@@ -72,6 +72,8 @@ class Registers:
     f30 = 0.0
     f31 = 0.0
 
+    hi = 0
+    lo = 0
 
 
     def __init__(self):

@@ -9,9 +9,12 @@ class Interpreter:
     labels = {}
 
     registers_ref = None
+    __breakpoints__ = []
+    __call_stack__ = []
 
     __processed__ = False
     __foundmain__ = False
+
 
     def __init__(self, file_name, r):
         self.registers_ref = r
@@ -69,11 +72,13 @@ class Interpreter:
         self.execute_label("main")
 
     def execute_label(self, label_to_run):
+
         # main entry point
         code = self.labels[label_to_run].strip().splitlines()
         for i in code: 
             instruction = i.split(" ")
             if Multiplexer.is_a_jump_instruction(instruction[0]):
                 self.execute_label(instruction[1])
+            # elif is a branch beq t0, t1, main
 
             Multiplexer.decode_and_execute(self.registers_ref, instruction[0], instruction[1:])

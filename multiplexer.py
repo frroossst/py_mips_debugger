@@ -13,3 +13,25 @@ class Multiplexer:
         if ins == "j":
             return True
         return False
+
+    def check_and_evaluate_branch(ins, args):
+        if ins == "beq":
+            if args[0] == args[1]:
+                return True
+        elif ins == "bne":
+            if args[0] != args[1]:
+                return True
+        elif ins == "bgt":
+            if args[0] > args[1]:
+                return True
+        elif ins == "blt":
+            if args[0] < args[1]:
+                return True
+        elif ins == "bge":
+            if args[0] >= args[1]:
+                return True
+        elif ins == "ble":
+            if args[0] <= args[1]:
+                return True
+        return False
+

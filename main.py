@@ -14,5 +14,5 @@ if __name__ == '__main__':
     try:
         I.run()
     except Exception as e:
-        print(f"Emulator errored out with errror: {e}")
         print(R)
+        print(f"Emulator errored out with errror: {e}")
