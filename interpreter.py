@@ -17,8 +17,8 @@ class Interpreter:
         self.registers_ref = r
         self.file_name = file_name
 
-        with open(file_name, 'r') as f:
-            content = f.readlines()
+        with open(file_name, 'r') as fobj:
+            content = fobj.readlines()
             # find .text heading and put everything after it in text
             for i in range(len(content)):
                 if content[i].strip() == ".text":
@@ -54,6 +54,8 @@ class Interpreter:
                         val += i
                         val += "\n"
                         self.labels[last_label] = val
+                else:
+                    raise SyntaxError("Instruction found before label")
 
         if not self.__foundmain__:
             raise SyntaxError("No main label found")
@@ -71,4 +73,7 @@ class Interpreter:
         code = self.labels[label_to_run].strip().splitlines()
         for i in code: 
             instruction = i.split(" ")
+            if Multiplexer.is_a_jump_instruction(instruction[0]):
+                self.execute_label(instruction[1])
+
             Multiplexer.decode_and_execute(self.registers_ref, instruction[0], instruction[1:])

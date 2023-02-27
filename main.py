@@ -11,5 +11,8 @@ if __name__ == '__main__':
     R = Registers()
     I = Interpreter(file, R)
     I.process()
-    I.run()
-    print(R)
+    try:
+        I.run()
+    except Exception as e:
+        print(f"Emulator errored out with errror: {e}")
+        print(R)
