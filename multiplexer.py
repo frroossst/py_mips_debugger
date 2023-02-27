@@ -1,12 +1,7 @@
-from registers import Registers
-from instructions import *
+from instructions import Instuctions
 
 class Multiplexer:
 
-    def decode_instruction(r, ins, args):
+    def decode_and_execute(r, ins, args):
         if ins == "li":
-            li(r, args[0], args[1])
-
-
-
-
+            Instuctions.li(r, args[0].strip(","), args[1])

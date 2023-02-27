@@ -10,5 +10,6 @@ file = sys.argv[1]
 if __name__ == '__main__':
     R = Registers()
     I = Interpreter(file, R)
+    I.process()
     I.run()
     print(R)

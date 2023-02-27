@@ -372,8 +372,3 @@ class Registers:
             return self.f31
         else:
             raise ValueError("Invalid register name")
-
-
-
-
-        
