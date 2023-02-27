@@ -29,6 +29,9 @@ class IDE(QWidget):
 
     filename = None
 
+    breakpoints = {}
+    last_added_breakpoint = None
+
     def __init__(self, filename):
         self.filename = filename
         super().__init__()
@@ -78,7 +81,36 @@ class IDE(QWidget):
         lineText = block.text()
 
         # Print the line number to the console
-        print(f'Clicked line: {lineNumber}: {lineText}')
+
+        print("---------------------------------")
+        print(list(self.breakpoints.keys()))
+        print(self.last_added_breakpoint)
+        print("---------------------------------")
+
+        if lineNumber in self.breakpoints.keys() and lineNumber != self.last_added_breakpoint:
+            print("removing breakpoint")
+            print(f'Clicked line: {lineNumber}: {lineText}')
+
+            # clear highlight
+            no_highlight_format = QTextBlockFormat()
+            no_highlight_format.setBackground(Qt.white)
+            cursor.setBlockFormat(no_highlight_format)
+
+            self.breakpoints.pop(lineNumber, None)
+            self.last_added_breakpoint = lineNumber
+
+        else:
+            print("adding breakpoint")
+            print(f'Clicked line: {lineNumber}: {lineText}')
+
+            yellow_highlight_format = QTextBlockFormat()
+            yellow_highlight_format.setBackground(Qt.yellow)
+            cursor.setBlockFormat(yellow_highlight_format)
+
+            self.breakpoints[lineNumber] = lineText
+            self.last_added_breakpoint = lineNumber
+
+
 
     def eventFilter(self, object, event) :
         # Add a breakpoint icon to the left margin when a line is clicked

@@ -4,7 +4,6 @@ from interpreter import Interpreter
 from registers import Registers
 from instructions import *
 from ide import *
-import threading
 import sys
 
 file_name = sys.argv[1]
