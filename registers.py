@@ -113,7 +113,7 @@ class Registers:
         elif register == "t9":
             self.t9 = value
         else:
-            raise ValueError("Invalid register name")
+            raise ValueError(f"Invalid register name: {register}")
         
     def get_temporary_register(self, register):
         if register == "t0":

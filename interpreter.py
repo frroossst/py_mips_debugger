@@ -1,10 +1,14 @@
+from multiplexer import Multiplexer
+
 class Interpreter:
 
     file_name = ""
     text = ""
     data = ""
+    registers_ref = None
 
-    def __init__(self, file_name):
+    def __init__(self, file_name, r):
+        self.registers_ref = r
         self.file_name = file_name
         with open(file_name, 'r') as f:
             content = f.readlines()
@@ -20,3 +24,6 @@ class Interpreter:
 
     def run(self):
         print(self.text)
+        Multiplexer.decode_instruction(self.registers_ref, "li", "$t1, 52".split(", "))
+
+
