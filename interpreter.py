@@ -36,7 +36,7 @@ class Interpreter:
 
     def process(self):
         last_label = None
-        for i in self.text:
+        for x, i in enumerate(self.text):
             if Instructions.isLabel(i):
                 if i == "main:":
                     self.__foundmain__ = True

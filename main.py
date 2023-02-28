@@ -1,5 +1,6 @@
 from breakpoints import GLOBAL_BREAKPOINTS
 from PyQt5.QtWidgets import QApplication
+from termcolor import colored, cprint
 from multiplexer import Multiplexer
 from interpreter import Interpreter
 from registers import Registers
@@ -24,16 +25,17 @@ def setup_runtime():
     I.run()
 
 if __name__ == '__main__':
-    setup_ide()
+    # setup_ide()
 
     # setting up the runtime environment
-    # R = Registers()
-    # I = Interpreter(file_name, R)
-    # I.process()
+    R = Registers()
+    I = Interpreter(file_name, R)
+    I.process()
 
     try:
         I.run()
     except Exception as e:
-        print(f"Emulator errored out with errror: {e}")
+        err = f"Emulator errored out with errror: {e}"
+        cprint(err, "red")
     finally:
         print(R)

@@ -1,12 +1,12 @@
-from instructions import Instuctions
+from instructions import Instructions
 
 class Multiplexer:
 
     def decode_and_execute(r, ins, args):
         if ins == "li":
-            Instuctions.li(r, args[0].strip(","), args[1])
+            Instructions.li(r, args[0].strip(","), args[1])
         elif ins == "addi":
-            Instuctions.addi(r, args[0].strip(","), args[1])
+            Instructions.addi(r, args[0].strip(","), args[1].strip(","), args[2])
 
     # expand to include more jumps
     def is_a_jump_instruction(ins):

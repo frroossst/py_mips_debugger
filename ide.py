@@ -2,7 +2,7 @@ from PyQt5.QtGui import QTextBlockFormat, QTextCursor, QTextCharFormat, QTextDoc
 from PyQt5.QtWidgets import QWidget, QPlainTextEdit, QTextEdit, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt, QEvent, QRectF, QPointF, QSize
 from breakpoints import GLOBAL_BREAKPOINTS
-from instructions import Instuctions
+from instructions import Instructions
 from interpreter import Interpreter
 import sys
 
@@ -90,7 +90,7 @@ class IDE(QWidget):
             try:
                 extracted_instruction = lineText.split(" ")[5] 
                 print(extracted_instruction)
-                if extracted_instruction in Instuctions.get_all_instructions() and not Instuctions.isLabel(lineText): 
+                if extracted_instruction in Instructions.get_all_instructions() and not Instructions.isLabel(lineText): 
                     fmt = QTextBlockFormat()
                     fmt.setBackground(Qt.red)
 
