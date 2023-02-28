@@ -1,3 +1,4 @@
+from instructions import Instructions
 from multiplexer import Multiplexer
 
 class Interpreter:
@@ -9,7 +10,7 @@ class Interpreter:
     labels = {}
 
     registers_ref = None
-    __breakpoints__ = []
+    __breakpoints__ = {}
     __call_stack__ = []
 
     __processed__ = False
@@ -33,16 +34,10 @@ class Interpreter:
         else:
             self.text = [ x.strip() for x in "".join(self.text).splitlines() if x.strip() != "" ]
 
-    @staticmethod
-    def isLabel(line):
-        if ":" in line:
-            return True
-        return False
-
     def process(self):
         last_label = None
         for i in self.text:
-            if Interpreter.isLabel(i):
+            if Instructions.isLabel(i):
                 if i == "main:":
                     self.__foundmain__ = True
 

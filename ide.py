@@ -1,6 +1,9 @@
 from PyQt5.QtGui import QTextBlockFormat, QTextCursor, QTextCharFormat, QTextDocument, QPixmap, QPainter, QPen
 from PyQt5.QtWidgets import QWidget, QPlainTextEdit, QTextEdit, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt, QEvent, QRectF, QPointF, QSize
+from breakpoints import GLOBAL_BREAKPOINTS
+from instructions import Instuctions
+from interpreter import Interpreter
 import sys
 
 
@@ -29,7 +32,6 @@ class IDE(QWidget):
 
     filename = None
 
-    breakpoints = {}
     last_added_breakpoint = None
 
     def __init__(self, filename):
@@ -43,22 +45,16 @@ class IDE(QWidget):
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
 
-        # Connect the cursor position changed signal to the onCursorPositionChanged method
-        self.textEdit.cursorPositionChanged.connect(self.onCursorPositionChanged)
-
         # Create a layout for the window and add the QTextEdit widget to it
         layout = QVBoxLayout()
         layout.addWidget(self.textEdit)
         self.setLayout(layout)
 
-        # Connect the cursor position changed signal to the onCursorPositionChanged method
-        self.textEdit.cursorPositionChanged.connect(self.onCursorPositionChanged)
-
-        # Add a breakpoint icon to the left margin when a line is clicked
-        self.textEdit.installEventFilter(self)
-
         # Load the file and display its contents
         self.loadFile()
+
+        # Connect the cursor position changed signal to the onCursorPositionChanged method
+        self.textEdit.mouseDoubleClickEvent = self.onMouseDoubleClickEvent
 
     def loadFile(self):
         # Open the file and read its contents
@@ -72,7 +68,7 @@ class IDE(QWidget):
         # Set the text of the QTextEdit widget to the numbered text
         self.textEdit.setText(numberedText)
 
-    def onCursorPositionChanged(self):
+    def onMouseDoubleClickEvent(self, event):
         # Get the current line number
         cursor = self.textEdit.textCursor()
         block = cursor.block()
@@ -80,112 +76,27 @@ class IDE(QWidget):
         lineNumber = cursor.blockNumber() + 1
         lineText = block.text()
 
-        # Print the line number to the console
+        try:
+            _ = GLOBAL_BREAKPOINTS[lineNumber]
+            GLOBAL_BREAKPOINTS.pop(lineNumber)
 
-        print("---------------------------------")
-        print(list(self.breakpoints.keys()))
-        print(self.last_added_breakpoint)
-        print("---------------------------------")
+            fmt = QTextBlockFormat()
+            fmt.setBackground(Qt.white)
 
-        if lineNumber in self.breakpoints.keys() and lineNumber != self.last_added_breakpoint:
-            print("removing breakpoint")
-            print(f'Clicked line: {lineNumber}: {lineText}')
+            cursor.setBlockFormat(fmt)
+        except KeyError:
+            GLOBAL_BREAKPOINTS[lineNumber] = lineText
 
-            # clear highlight
-            no_highlight_format = QTextBlockFormat()
-            no_highlight_format.setBackground(Qt.white)
-            cursor.setBlockFormat(no_highlight_format)
+            try:
+                extracted_instruction = lineText.split(" ")[5] 
+                print(extracted_instruction)
+                if extracted_instruction in Instuctions.get_all_instructions() and not Instuctions.isLabel(lineText): 
+                    fmt = QTextBlockFormat()
+                    fmt.setBackground(Qt.red)
 
-            self.breakpoints.pop(lineNumber, None)
-            self.last_added_breakpoint = lineNumber
+                    cursor.setBlockFormat(fmt)
+            except Exception as e:
+                pass
 
-        else:
-            print("adding breakpoint")
-            print(f'Clicked line: {lineNumber}: {lineText}')
-
-            yellow_highlight_format = QTextBlockFormat()
-            yellow_highlight_format.setBackground(Qt.yellow)
-            cursor.setBlockFormat(yellow_highlight_format)
-
-            self.breakpoints[lineNumber] = lineText
-            self.last_added_breakpoint = lineNumber
-
-
-
-    def eventFilter(self, object, event) :
-        # Add a breakpoint icon to the left margin when a line is clicked
-        if event.type() == QEvent.MouseButtonPress:
-            if event.button() == Qt.LeftButton:
-                cursor = self.textEdit.cursorForPosition(event.pos())
-                block = cursor.block()
-                lineNumber = block.blockNumber() + 1
-
-                # Add the breakpoint icon to the left margin
-                format = QTextBlockFormat()
-                format.setLeftMargin(16)
-                block.setBlockFormat(format)
-
-                breakpoint = Breakpoint()
-                breakpoint.setObjectName('breakpoint')
-                breakpoint.setToolTip(f'Breakpoint on line {lineNumber}')
-                breakpoint.setProperty('lineNumber', lineNumber)
-
-                layout = QHBoxLayout()
-                layout.setContentsMargins(0, 0, 0, 0)
-                layout.addWidget(breakpoint)
-                widget = QWidget()
-                widget.setLayout(layout)
-
-                self.textEdit.setViewportMargins(16, 0, 0, 0)
-
-                self.textEdit.setLineWrapMode(QTextEdit.NoWrap)
-                self.textEdit.setReadOnly(False)
-                self.textEdit.setMaximumBlockCount(100000)
-                self.textEdit.setDocument(QTextDocument(self))
-
-
-                leftMargin = QWidget(self.textEdit)
-                leftMargin.setObjectName('leftMargin')
-                leftMargin.setGeometry(0, 0, 16, 16 * self.textEdit.blockCount())
-                self.textEdit.setViewportMargins(16, 0, 0, 0)
-
-                self.updateLeftMargin()
-
-                self.textEdit.installEventFilter(self)
-
-                self.show()
-
-        return super().eventFilter(object, event)
-
-    def updateLeftMargin(self):
-        leftMargin = self.textEdit.findChild(QWidget, 'leftMargin')
-        if leftMargin is None:
-            return
-    
-        for i in range(self.textEdit.blockCount()):
-            block = self.textEdit.document().findBlockByNumber(i)
-            breakpoint = leftMargin.findChild(QLabel, f'breakpoint_{i}')
-            if breakpoint is None:
-                continue
-            
-            breakpoint.move(0, self.textEdit.cursorRect(block.position()).top())
-    
-    def paintEvent(self, event):
-        painter = QPainter(self)
-    
-        leftMargin = self.textEdit.findChild(QWidget, 'leftMargin')
-        if leftMargin is None:
-            return
-    
-        for i in range(self.textEdit.blockCount()):
-            block = self.textEdit.document().findBlockByNumber(i)
-            breakpoint = leftMargin.findChild(QLabel, f'breakpoint_{i}')
-            if breakpoint is None:
-                continue
-            
-            painter.drawPixmap(0, self.textEdit.cursorRect(block.position()).top(), breakpoint.pixmap())
-    
-        painter.end()
-    
-
+        print(f"Breakpoints: {GLOBAL_BREAKPOINTS}")
 

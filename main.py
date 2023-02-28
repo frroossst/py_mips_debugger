@@ -1,3 +1,4 @@
+from breakpoints import GLOBAL_BREAKPOINTS
 from PyQt5.QtWidgets import QApplication
 from multiplexer import Multiplexer
 from interpreter import Interpreter
@@ -7,6 +8,7 @@ from ide import *
 import sys
 
 file_name = sys.argv[1]
+GLOBAL_BREAKPOINTS = {}
 
 # setting up the GUI
 def setup_ide():
