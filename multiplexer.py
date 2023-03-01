@@ -1,4 +1,5 @@
 from instructions import Instructions
+from helper_instructions import *
 
 class Multiplexer:
 
@@ -7,6 +8,11 @@ class Multiplexer:
             Instructions.li(r, args[0].strip(","), args[1])
         elif ins == "addi":
             Instructions.addi(r, args[0].strip(","), args[1].strip(","), args[2])
+
+    def reached_end_of_instruction(ins):
+        if ins == EndOfInstruction().__str__():
+            return True
+        return False
 
     # expand to include more jumps
     def is_a_jump_instruction(ins):

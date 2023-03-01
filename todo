@@ -1,7 +1,7 @@
 - figure out memory layout and file IO
+- figure out a program counter
 - build a basic GUI for debug breakpoints
 - add a console
 - reload button to reload new file code changes
     - automatically detect changes and hot-reload?
 - UI to browse and load in files
-- 

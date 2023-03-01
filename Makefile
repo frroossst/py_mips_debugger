@@ -2,6 +2,7 @@
 
 OUTPUT = output
 PYTHONFILE = main.py
+PYTHONLIBVER = python3.10
 CFILE=main.c
 
 help:
@@ -14,16 +15,18 @@ help:
 	@echo "make clean"
 	@echo "    Remove the binary file"
 	
-
 build:
 	cython $(PYTHONFILE) --embed
-	gcc -Os -I /usr/include/python3.3m -o $(OUTPUT) $(CFILE) -lpython3.3m -lpthread -lm -lutil -ldl
+	gcc -Os -I/usr/include/$(PYTHONLIBVER) $(python3-config --includes) main.c -o output $(python3-config --ldflags) -l$(PYTHONLIBVER)
 
 run:
-	./output_bin_file
+	./output
 
 dependencies:
+	@echo "********** Installing dependencies **********"
+	@echo "********** Installing Cython ****************"
 	pip3 install cython
+	@echo "********** Installing PyQt5 *****************"
 	pip3 install PyQt5
 
 clean:

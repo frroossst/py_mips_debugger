@@ -1,5 +1,3 @@
-from copy import copy
-
 class Instructions:
 
     @staticmethod

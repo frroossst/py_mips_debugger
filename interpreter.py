@@ -1,5 +1,6 @@
 from instructions import Instructions
 from multiplexer import Multiplexer
+from helper_instructions import *
 
 class Interpreter:
 
@@ -51,6 +52,7 @@ class Interpreter:
                     finally:
                         val += i
                         val += "\n"
+                        val += EndOfInstruction().__str__()
                         self.labels[last_label] = val
                 else:
                     raise SyntaxError("Instruction found before label")
@@ -72,6 +74,8 @@ class Interpreter:
         code = self.labels[label_to_run].strip().splitlines()
         for i in code: 
             instruction = i.split(" ")
+            if Multiplexer.reached_end_of_instruction(instruction[0]):
+                return None
             if Multiplexer.is_a_jump_instruction(instruction[0]):
                 Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
                 if self.registers_ref.ra in list(self.labels):
