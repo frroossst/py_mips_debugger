@@ -66,14 +66,16 @@ class Interpreter:
 
         self.execute_label("main")
 
-    def execute_label(self, label_to_run):
+    def execute_label(self, label_to_run, return_control=False):
 
         # main entry point
         code = self.labels[label_to_run].strip().splitlines()
         for i in code: 
             instruction = i.split(" ")
             if Multiplexer.is_a_jump_instruction(instruction[0]):
-                self.execute_label(instruction[1])
+                Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
+                if self.registers_ref.ra in list(self.labels):
+                    self.execute_label(instruction[1], return_control=True)
             # elif is a branch beq t0, t1, main
 
             Multiplexer.decode_and_execute(self.registers_ref, instruction[0], instruction[1:])

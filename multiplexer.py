@@ -10,9 +10,18 @@ class Multiplexer:
 
     # expand to include more jumps
     def is_a_jump_instruction(ins):
-        if ins == "j":
+        if ins == "j" or ins == "ja" or ins == "jal":
             return True
         return False
+
+    def process_jump_instruction(r, ins, args):
+        if ins == "ja":
+            r.ra = args[0]
+        elif ins == "jal":
+            # check if label or address
+            r.ra = args[0]
+            
+        return None
 
     def check_and_evaluate_branch(ins, args):
         if ins == "beq":

@@ -11,6 +11,8 @@ import sys
 file_name = sys.argv[1]
 GLOBAL_BREAKPOINTS = {}
 
+turn_on_gui = False
+
 # setting up the GUI
 def setup_ide():
     app = QApplication(sys.argv)
@@ -25,17 +27,31 @@ def setup_runtime():
     I.run()
 
 if __name__ == '__main__':
-    # setup_ide()
+    if turn_on_gui:
+        setup_ide()
+    else:
+        fmt = f"Running {file_name} in CLI mode"
+        cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
 
     # setting up the runtime environment
     R = Registers()
     I = Interpreter(file_name, R)
     I.process()
 
+    err_flag = False
+
     try:
         I.run()
     except Exception as e:
+        err_flag = True
         err = f"Emulator errored out with errror: {e}"
-        cprint(err, "red")
+        cprint(err, "red", attrs=["bold"], file=sys.stderr)
     finally:
         print(R)
+
+    if err_flag:
+        fmt = f"[ERROR]"
+        cprint(fmt, "red", attrs=["bold"], file=sys.stderr)
+    else:
+        fmt = f"[SUCCESS]"
+        cprint(fmt, "green", attrs=["bold"], file=sys.stdout)
