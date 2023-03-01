@@ -7,7 +7,6 @@ class Interpreter:
 
     file_name = ""
     text = ""
-    text_starts_at_line = None
     data = ""
 
     labels = OrderedDict()
@@ -36,11 +35,8 @@ class Interpreter:
 
         if self.text == "":
             raise SyntaxError("No .text section found in file")
-        else:
-            prev_text_len = len(self.text)
-            self.text = [ x.strip() for x in "".join(self.text).splitlines() if x.strip() != "" ]
-            now_text_len = len(self.text)
-            self.text_starts_at_line -= (prev_text_len - now_text_len)
+
+        self.text = [ x.strip() for x in "".join(self.text).splitlines() if x.strip() != "" ]
 
     def process(self):
         last_label = None
@@ -65,7 +61,9 @@ class Interpreter:
                         val += i
                         val += "\n"
                         self.labels[last_label] = val
-                        self.label_index[last_label] = self.text_starts_at_line + x + 1
+
+                        if last_label not in list(self.label_index):
+                            self.label_index[last_label] = self.text_starts_at_line + x + 1
                 else:
                     raise SyntaxError("Instruction found before label")
 

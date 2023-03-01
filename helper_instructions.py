@@ -1,4 +1,5 @@
 class EndOfInstruction():
+
     def __init__(self) -> None:
         pass
 
