@@ -1,7 +1,9 @@
+- GUI buttons to run, step into, stop, etc
+- map GUI layout to interpreter layout
 - figure out memory layout and file IO
-- figure out a program counter
-- build a basic GUI for debug breakpoints
+- figure out a program counter of sorts
 - add a console
 - reload button to reload new file code changes
     - automatically detect changes and hot-reload?
 - UI to browse and load in files
+- edit text in the editor

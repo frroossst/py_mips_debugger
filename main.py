@@ -11,7 +11,7 @@ import sys
 file_name = sys.argv[1]
 GLOBAL_BREAKPOINTS = {}
 
-turn_on_gui = False
+turn_on_gui = True
 
 # setting up the GUI
 def setup_ide():
@@ -32,6 +32,10 @@ if __name__ == '__main__':
     else:
         fmt = f"Running {file_name} in CLI mode"
         cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
+
+    # show pre-alpha warning
+    fmt = f"WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
+    cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
     # setting up the runtime environment
     R = Registers()

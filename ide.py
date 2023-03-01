@@ -7,27 +7,6 @@ from interpreter import Interpreter
 import sys
 
 
-class Breakpoint(QLabel):
-    def __init__(self, parent=None) -> None:
-        super().__init__()
-        self.setFixedSize(QSize(16, 16))
-        self.setAlignment(Qt.AlignCenter)
-        self.setPixmap(self.makePixmap())
-
-    def makePixmap(self):
-        size = self.size().width()
-        pixmap = QPixmap(size, size)
-        pixmap.fill(Qt.transparent)
-        painter = QPainter(pixmap)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(QPen(Qt.red, 2))
-        painter.setBrush(Qt.red)
-        painter.drawEllipse(QRectF(2, 2, size - 4, size - 4))
-        painter.end()
-        return pixmap
-
-
-
 class IDE(QWidget):
 
     filename = None
