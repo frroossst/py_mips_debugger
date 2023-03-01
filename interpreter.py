@@ -1,14 +1,17 @@
 from instructions import Instructions
 from multiplexer import Multiplexer
+from collections import OrderedDict
 from helper_instructions import *
 
 class Interpreter:
 
     file_name = ""
     text = ""
+    text_starts_at_line = None
     data = ""
 
-    labels = {}
+    labels = OrderedDict()
+    label_index = {}
 
     registers_ref = None
     __breakpoints__ = {}
@@ -28,12 +31,16 @@ class Interpreter:
             for i in range(len(content)):
                 if content[i].strip() == ".text":
                     self.text = content[i + 1:]
+                    self.text_starts_at_line = i + 1
                     break
 
         if self.text == "":
             raise SyntaxError("No .text section found in file")
         else:
+            prev_text_len = len(self.text)
             self.text = [ x.strip() for x in "".join(self.text).splitlines() if x.strip() != "" ]
+            now_text_len = len(self.text)
+            self.text_starts_at_line -= (prev_text_len - now_text_len)
 
     def process(self):
         last_label = None
@@ -41,6 +48,11 @@ class Interpreter:
             if Instructions.isLabel(i):
                 if i == "main:":
                     self.__foundmain__ = True
+
+                if last_label is not None:
+                    val = self.labels[last_label]
+                    val += EndOfInstruction().__str__()
+                    self.labels[last_label] = val
 
                 last_label = i[:-1:]
             else:
@@ -52,13 +64,21 @@ class Interpreter:
                     finally:
                         val += i
                         val += "\n"
-                        val += EndOfInstruction().__str__()
                         self.labels[last_label] = val
+                        self.label_index[last_label] = self.text_starts_at_line + x + 1
                 else:
                     raise SyntaxError("Instruction found before label")
 
+        if last_label is not None:
+            val = self.labels[last_label]
+            val += EndOfInstruction().__str__()
+            self.labels[last_label] = val
+
         if not self.__foundmain__:
             raise SyntaxError("No main label found")
+
+        print(self.label_index)
+        print(self.labels)
 
         self.__processed__ = True
 
