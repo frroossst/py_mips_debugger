@@ -1,9 +1,9 @@
 from PyQt5.QtGui import QTextBlockFormat, QTextCursor, QTextCharFormat, QTextDocument, QPixmap, QPainter, QPen
 from PyQt5.QtWidgets import QWidget, QPlainTextEdit, QTextEdit, QVBoxLayout, QLabel, QHBoxLayout
 from PyQt5.QtCore import Qt, QEvent, QRectF, QPointF, QSize
-from breakpoints import GLOBAL_BREAKPOINTS
 from instructions import Instructions
 from interpreter import Interpreter
+import breakpoints
 import sys
 
 
@@ -56,19 +56,18 @@ class IDE(QWidget):
         lineText = block.text()
 
         try:
-            _ = GLOBAL_BREAKPOINTS[lineNumber]
-            GLOBAL_BREAKPOINTS.pop(lineNumber)
+            _ = breakpoints.GLOBAL_BREAKPOINTS[lineNumber]
+            breakpoints.GLOBAL_BREAKPOINTS.pop(lineNumber)
 
             fmt = QTextBlockFormat()
             fmt.setBackground(Qt.white)
 
             cursor.setBlockFormat(fmt)
         except KeyError:
-            GLOBAL_BREAKPOINTS[lineNumber] = lineText
+            breakpoints.GLOBAL_BREAKPOINTS[lineNumber] = lineText
 
             try:
                 extracted_instruction = lineText.split(" ")[5] 
-                print(extracted_instruction)
                 if extracted_instruction in Instructions.get_all_instructions() and not Instructions.isLabel(lineText): 
                     fmt = QTextBlockFormat()
                     fmt.setBackground(Qt.red)
@@ -77,5 +76,5 @@ class IDE(QWidget):
             except Exception as e:
                 pass
 
-        print(f"Breakpoints: {GLOBAL_BREAKPOINTS}")
+        print(f"Breakpoints: {breakpoints.GLOBAL_BREAKPOINTS}")
 

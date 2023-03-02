@@ -30,6 +30,6 @@ dependencies:
 	pip3 install PyQt5
 
 clean:
-	rm -f output_bin_file
+	rm -f output
 	rm -f *.c
 
