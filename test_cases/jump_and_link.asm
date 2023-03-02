@@ -7,6 +7,8 @@ a:
 b:
     li $t2, 9
 
+# this is a comment
+
 main:
     li $t0, 1
     jal a

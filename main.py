@@ -5,7 +5,6 @@ from interpreter import Interpreter
 from registers import Registers
 from instructions import *
 from ide import *
-import breakpoints
 import sys
 
 file_name = sys.argv[1]

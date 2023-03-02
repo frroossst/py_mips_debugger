@@ -65,7 +65,6 @@ class IDE(QWidget):
             cursor.setBlockFormat(fmt)
         except KeyError:
             breakpoints.GLOBAL_BREAKPOINTS[lineNumber] = lineText
-
             try:
                 extracted_instruction = lineText.split(" ")[5] 
                 if extracted_instruction in Instructions.get_all_instructions() and not Instructions.isLabel(lineText): 
@@ -75,6 +74,9 @@ class IDE(QWidget):
                     cursor.setBlockFormat(fmt)
             except Exception as e:
                 pass
+        finally:
+            breakpoints.process_and_clean_breakpoints()
+            breakpoints.map_ide_breakpoints_to_interpreter_breakpoints(self.textEdit.toPlainText().splitlines())
 
         print(f"Breakpoints: {breakpoints.GLOBAL_BREAKPOINTS}")
 

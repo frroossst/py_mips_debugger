@@ -2,6 +2,7 @@ from instructions import Instructions
 from multiplexer import Multiplexer
 from collections import OrderedDict
 from helper_instructions import *
+import breakpoints
 
 class Interpreter:
 
@@ -58,8 +59,10 @@ class Interpreter:
                     except KeyError:
                         val = ""
                     finally:
-                        val += i
-                        val += "\n"
+                        # append only if not a comment
+                        if not i.startswith("#"):
+                            val += i
+                            val += "\n"
                         self.labels[last_label] = val
 
                         if last_label not in list(self.label_index):
@@ -86,11 +89,18 @@ class Interpreter:
 
         self.execute_label("main")
 
-    def execute_label(self, label_to_run, return_control=False):
+    def check_and_breakpoint(self, label, instruction_number):
+        if label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()):
+            if instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]:
+                while (True):
+                    print("Breakpoint hit")
+                    pass
 
+    def execute_label(self, label_to_run, return_control=False):
         # main entry point
         code = self.labels[label_to_run].strip().splitlines()
-        for i in code: 
+        for x, i in enumerate(code): 
+            self.check_and_breakpoint(label_to_run, x)
             instruction = i.split(" ")
             if Multiplexer.reached_end_of_instruction(instruction[0]):
                 return None
