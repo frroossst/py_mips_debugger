@@ -2,7 +2,7 @@ from instructions import Instructions
 import queue
 
 GLOBAL_BREAKPOINTS = {}
-INTERPRETED_BREAKPOINTS = {'main': [0]}
+INTERPRETED_BREAKPOINTS = {}
 MESSAGE_QUEUE = queue.Queue()
 
 
@@ -17,12 +17,16 @@ def consume_line_number_and_return_line(line):
         else:
             return line[x:]
 
-def map_ide_breakpoints_to_interpreter_breakpoints(text_list):
+def remove_duplicate_breakpoints():
+    # remove duplicate values in the list
+    for k, v in INTERPRETED_BREAKPOINTS.items():
+        INTERPRETED_BREAKPOINTS[k] = list(set(v))
+
+def map_ide_breakpoints_to_interpreter_breakpoints(text_list, removing_breakpoints):
     for k, v in GLOBAL_BREAKPOINTS.items():
         last_label = None
         label_offset = 0
         for x, i in enumerate(text_list):
-            print(i)
             label_offset += 1
             if Instructions.isLabel(consume_line_number_and_return_line(i)):
                 last_label = i.split(":")[1].strip()
@@ -32,9 +36,15 @@ def map_ide_breakpoints_to_interpreter_breakpoints(text_list):
                 # TODO: remove breakpoints too at some time
                 if last_label not in list(INTERPRETED_BREAKPOINTS.keys()):
                     INTERPRETED_BREAKPOINTS[last_label] = [label_offset - 1]
+                    break
                 else:
-                    INTERPRETED_BREAKPOINTS[last_label].append(label_offset - 1)
-    print(INTERPRETED_BREAKPOINTS)
+                    if not removing_breakpoints:
+                        INTERPRETED_BREAKPOINTS[last_label].append(label_offset - 1)
+                        remove_duplicate_breakpoints()
+                    else:
+                        INTERPRETED_BREAKPOINTS[last_label].remove(label_offset)
+                        remove_duplicate_breakpoints()
+                        return None
 
 
 def process_and_clean_breakpoints():

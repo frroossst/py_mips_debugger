@@ -55,9 +55,11 @@ class IDE(QWidget):
         lineNumber = cursor.blockNumber() + 1
         lineText = block.text()
 
+        removing_breakpoint = False
+
         try:
             _ = breakpoints.GLOBAL_BREAKPOINTS[lineNumber]
-            breakpoints.GLOBAL_BREAKPOINTS.pop(lineNumber)
+            removing_breakpoint = True
 
             fmt = QTextBlockFormat()
             fmt.setBackground(Qt.white)
@@ -76,7 +78,11 @@ class IDE(QWidget):
                 pass
         finally:
             breakpoints.process_and_clean_breakpoints()
-            breakpoints.map_ide_breakpoints_to_interpreter_breakpoints(self.textEdit.toPlainText().splitlines())
+            breakpoints.map_ide_breakpoints_to_interpreter_breakpoints(self.textEdit.toPlainText().splitlines(), removing_breakpoint)
+
+            if removing_breakpoint: # removing early to ensure that map_ide_breakpoints_to_interpreter_breakpoints works correctly
+                breakpoints.GLOBAL_BREAKPOINTS.pop(lineNumber)
 
         print(f"Breakpoints: {breakpoints.GLOBAL_BREAKPOINTS}")
+        print(f"Interpreted breakpoints: {breakpoints.INTERPRETED_BREAKPOINTS}")
 
