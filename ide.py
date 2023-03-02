@@ -69,7 +69,7 @@ class IDE(QWidget):
             breakpoints.GLOBAL_BREAKPOINTS[lineNumber] = lineText
             try:
                 extracted_instruction = lineText.split(" ")[5] 
-                if extracted_instruction in Instructions.get_all_instructions() and not Instructions.isLabel(lineText): 
+                if extracted_instruction in Instructions.get_all_instructions() and not Instructions.isLabel(breakpoints.consume_line_number_and_return_line(lineText)): 
                     fmt = QTextBlockFormat()
                     fmt.setBackground(Qt.red)
 

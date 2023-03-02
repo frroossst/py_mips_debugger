@@ -42,7 +42,14 @@ def map_ide_breakpoints_to_interpreter_breakpoints(text_list, removing_breakpoin
                         INTERPRETED_BREAKPOINTS[last_label].append(label_offset - 1)
                         remove_duplicate_breakpoints()
                     else:
-                        INTERPRETED_BREAKPOINTS[last_label].remove(label_offset)
+                        # INTERPRETED_BREAKPOINTS[last_label].remove(label_offset - 1)
+                        print(INTERPRETED_BREAKPOINTS)
+                        print("removed breakpoint: ", v)
+                        print("from label: ", last_label)
+                        print("at instruction number: ", label_offset - 1)
+                        val = INTERPRETED_BREAKPOINTS[last_label]
+                        val.remove(label_offset - 1)
+                        INTERPRETED_BREAKPOINTS[last_label] = val
                         remove_duplicate_breakpoints()
                         return None
 
