@@ -7,8 +7,6 @@ MESSAGE_QUEUE = queue.Queue()
 
 
 def consume_line_number_and_return_line(line):
-    processed_line = ""
-    hit_colon = False
     for x, i in enumerate(line):
         if i.isnumeric():
             continue

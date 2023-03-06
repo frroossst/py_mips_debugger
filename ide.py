@@ -1,10 +1,8 @@
-from PyQt5.QtGui import QTextBlockFormat, QTextCursor, QTextCharFormat, QTextDocument, QPixmap, QPainter, QPen
-from PyQt5.QtWidgets import QWidget, QPlainTextEdit, QTextEdit, QVBoxLayout, QLabel, QHBoxLayout
-from PyQt5.QtCore import Qt, QEvent, QRectF, QPointF, QSize
+from PyQt5.QtGui import QTextBlockFormat
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout
+from PyQt5.QtCore import Qt
 from instructions import Instructions
-from interpreter import Interpreter
 import breakpoints
-import sys
 
 
 class IDE(QWidget):
@@ -74,7 +72,7 @@ class IDE(QWidget):
                     fmt.setBackground(Qt.red)
 
                     cursor.setBlockFormat(fmt)
-            except Exception as e:
+            except Exception:
                 pass
         finally:
             breakpoints.process_and_clean_breakpoints()

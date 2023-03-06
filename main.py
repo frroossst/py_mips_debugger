@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QApplication
 from termcolor import cprint
-from multiplexer import Multiplexer
 from interpreter import Interpreter
 from registers import Registers
 from instructions import *
@@ -26,7 +25,7 @@ def setup_runtime():
 
 if __name__ == '__main__':
     # show pre-alpha warning
-    fmt = f"WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
+    fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
     cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
     if turn_on_gui:
@@ -52,8 +51,8 @@ if __name__ == '__main__':
         print(R)
 
     if err_flag:
-        fmt = f"[ERROR]"
+        fmt = "[ERROR]"
         cprint(fmt, "red", attrs=["bold"], file=sys.stderr)
     else:
-        fmt = f"[SUCCESS]"
+        fmt = "[SUCCESS]"
         cprint(fmt, "green", attrs=["bold"], file=sys.stdout)
