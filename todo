@@ -7,3 +7,5 @@
     - automatically detect changes and hot-reload?
 - UI to browse and load in files
 - edit text in the editor
+- add a watch panel, where users can specify the debugger to stop when a register changes or when a certain 
+    condition is met like $t0 < 9 or $t0 == $a1
