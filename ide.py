@@ -1,15 +1,22 @@
+# GUI imports
 from PyQt5.QtGui import QTextBlockFormat
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
+
+# Runtime imports
 from instructions import Instructions
+from interpreter import Interpreter
+from registers import Registers
 import breakpoints
 
 
 class IDE(QWidget):
 
     filename = None
-
     last_added_breakpoint = None
+
+    R = None
+    I = None
 
     def __init__(self, filename):
         self.filename = filename
@@ -56,6 +63,14 @@ class IDE(QWidget):
         # Connect the cursor position changed signal to the onCursorPositionChanged method
         self.textEdit.mouseDoubleClickEvent = self.onMouseDoubleClickEvent
 
+        self.setup_runtime()
+
+    def setup_runtime(self):
+        self.R = Registers()
+        self.I = Interpreter(self.filename, self.R)
+        self.I.process()
+        self.I.run()
+
     def loadFile(self):
         # Open the file and read its contents
         with open(self.filename, 'r') as file:
@@ -78,7 +93,7 @@ class IDE(QWidget):
         self.loadFile()
 
 
-    def onMouseDoubleClickEvent(self, event):
+    def onMouseDoubleClickEvent(self, _event):
         # Get the current line number
         cursor = self.textEdit.textCursor()
         block = cursor.block()
@@ -121,4 +136,6 @@ class IDE(QWidget):
         print("running code")
 
     def showRegisters(self):
-        print("showing registers")
+        register_box = QMessageBox()
+        register_box.setText(self.R.__str__())
+        register_box.exec_()

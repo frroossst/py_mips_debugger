@@ -1,6 +1,7 @@
 [tool.ruff]
 ignore = [
-    "E501"
+    "E501",
+    "E741"
     ]
 extend-select = [
     "ARG",
