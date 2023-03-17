@@ -18,11 +18,15 @@ class IDE(QWidget):
     R = None
     I = None
 
+    register_box = None
+
     def __init__(self, filename):
         self.filename = filename
         super().__init__()
         self.initUI()
         self.setMinimumSize(720, 480)
+        if self.register_box is not None:
+            self.register_box.register_value_changed.connect(self.updateRegistersGUI)
 
     def initUI(self):
         # Create the QTextEdit widget to display the file contents
@@ -47,7 +51,7 @@ class IDE(QWidget):
 
         # Create Registers button
         registers_button = QPushButton("REGISTERS", self)
-        registers_button.clicked.connect(self.showRegisters)
+        registers_button.clicked.connect(self.showRegistersGUI)
         btn_hlayout.addWidget(registers_button)
 
 
@@ -69,7 +73,6 @@ class IDE(QWidget):
         self.R = Registers()
         self.I = Interpreter(self.filename, self.R)
         self.I.process()
-        self.I.run()
 
     def loadFile(self):
         # Open the file and read its contents
@@ -133,9 +136,10 @@ class IDE(QWidget):
         print(f"Interpreted breakpoints: {breakpoints.INTERPRETED_BREAKPOINTS}")
 
     def runCode(self):
-        print("running code")
+        self.I.run()
 
-    def showRegisters(self):
-        register_box = QMessageBox()
-        register_box.setText(self.R.__str__())
-        register_box.exec_()
+    def showRegistersGUI(self):
+        self.register_box = QMessageBox()
+        self.register_box.setText(self.R.__str__())
+        self.register_box.exec_()
+

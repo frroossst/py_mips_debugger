@@ -1,5 +1,5 @@
+from helper_instructions import EndOfInstruction
 from instructions import Instructions
-from helper_instructions import *
 
 class Multiplexer:
 

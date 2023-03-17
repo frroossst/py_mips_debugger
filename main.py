@@ -5,7 +5,6 @@ from registers import Registers
 from ide import IDE
 import sys
 
-file_name = sys.argv[1]
 
 turn_on_gui = True
 
@@ -27,6 +26,10 @@ if __name__ == '__main__':
     fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
     cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
+    if len(sys.argv) < 2:
+        raise ValueError("No file name provided")
+    file_name = sys.argv[1]
+
     if turn_on_gui:
         setup_ide()
     else:
@@ -43,8 +46,8 @@ if __name__ == '__main__':
     try:
         I.run()
     except Exception as e:
-        err_flag = True
         err = f"Emulator errored out with errror: {e}"
+        err_flag = True
         cprint(err, "red", attrs=["bold"], file=sys.stderr)
     finally:
         print(R)

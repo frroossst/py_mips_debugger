@@ -1,5 +1,7 @@
 class Registers:
 
+    register_value_changed = None
+
     # TODO: add register print formatters
     # print in hexadecimal, octal
     # print only some registers etc.
