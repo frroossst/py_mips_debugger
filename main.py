@@ -19,7 +19,6 @@ def setup_runtime():
     R = Registers()
     I = Interpreter(file_name, R)
     I.process()
-    I.run()
 
 if __name__ == '__main__':
     # show pre-alpha warning
@@ -37,24 +36,24 @@ if __name__ == '__main__':
         cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
 
     # setting up the runtime environment
-    R = Registers()
-    I = Interpreter(file_name, R)
-    I.process()
+    # R = Registers()
+    # I = Interpreter(file_name, R)
+    # I.process()
 
-    err_flag = False
+    # err_flag = False
 
-    try:
-        I.run()
-    except Exception as e:
-        err = f"Emulator errored out with errror: {e}"
-        err_flag = True
-        cprint(err, "red", attrs=["bold"], file=sys.stderr)
-    finally:
-        print(R)
+    # try:
+    #     I.run()
+    # except Exception as e:
+    #     err = f"Emulator errored out with errror: {e}"
+    #     err_flag = True
+    #     cprint(err, "red", attrs=["bold"], file=sys.stderr)
+    # finally:
+    #     print(R)
 
-    if err_flag:
-        fmt = "[ERROR]"
-        cprint(fmt, "red", attrs=["bold"], file=sys.stderr)
-    else:
-        fmt = "[SUCCESS]"
-        cprint(fmt, "green", attrs=["bold"], file=sys.stdout)
+    # if err_flag:
+    #     fmt = "[ERROR]"
+    #     cprint(fmt, "red", attrs=["bold"], file=sys.stderr)
+    # else:
+    #     fmt = "[SUCCESS]"
+    #     cprint(fmt, "green", attrs=["bold"], file=sys.stdout)

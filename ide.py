@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QDockWidget
 from PyQt5.QtCore import Qt
 
 # Runtime imports
@@ -25,17 +25,23 @@ class IDE(QWidget):
         super().__init__()
         self.initUI()
         self.setMinimumSize(720, 480)
-        if self.register_box is not None:
-            self.register_box.register_value_changed.connect(self.updateRegistersGUI)
+        # if self.register_box is not None:
+        #     self.register_box.register_value_changed.connect(self.updateRegistersGUI)
 
     def initUI(self):
         # Create the QTextEdit widget to display the file contents
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
 
+        # Registers Window
+        self.register_box = QTextEdit(self)
+        self.register_box.setReadOnly(True)
+        self.register_box.setText("Registers:\n" + self.R.__str__())
+
         # Create a layout for the window and add the QTextEdit widget to it
         layout = QVBoxLayout()
         btn_hlayout = QHBoxLayout()
+        main_hlayout = QSplitter(Qt.Horizontal)
         menu_bar = QMenuBar()
 
         # Constructing the menu bar
@@ -49,15 +55,14 @@ class IDE(QWidget):
         run_button.clicked.connect(self.runCode)
         btn_hlayout.addWidget(run_button)
 
-        # Create Registers button
-        registers_button = QPushButton("REGISTERS", self)
-        registers_button.clicked.connect(self.showRegistersGUI)
-        btn_hlayout.addWidget(registers_button)
-
+        main_hlayout.addWidget(self.register_box)
+        main_hlayout.addWidget(self.textEdit)
+        main_hlayout.setSizes([200, 500])
 
         layout.addWidget(menu_bar)
+        layout.addWidget(main_hlayout, 2)
         layout.addLayout(btn_hlayout)
-        layout.addWidget(self.textEdit)
+
         self.setLayout(layout)
         
 
@@ -73,6 +78,7 @@ class IDE(QWidget):
         self.R = Registers()
         self.I = Interpreter(self.filename, self.R)
         self.I.process()
+        self.register_box.setText("Registers:\n" + self.R.__str__())
 
     def loadFile(self):
         # Open the file and read its contents
@@ -139,7 +145,7 @@ class IDE(QWidget):
         self.I.run()
 
     def showRegistersGUI(self):
-        self.register_box = QMessageBox()
+        self.register_box = QDockWidget("Registers", self)
         self.register_box.setText(self.R.__str__())
         self.register_box.exec_()
 
