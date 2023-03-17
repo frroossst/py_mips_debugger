@@ -41,7 +41,7 @@ class Registers:
     s6 = 0
     s7 = 0
 
-    # return address
+    # register return address
     ra = 0
 
     # floating point registers
@@ -93,8 +93,7 @@ class Registers:
         saved_registers = f"s0: {self.s0} \ns1: {self.s1} \ns2: {self.s2} \ns3: {self.s3} \ns4: {self.s4} \ns5: {self.s5} \ns6: {self.s6} \ns7: {self.s7}\n"
         return_address = f"ra: {self.ra}\n"
         floating_point_registers = f"f0:  {self.f0} \nf1:  {self.f1} \nf2:  {self.f2} \nf3:  {self.f3} \nf4:  {self.f4} \nf5:  {self.f5} \nf6:  {self.f6} \nf7:  {self.f7} \nf8:  {self.f8} \nf9:  {self.f9} \nf10: {self.f10} \nf11: {self.f11} \nf12: {self.f12} \nf13: {self.f13} \nf14: {self.f14} \nf15: {self.f15} \nf16: {self.f16} \nf17: {self.f17} \nf18: {self.f18} \nf19: {self.f19} \nf20: {self.f20} \nf21: {self.f21} \nf22: {self.f22} \nf23: {self.f23} \nf24: {self.f24} \nf25: {self.f25} \nf26: {self.f26} \nf27: {self.f27} \nf28: {self.f28} \nf29: {self.f29} \nf30: {self.f30} \nf31: {self.f31}\n"
-        fmt = f"{value_registers}\n{argument_registers}\n{temporary_registers}\n{saved_registers}\n{return_address}\n{floating_point_registers}"
-        return fmt
+        return f"{value_registers}\n{argument_registers}\n{temporary_registers}\n{saved_registers}\n{return_address}\n{floating_point_registers}"
 
     def set_temporary_register(self, register, value):
         if not isinstance(value, int):
@@ -126,26 +125,26 @@ class Registers:
     def get_temporary_register(self, register):
         if register == "t0":
             return self.t0
-        elif register == "t1":
+        if register == "t1":
             return self.t1
-        elif register == "t2":
+        if register == "t2":
             return self.t2
-        elif register == "t3":
+        if register == "t3":
             return self.t3
-        elif register == "t4":
-            return self.t4
-        elif register == "t5":
+        if register == "t4":
+           return self.t4
+        if register == "t5":
             return self.t5
-        elif register == "t6":
+        if register == "t6":
             return self.t6
-        elif register == "t7":
+        if register == "t7":
             return self.t7
-        elif register == "t8":
+        if register == "t8":
             return self.t8
-        elif register == "t9":
+        if register == "t9":
             return self.t9
-        else:
-            raise ValueError("Invalid register name")
+
+        raise ValueError("Invalid register name")
         
     def set_value_register(self, register, value):
         if not isinstance(value, int):
@@ -161,10 +160,10 @@ class Registers:
     def get_value_register(self, register):
         if register == "v0":
             return self.v0
-        elif register == "v1":
+        if register == "v1":
             return self.v1
-        else:
-            raise ValueError("Invalid register name")
+
+        raise ValueError("Invalid register name")
         
     def set_argument_register(self, register, value):
         if not isinstance(value, int):
@@ -184,14 +183,14 @@ class Registers:
     def get_argument_register(self, register):
         if register == "a0":
             return self.a0
-        elif register == "a1":
+        if register == "a1":
             return self.a1
-        elif register == "a2":
+        if register == "a2":
             return self.a2
-        elif register == "a3":
+        if register == "a3":
             return self.a3
-        else:
-            raise ValueError("Invalid register name")
+
+        raise ValueError("Invalid register name")
         
     def set_saved_register(self, register, value):
         if not isinstance(value, int):
@@ -219,22 +218,22 @@ class Registers:
     def get_saved_register(self, register):
         if register == "s0":
             return self.s0
-        elif register == "s1":
+        if register == "s1":
             return self.s1
-        elif register == "s2":
+        if register == "s2":
             return self.s2
-        elif register == "s3":
+        if register == "s3":
             return self.s3
-        elif register == "s4":
+        if register == "s4":
             return self.s4
-        elif register == "s5":
+        if register == "s5":
             return self.s5
-        elif register == "s6":
+        if register == "s6":
             return self.s6
-        elif register == "s7":
+        if register == "s7":
             return self.s7
-        else:
-            raise ValueError("Invalid register name")
+
+        raise ValueError("Invalid register name")
         
     def set_return_address(self, value):
         self.ra = value
@@ -316,67 +315,67 @@ class Registers:
     def get_floating_point_register(self, register):
         if register == "f0":
             return self.f0
-        elif register == "f1":
+        if register == "f1":
             return self.f1
-        elif register == "f2":
+        if register == "f2":
             return self.f2
-        elif register == "f3":
+        if register == "f3":
             return self.f3
-        elif register == "f4":
+        if register == "f4":
             return self.f4
-        elif register == "f5":
+        if register == "f5":
             return self.f5
-        elif register == "f6":
+        if register == "f6":
             return self.f6
-        elif register == "f7":
+        if register == "f7":
             return self.f7
-        elif register == "f8":
+        if register == "f8":
             return self.f8
-        elif register == "f9":
+        if register == "f9":
             return self.f9
-        elif register == "f10":
+        if register == "f10":
             return self.f10
-        elif register == "f11":
+        if register == "f11":
             return self.f11
-        elif register == "f12":
+        if register == "f12":
             return self.f12
-        elif register == "f13":
+        if register == "f13":
             return self.f13
-        elif register == "f14":
+        if register == "f14":
             return self.f14
-        elif register == "f15":
+        if register == "f15":
             return self.f15
-        elif register == "f16":
+        if register == "f16":
             return self.f16
-        elif register == "f17":
+        if register == "f17":
             return self.f17
-        elif register == "f18":
+        if register == "f18":
             return self.f18
-        elif register == "f19":
+        if register == "f19":
             return self.f19
-        elif register == "f20":
+        if register == "f20":
             return self.f20
-        elif register == "f21":
+        if register == "f21":
             return self.f21
-        elif register == "f22":
+        if register == "f22":
             return self.f22
-        elif register == "f23":
+        if register == "f23":
             return self.f23
-        elif register == "f24":
+        if register == "f24":
             return self.f24
-        elif register == "f25":
+        if register == "f25":
             return self.f25
-        elif register == "f26":
+        if register == "f26":
             return self.f26
-        elif register == "f27":
+        if register == "f27":
             return self.f27
-        elif register == "f28":
+        if register == "f28":
             return self.f28
-        elif register == "f29":
+        if register == "f29":
             return self.f29
-        elif register == "f30":
+        if register == "f30":
             return self.f30
-        elif register == "f31":
+        if register == "f31":
             return self.f31
-        else:
-            raise ValueError("Invalid register name")
+
+        raise ValueError("Invalid register name")

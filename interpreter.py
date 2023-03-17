@@ -1,7 +1,7 @@
+from helper_instructions import EndOfInstruction
 from instructions import Instructions
 from multiplexer import Multiplexer
 from collections import OrderedDict
-from helper_instructions import *
 import breakpoints
 
 class Interpreter:
@@ -90,13 +90,11 @@ class Interpreter:
         self.execute_label("main")
 
     def check_and_breakpoint(self, label, instruction_number):
-        if label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()):
-            if instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]:
-                while (True):
-                    print("Breakpoint hit")
-                    pass
+        if label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]:
+            while (True):
+                print("Breakpoint hit")
 
-    def execute_label(self, label_to_run, return_control=False):
+    def execute_label(self, label_to_run, _return_control=False):
         # main entry point
         code = self.labels[label_to_run].strip().splitlines()
         for x, i in enumerate(code): 

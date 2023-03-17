@@ -8,6 +8,8 @@ import sys
 
 turn_on_gui = True
 
+R = None
+
 # setting up the GUI
 def setup_ide():
     app = QApplication(sys.argv)
@@ -21,39 +23,32 @@ def setup_runtime():
     I.process()
 
 if __name__ == '__main__':
-    # show pre-alpha warning
-    fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
-    cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
+    err_flag = False
+    try:
+        # show pre-alpha warning
+        fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
+        cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
-    if len(sys.argv) < 2:
-        raise ValueError("No file name provided")
-    file_name = sys.argv[1]
+        if len(sys.argv) < 2:
+            raise ValueError("No file name provided")
+        file_name = sys.argv[1]
 
-    if turn_on_gui:
-        setup_ide()
+        if turn_on_gui:
+            setup_ide()
+        else:
+            fmt = f"Running {file_name} in CLI mode"
+            cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
+
+    except Exception as e:
+        err = f"Emulator errored out with errror: {e}"
+        err_flag = True
+        cprint(err, "red", attrs=["bold"], file=sys.stderr)
+    finally:
+        print(R.__str__())
+
+    if err_flag:
+        fmt = "[ERROR]"
+        cprint(fmt, "red", attrs=["bold"], file=sys.stderr)
     else:
-        fmt = f"Running {file_name} in CLI mode"
-        cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
-
-    # setting up the runtime environment
-    # R = Registers()
-    # I = Interpreter(file_name, R)
-    # I.process()
-
-    # err_flag = False
-
-    # try:
-    #     I.run()
-    # except Exception as e:
-    #     err = f"Emulator errored out with errror: {e}"
-    #     err_flag = True
-    #     cprint(err, "red", attrs=["bold"], file=sys.stderr)
-    # finally:
-    #     print(R)
-
-    # if err_flag:
-    #     fmt = "[ERROR]"
-    #     cprint(fmt, "red", attrs=["bold"], file=sys.stderr)
-    # else:
-    #     fmt = "[SUCCESS]"
-    #     cprint(fmt, "green", attrs=["bold"], file=sys.stdout)
+        fmt = "[SUCCESS]"
+        cprint(fmt, "green", attrs=["bold"], file=sys.stdout)

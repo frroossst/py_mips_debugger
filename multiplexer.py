@@ -45,8 +45,7 @@ class Multiplexer:
         elif ins == "bge":
             if args[0] >= args[1]:
                 return True
-        elif ins == "ble":
-            if args[0] <= args[1]:
+        elif ins == "ble" and args[0] <= args[1]:
                 return True
         return False
 
