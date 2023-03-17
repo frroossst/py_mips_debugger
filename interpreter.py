@@ -94,7 +94,7 @@ class Interpreter:
             while (True):
                 print("Breakpoint hit")
 
-    def execute_label(self, label_to_run, _return_control=False):
+    def execute_label(self, label_to_run, return_control=False):
         # main entry point
         code = self.labels[label_to_run].strip().splitlines()
         for x, i in enumerate(code): 

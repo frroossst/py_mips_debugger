@@ -1,5 +1,5 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat
+from PyQt5.QtGui import QTextBlockFormat, QIcon
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter
 from PyQt5.QtCore import Qt, QTimer
 
@@ -27,6 +27,9 @@ class IDE(QWidget):
         self.setMinimumSize(720, 480)
 
     def initUI(self):
+        self.setWindowTitle("PyMIPS Emulator")
+        self.setWindowIcon(QIcon('./assets/icon.png'))
+
         # Create the QTextEdit widget to display the file contents
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
@@ -148,5 +151,12 @@ class IDE(QWidget):
         self.I.run()
 
     def updateRegistersGUI(self):
+        # Get the current scroll position
+        scroll_bar = self.register_box.verticalScrollBar()
+        scroll_pos = scroll_bar.value()
+
         self.register_box.setText(self.R.__str__())
+
+        # Restore the scroll position
+        scroll_bar.setValue(scroll_pos)
 
