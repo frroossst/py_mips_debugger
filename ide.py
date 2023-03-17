@@ -1,7 +1,7 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QDockWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter
+from PyQt5.QtCore import Qt, QTimer
 
 # Runtime imports
 from instructions import Instructions
@@ -25,8 +25,6 @@ class IDE(QWidget):
         super().__init__()
         self.initUI()
         self.setMinimumSize(720, 480)
-        # if self.register_box is not None:
-        #     self.register_box.register_value_changed.connect(self.updateRegistersGUI)
 
     def initUI(self):
         # Create the QTextEdit widget to display the file contents
@@ -64,6 +62,11 @@ class IDE(QWidget):
         layout.addLayout(btn_hlayout)
 
         self.setLayout(layout)
+
+        timer = QTimer(self)
+        timer.setInterval(500)
+        timer.timeout.connect(self.updateRegistersGUI)
+        timer.start()
         
 
         # Load the file and display its contents
@@ -144,8 +147,6 @@ class IDE(QWidget):
     def runCode(self):
         self.I.run()
 
-    def showRegistersGUI(self):
-        self.register_box = QDockWidget("Registers", self)
+    def updateRegistersGUI(self):
         self.register_box.setText(self.R.__str__())
-        self.register_box.exec_()
 
