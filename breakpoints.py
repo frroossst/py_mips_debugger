@@ -8,9 +8,7 @@ MESSAGE_QUEUE = queue.Queue()
 
 def consume_line_number_and_return_line(line):
     for x, i in enumerate(line):
-        if i.isnumeric():
-            continue
-        elif i == ":":
+        if i.isnumeric() or i == ":":
             continue
         else:
             return line[x:]

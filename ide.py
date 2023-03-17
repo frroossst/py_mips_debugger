@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QTextBlockFormat
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog
 from PyQt5.QtCore import Qt
 from instructions import Instructions
 import breakpoints
@@ -24,8 +24,31 @@ class IDE(QWidget):
 
         # Create a layout for the window and add the QTextEdit widget to it
         layout = QVBoxLayout()
+        btn_hlayout = QHBoxLayout()
+        menu_bar = QMenuBar()
+
+        # Constructing the menu bar
+        file_menu = menu_bar.addMenu("File")
+        open_action = QAction("Open", self)
+        open_action.triggered.connect(self.open_file_dialog)
+        file_menu.addAction(open_action)
+
+        # Create RUN button
+        run_button = QPushButton("RUN", self)
+        run_button.clicked.connect(self.runCode)
+        btn_hlayout.addWidget(run_button)
+
+        # Create Registers button
+        registers_button = QPushButton("REGISTERS", self)
+        registers_button.clicked.connect(self.showRegisters)
+        btn_hlayout.addWidget(registers_button)
+
+
+        layout.addWidget(menu_bar)
+        layout.addLayout(btn_hlayout)
         layout.addWidget(self.textEdit)
         self.setLayout(layout)
+        
 
         # Load the file and display its contents
         self.loadFile()
@@ -44,6 +67,16 @@ class IDE(QWidget):
 
         # Set the text of the QTextEdit widget to the numbered text
         self.textEdit.setText(numberedText)
+
+    def open_file_dialog(self):
+        file_dialog = QFileDialog(self)
+        file_dialog.setNameFilter("Assembly Files (*.asm, *.s); All Files (*)")
+
+        file_path, _ = file_dialog.getOpenFileName(self, "Open file", "", "Assembly Files (*.asm, *.s); All Files (*)")
+
+        self.filename = file_path
+        self.loadFile()
+
 
     def onMouseDoubleClickEvent(self, event):
         # Get the current line number
@@ -84,3 +117,8 @@ class IDE(QWidget):
         print(f"Breakpoints: {breakpoints.GLOBAL_BREAKPOINTS}")
         print(f"Interpreted breakpoints: {breakpoints.INTERPRETED_BREAKPOINTS}")
 
+    def runCode(self):
+        print("running code")
+
+    def showRegisters(self):
+        print("showing registers")

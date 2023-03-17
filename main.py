@@ -2,8 +2,7 @@ from PyQt5.QtWidgets import QApplication
 from termcolor import cprint
 from interpreter import Interpreter
 from registers import Registers
-from instructions import *
-from ide import *
+from ide import IDE
 import sys
 
 file_name = sys.argv[1]
