@@ -150,6 +150,7 @@ class IDE(QWidget):
         print(f"Interpreted breakpoints: {breakpoints.INTERPRETED_BREAKPOINTS}")
 
     def runCode(self):
+        self.setup_runtime()
         self.I.run()
 
     def updateRegistersGUI(self):

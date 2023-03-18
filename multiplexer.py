@@ -26,6 +26,8 @@ class Multiplexer:
         elif ins == "jal":
             # check if label or address
             r.ra = args[0]
+        elif ins == "j":
+            r.ra = args[0]
             
         return None
 

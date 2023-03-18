@@ -25,11 +25,11 @@ run:
 dependencies:
 	@echo "********** Installing dependencies **********"
 	@echo "********** Installing Cython ****************"
-	pip3 install cython
+	pip3 install cython3
 	@echo "********** Installing PyQt5 *****************"
 	pip3 install PyQt5
 
 clean:
 	rm -f output
 	rm -f *.c
-
+	rm -f *.o

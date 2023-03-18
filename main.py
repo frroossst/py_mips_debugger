@@ -3,11 +3,12 @@ from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import Qt
 from termcolor import cprint
 
+from interpreter import Interpreter
+from registers import Registers
 from ide import IDE
+import argparse
 import sys
 
-
-turn_on_gui = True
 
 R = None
 
@@ -37,6 +38,7 @@ def setup_ide():
 
 if __name__ == '__main__':
     err_flag = False
+    turn_on_gui = True
     try:
         # show pre-alpha warning
         fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
@@ -51,6 +53,11 @@ if __name__ == '__main__':
         else:
             fmt = f"Running {file_name} in CLI mode"
             cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
+
+            R = Registers()
+            I = Interpreter(file_name, R)
+            I.process()
+            I.run()
 
     except Exception as e:
         err = f"Emulator errored out with errror: {e}"
