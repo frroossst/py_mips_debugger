@@ -10,6 +10,11 @@ import argparse
 import sys
 
 
+parser = argparse.ArgumentParser(description="A minimal MIPS assembly emulator written in Python")
+parser.add_argument("file_name")
+parser.add_argument("--no-gui", dest="no_gui_arg", action="store_true")
+args = parser.parse_args()
+
 R = None
 
 # setting up the GUI
@@ -38,7 +43,7 @@ def setup_ide():
 
 if __name__ == '__main__':
     err_flag = False
-    turn_on_gui = True
+    turn_on_gui = not args.no_gui_arg
     try:
         # show pre-alpha warning
         fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
