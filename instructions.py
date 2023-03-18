@@ -16,6 +16,11 @@ class Instructions:
         raise RuntimeError("Invalid instruction j, control flow should not have reached here!")
 
     @staticmethod
+    def jal():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise RuntimeError("Invalid instruction jal, control flow should not have reached here!")
+
+    @staticmethod
     def li(r, reg, val):
         if reg[0] != "$":
             raise ValueError("Invalid register name")

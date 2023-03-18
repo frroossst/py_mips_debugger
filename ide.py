@@ -1,5 +1,5 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat, QIcon
+from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter
 from PyQt5.QtCore import Qt, QTimer
 
@@ -24,7 +24,7 @@ class IDE(QWidget):
         self.filename = filename
         super().__init__()
         self.initUI()
-        self.setMinimumSize(720, 480)
+        self.setMinimumSize(1080, 720)
 
     def initUI(self):
         self.setWindowTitle("PyMIPS Emulator")
@@ -125,7 +125,7 @@ class IDE(QWidget):
             removing_breakpoint = True
 
             fmt = QTextBlockFormat()
-            fmt.setBackground(Qt.white)
+            fmt.setBackground(QColor(25,25,25))
 
             cursor.setBlockFormat(fmt)
         except KeyError:
@@ -157,7 +157,7 @@ class IDE(QWidget):
         scroll_bar = self.register_box.verticalScrollBar()
         scroll_pos = scroll_bar.value()
 
-        self.register_box.setText(self.R.__str__())
+        self.register_box.setText("Registers:\n" + self.R.__str__())
 
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)

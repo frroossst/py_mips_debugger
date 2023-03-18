@@ -1,10 +1,10 @@
 class Registers:
 
-    register_value_changed = None
-
     # TODO: add register print formatters
     # print in hexadecimal, octal
     # print only some registers etc.
+
+    regsiter_hotmap = []
 
     # $zero
     zero = 0
@@ -92,8 +92,9 @@ class Registers:
         temporary_registers = f"t0: {self.t0} \nt1: {self.t1} \nt2: {self.t2} \nt3: {self.t3} \nt4: {self.t4} \nt5: {self.t5} \nt6: {self.t6} \nt7: {self.t7} \nt8: {self.t8} \nt9: {self.t9}\n"
         saved_registers = f"s0: {self.s0} \ns1: {self.s1} \ns2: {self.s2} \ns3: {self.s3} \ns4: {self.s4} \ns5: {self.s5} \ns6: {self.s6} \ns7: {self.s7}\n"
         return_address = f"ra: {self.ra}\n"
-        floating_point_registers = f"f0:  {self.f0} \nf1:  {self.f1} \nf2:  {self.f2} \nf3:  {self.f3} \nf4:  {self.f4} \nf5:  {self.f5} \nf6:  {self.f6} \nf7:  {self.f7} \nf8:  {self.f8} \nf9:  {self.f9} \nf10: {self.f10} \nf11: {self.f11} \nf12: {self.f12} \nf13: {self.f13} \nf14: {self.f14} \nf15: {self.f15} \nf16: {self.f16} \nf17: {self.f17} \nf18: {self.f18} \nf19: {self.f19} \nf20: {self.f20} \nf21: {self.f21} \nf22: {self.f22} \nf23: {self.f23} \nf24: {self.f24} \nf25: {self.f25} \nf26: {self.f26} \nf27: {self.f27} \nf28: {self.f28} \nf29: {self.f29} \nf30: {self.f30} \nf31: {self.f31}\n"
-        return f"{value_registers}\n{argument_registers}\n{temporary_registers}\n{saved_registers}\n{return_address}\n{floating_point_registers}"
+        hi_lo = f"hi: {self.hi} \nlo: {self.lo}\n"
+        floating_point_registers = f"f0:   {self.f0} \nf1:   {self.f1} \nf2:   {self.f2} \nf3:   {self.f3} \nf4:   {self.f4} \nf5:   {self.f5} \nf6:   {self.f6} \nf7:   {self.f7} \nf8:   {self.f8} \nf9:   {self.f9} \nf10: {self.f10} \nf11: {self.f11} \nf12: {self.f12} \nf13: {self.f13} \nf14: {self.f14} \nf15: {self.f15} \nf16: {self.f16} \nf17: {self.f17} \nf18: {self.f18} \nf19: {self.f19} \nf20: {self.f20} \nf21: {self.f21} \nf22: {self.f22} \nf23: {self.f23} \nf24: {self.f24} \nf25: {self.f25} \nf26: {self.f26} \nf27: {self.f27} \nf28: {self.f28} \nf29: {self.f29} \nf30: {self.f30} \nf31: {self.f31}\n"
+        return f"{value_registers}\n{argument_registers}\n{temporary_registers}\n{saved_registers}\n{return_address}\n{hi_lo}\n{floating_point_registers}"
 
     def clear_registers(self):
         all_registers = [
@@ -107,6 +108,16 @@ class Registers:
             ]
         for register in all_registers:
             self.set_register(register, 0)
+
+    def add_to_register_hotmap(self, register):
+        if register in self.register_hotmap:
+            self.regsiter_hotmap.remove(register)
+        
+        if len(self.regsiter_hotmap) > 3:
+            self.regsiter_hotmap.pop(0)
+            self.regsiter_hotmap.append(register)
+        else:
+            self.regsiter_hotmap.append(register)
 
     def set_register(self, register, value):
         if register[0] == "t":
@@ -154,7 +165,7 @@ class Registers:
             self.t9 = value
         else:
             raise ValueError(f"Invalid register name: {register}")
-        
+
     def get_temporary_register(self, register):
         if register == "t0":
             return self.t0
