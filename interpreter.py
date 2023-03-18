@@ -22,8 +22,14 @@ class Interpreter:
 
 
     def __init__(self, file_name, r):
-        self.registers_ref = r
         self.file_name = file_name
+        self.text, self.data = "", ""
+
+        self.labels, self.label_index = OrderedDict(), {}
+
+        self.registers_ref, self.__breakpoints__, self.__call_stack__ = r, {}, []
+
+        self.__processed, self.__foundmain__ = False, False
 
         with open(file_name, 'r') as fobj:
             content = fobj.readlines()

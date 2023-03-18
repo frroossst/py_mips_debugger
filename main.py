@@ -1,9 +1,8 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtCore import Qt
 from termcolor import cprint
-from interpreter import Interpreter
-from registers import Registers
+
 from ide import IDE
 import sys
 
@@ -35,11 +34,6 @@ def setup_ide():
     ide = IDE(file_name)
     ide.show()
     sys.exit(app.exec_())
-
-def setup_runtime():
-    R = Registers()
-    I = Interpreter(file_name, R)
-    I.process()
 
 if __name__ == '__main__':
     err_flag = False

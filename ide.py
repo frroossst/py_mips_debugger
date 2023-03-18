@@ -106,6 +106,8 @@ class IDE(QWidget):
 
         self.filename = file_path
         self.loadFile()
+        self.R.clear_registers()
+        self.setup_runtime()
 
 
     def onMouseDoubleClickEvent(self, _event):
