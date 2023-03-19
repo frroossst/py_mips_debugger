@@ -1,12 +1,14 @@
 class InterpreterException(Exception):
 
-    def __init__(self, message):
+    def __init__(self, message, label_that_crashed=None, instruction_that_crashed=None):
         self.message = message
+        self.label_that_crashed = label_that_crashed
+        self.instruction_that_crashed = instruction_that_crashed
         super().__init__(self.message)
 
     def __str__(self):
         return self.message
-    
+
 class InterpreterSyntaxError(InterpreterException):
     pass
 
@@ -38,6 +40,9 @@ class InterpreterLabelError(InterpreterException):
     pass
 
 class InterpreterFileError(InterpreterException):
+    pass
+
+class InterpreterRecursionError(InterpreterException):
     pass
 
 class InterpreterMemoryError(InterpreterException):

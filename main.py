@@ -18,6 +18,26 @@ args = parser.parse_args()
 
 R = None
 
+def exception_hook(exctype, value, traceback):
+
+    if (issubclass(exctype, InterpreterException)):
+        # print last known state of registers
+        print(R.__str__())
+        print("*" * 80)
+
+        fmt = "[ERROR]"
+        cprint(fmt, "red", attrs=["bold"], file=sys.stderr, end=" ")
+        err = f"Emulator errored out with errror: {str(exctype.__name__)}: {str(value)}"
+        cprint(err, "red", attrs=["bold"], file=sys.stderr)
+        print(f"label: {value.label_that_crashed} (instruction: {value.instruction_that_crashed})")
+
+        print("\nPlease report this to the developer.")
+
+        sys.exit(1)
+
+    else:
+        sys.__excepthook__(exctype, value, traceback)
+
 # setting up the GUI
 def setup_ide():
     app = QApplication(sys.argv)
@@ -40,43 +60,29 @@ def setup_ide():
 
     ide = IDE(file_name)
     ide.show()
+    sys.excepthook = exception_hook
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
     err_flag = False
     turn_on_gui = not args.no_gui_arg
-    try:
-        # show pre-alpha warning
-        fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
-        cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
-        if len(sys.argv) < 2:
-            raise InterpreterFileError("No file name provided")
-        file_name = sys.argv[1]
+    # show pre-alpha warning
+    fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
+    cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
-        if turn_on_gui:
-            setup_ide()
-        else:
-            fmt = f"Running {file_name} in CLI mode"
-            cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
+    if len(sys.argv) < 2:
+        raise InterpreterFileError("No file name provided")
+    file_name = sys.argv[1]
 
-            R = Registers()
-            I = Interpreter(file_name, R)
-            I.process()
-            I.run()
-
-    except InterpreterException as e:
-        err = f"Emulator errored out with errror: {e}"
-        err_flag = True
-        cprint(err, "red", attrs=["bold"], file=sys.stderr)
-    finally:
-        print(R.__str__())
-
-    if err_flag:
-        fmt = "[ERROR]"
-        cprint(fmt, "red", attrs=["bold"], file=sys.stderr)
+    if turn_on_gui:
+        setup_ide()
     else:
-        fmt = "[SUCCESS]"
-        cprint(fmt, "green", attrs=["bold"], file=sys.stdout)
+        fmt = f"Running {file_name} in CLI mode"
+        cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
 
-    sys.exit(0 if not err_flag else 1)
+        R = Registers()
+        I = Interpreter(file_name, R)
+        I.process()
+        I.run()
+
