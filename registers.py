@@ -1,3 +1,5 @@
+from exceptions import InterpreterRegisterError, InterpreterTypeError
+
 class Registers:
 
     # TODO: add register print formatters
@@ -137,11 +139,11 @@ class Registers:
         elif register[0] == "f":
             self.set_floating_point_register(register, float(value))
         else:
-            raise ValueError(f"Invalid register name: {register}")
+            raise InterpreterRegisterError(f"Invalid register name: {register}")
 
     def set_temporary_register(self, register, value):
         if not isinstance(value, int):
-            raise TypeError("Value must be an integer")
+            raise InterpreterTypeError("Value must be an integer")
 
         if register == "t0":
             self.t0 = value
@@ -164,7 +166,7 @@ class Registers:
         elif register == "t9":
             self.t9 = value
         else:
-            raise ValueError(f"Invalid register name: {register}")
+            raise InterpreterRegisterError(f"Invalid register name: {register}")
 
     def get_temporary_register(self, register):
         if register == "t0":
@@ -188,18 +190,18 @@ class Registers:
         if register == "t9":
             return self.t9
 
-        raise ValueError("Invalid register name")
+        raise InterpreterRegisterError("Invalid register name")
         
     def set_value_register(self, register, value):
         if not isinstance(value, int):
-            raise TypeError("Value must be an integer")
+            raise InterpreterTypeError("Value must be an integer")
 
         if register == "v0":
             self.v0 = value
         elif register == "v1":
             self.v1 = value
         else:
-            raise ValueError("Invalid register name")
+            raise InterpreterRegisterError("Invalid register name")
     
     def get_value_register(self, register):
         if register == "v0":
@@ -207,11 +209,11 @@ class Registers:
         if register == "v1":
             return self.v1
 
-        raise ValueError("Invalid register name")
+        raise InterpreterRegisterError("Invalid register name")
         
     def set_argument_register(self, register, value):
         if not isinstance(value, int):
-            raise TypeError("Value must be an integer")
+            raise InterpreterTypeError("Value must be an integer")
 
         if register == "a0":
             self.a0 = value
@@ -222,7 +224,7 @@ class Registers:
         elif register == "a3":
             self.a3 = value
         else:
-            raise ValueError("Invalid register name")
+            raise InterpreterRegisterError("Invalid register name")
         
     def get_argument_register(self, register):
         if register == "a0":
@@ -234,11 +236,11 @@ class Registers:
         if register == "a3":
             return self.a3
 
-        raise ValueError("Invalid register name")
+        raise InterpreterRegisterError("Invalid register name")
         
     def set_saved_register(self, register, value):
         if not isinstance(value, int):
-            raise TypeError("Value must be an integer")
+            raise InterpreterTypeError("Value must be an integer")
 
         if register == "s0":
             self.s0 = value
@@ -257,7 +259,7 @@ class Registers:
         elif register == "s7":
             self.s7 = value
         else:
-            raise ValueError("Invalid register name")
+            raise InterpreterRegisterError("Invalid register name")
         
     def get_saved_register(self, register):
         if register == "s0":
@@ -277,7 +279,7 @@ class Registers:
         if register == "s7":
             return self.s7
 
-        raise ValueError("Invalid register name")
+        raise InterpreterRegisterError("Invalid register name")
         
     def set_return_address(self, value):
         self.ra = value
@@ -299,7 +301,7 @@ class Registers:
     
     def set_floating_point_register(self, register, value):
         if not isinstance(value, float):
-            raise TypeError("Value must be a float")
+            raise InterpreterTypeError("Value must be a float")
 
         if register == "f0":
             self.f0 = value
@@ -366,7 +368,7 @@ class Registers:
         elif register == "f31":
             self.f31 = value
         else:
-            raise ValueError("Invalid register name")
+            raise InterpreterRegisterError("Invalid register name")
         
     def get_floating_point_register(self, register):
         if register == "f0":
@@ -434,4 +436,4 @@ class Registers:
         if register == "f31":
             return self.f31
 
-        raise ValueError("Invalid register name")
+        raise InterpreterRegisterError("Invalid register name")

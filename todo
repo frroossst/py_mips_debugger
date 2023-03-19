@@ -1,4 +1,5 @@
 - GUI buttons to run, step into, stop, etc
+- Run interpreter in a separate thread
 - get breakpoints to work consistently
 - integrate breakpoints with the interpreter
 - recently changed register change font colour (red, orange, yellow)

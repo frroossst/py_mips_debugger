@@ -5,6 +5,7 @@ from termcolor import cprint
 
 from interpreter import Interpreter
 from registers import Registers
+from exceptions import InterpreterException, InterpreterFileError
 from ide import IDE
 import argparse
 import sys
@@ -50,7 +51,7 @@ if __name__ == '__main__':
         cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
         if len(sys.argv) < 2:
-            raise ValueError("No file name provided")
+            raise InterpreterFileError("No file name provided")
         file_name = sys.argv[1]
 
         if turn_on_gui:
@@ -64,7 +65,7 @@ if __name__ == '__main__':
             I.process()
             I.run()
 
-    except Exception as e:
+    except InterpreterException as e:
         err = f"Emulator errored out with errror: {e}"
         err_flag = True
         cprint(err, "red", attrs=["bold"], file=sys.stderr)
@@ -77,3 +78,5 @@ if __name__ == '__main__':
     else:
         fmt = "[SUCCESS]"
         cprint(fmt, "green", attrs=["bold"], file=sys.stdout)
+
+    sys.exit(0 if not err_flag else 1)
