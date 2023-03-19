@@ -56,6 +56,11 @@ class IDE(QWidget):
         run_button.clicked.connect(self.runCode)
         btn_hlayout.addWidget(run_button)
 
+        # Create STEP button
+        step_button = QPushButton("STEP", self)
+        step_button.clicked.connect(self.stepCode)
+        btn_hlayout.addWidget(step_button)
+
         main_hlayout.addWidget(self.register_box)
         main_hlayout.addWidget(self.textEdit)
         main_hlayout.setSizes([200, 500])
@@ -152,6 +157,9 @@ class IDE(QWidget):
     def runCode(self):
         self.setup_runtime()
         self.I.run()
+
+    def stepCode(self):
+        self.I.step()
 
     def updateRegistersGUI(self):
         # Get the current scroll position

@@ -98,6 +98,9 @@ class Interpreter:
 
         self.execute_label("main")
 
+    def step(self):
+        raise NotImplementedError("Step not implemented yet")
+
     def check_and_breakpoint(self, label, instruction_number):
         while (label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]):
             print("Breakpoint hit")

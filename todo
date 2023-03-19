@@ -1,9 +1,5 @@
-- GUI buttons to run, step into, stop, etc
-- Run interpreter in a separate thread
-- get breakpoints to work consistently
-- integrate breakpoints with the interpreter
+- GUI buttons to step into, stop, etc
 - recently changed register change font colour (red, orange, yellow)
-- map GUI layout to interpreter layout
 - figure out memory layout and file IO
 - figure out a program counter of sorts
 - add a console
