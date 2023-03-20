@@ -185,9 +185,12 @@ class IDE(QWidget):
     def stepCode(self):
         breakpoints.STOP_AT_NEXT_INSTRUCTION = True
         self.I.step_button_pressed = True
+        self.I.continue_button_pressed = False
 
     def continueCode(self):
-        raise NotImplementedError("Continue button not implemented yet")
+        breakpoints.STOP_AT_NEXT_INSTRUCTION = False
+        self.I.step_button_pressed = False
+        self.I.continue_button_pressed = True
 
     def clearRegisters(self):
         self.R.clear_registers()
