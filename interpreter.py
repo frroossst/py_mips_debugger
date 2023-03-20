@@ -112,15 +112,22 @@ class Interpreter:
                     break
 
         else:
-            while (breakpoints.STOP_AT_NEXT_INSTRUCTION):
-                QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
-                print("Step hit")
+            if breakpoints.STOP_AT_NEXT_INSTRUCTION:
+                breakpoints.STOP_AT_NEXT_INSTRUCTION = False
+                while (True):
+                    QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
+                    print("Step hit")
+                    if (self.step_button_pressed and breakpoints.STOP_AT_NEXT_INSTRUCTION):
+                        self.step_button_pressed = False
+                        break
 
     def execute_label(self, label_to_run, return_control=False):
         try:
             code = self.labels[label_to_run].strip().splitlines()
             for x, i in enumerate(code): 
+                # checks for breakpoints 
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True, quiet=False)
+
                 instruction = i.split(" ")
                 if Multiplexer.reached_end_of_instruction(instruction[0]):
                     return None
@@ -132,6 +139,7 @@ class Interpreter:
 
                 Multiplexer.decode_and_execute(self.registers_ref, instruction[0], instruction[1:])
 
+                # checks for steps
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False, quiet=False)
 
         except RecursionError:
