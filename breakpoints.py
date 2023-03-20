@@ -1,12 +1,12 @@
+from better_data_structures import better_deque
 from instructions import Instructions
-from collections import deque
 import queue
 
 GLOBAL_BREAKPOINTS = {}
 INTERPRETED_BREAKPOINTS = {}
 STOP_AT_NEXT_INSTRUCTION = False
 MESSAGE_QUEUE = queue.Queue()
-BUTTON_STACK = deque()
+BUTTON_STACK = better_deque()
 
 
 def consume_line_number_and_return_line(line):

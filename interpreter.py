@@ -112,15 +112,20 @@ class Interpreter:
                 QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
                 if (self.step_button_pressed or self.continue_button_pressed):
                     self.continue_button_pressed = False
-                    print(label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label])
-                    print(breakpoints.BUTTON_STACK.pop())
                     print(breakpoints.BUTTON_STACK)
-                    break
+                    if breakpoints.BUTTON_STACK.get_len() >= 2: # 2 because we want to check the previous button
+                        breakpoints.BUTTON_STACK.pop()
+                        prev_button = breakpoints.BUTTON_STACK.pop()
+                        if prev_button == "step":
+                            continue
 
+                    break
+                    # print(label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label])
+                    # print(breakpoints.BUTTON_STACK.pop())
+                    # print(breakpoints.BUTTON_STACK)
 
         # from stop to continue         => want to break
         # from run  to wanting  to stop => want to NOT break
-
 
         else:
             if breakpoints.STOP_AT_NEXT_INSTRUCTION:
