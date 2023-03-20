@@ -23,6 +23,8 @@ class Interpreter:
     __processed__ = False
     __foundmain__ = False
 
+    step_button_pressed = False
+
 
     def __init__(self, file_name, r):
         self.file_name = file_name
@@ -32,7 +34,9 @@ class Interpreter:
 
         self.registers_ref, self.__breakpoints__, self.__call_stack__ = r, {}, []
 
-        self.__processed, self.__foundmain__ = False, False
+        self.__processed__, self.__foundmain__ = False, False
+
+        self.step_button_pressed = False
 
         with open(file_name, 'r') as fobj:
             content = fobj.readlines()
@@ -96,22 +100,27 @@ class Interpreter:
         if not self.__processed__:
             raise InterpreterProcessError("You must call process() before run()")
 
+        # main entry point
         self.execute_label("main")
 
-    def step(self):
-        raise NotImplementedError("Step not implemented yet")
+    def check_and_breakpoint(self, label, instruction_number, check_for_breakpoint=True, quiet=False):
+        if check_for_breakpoint:
+            while (label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]):
+                print("Breakpoint hit")
+                QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
+                if (self.step_button_pressed):
+                    break
 
-    def check_and_breakpoint(self, label, instruction_number):
-        while (label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]):
-            print("Breakpoint hit")
-            QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
+        else:
+            while (breakpoints.STOP_AT_NEXT_INSTRUCTION):
+                QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
+                print("Step hit")
 
     def execute_label(self, label_to_run, return_control=False):
         try:
-            # main entry point
             code = self.labels[label_to_run].strip().splitlines()
             for x, i in enumerate(code): 
-                self.check_and_breakpoint(label_to_run, x)
+                self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True, quiet=False)
                 instruction = i.split(" ")
                 if Multiplexer.reached_end_of_instruction(instruction[0]):
                     return None
@@ -122,6 +131,9 @@ class Interpreter:
                 # elif is a branch beq t0, t1, main
 
                 Multiplexer.decode_and_execute(self.registers_ref, instruction[0], instruction[1:])
+
+                self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False, quiet=False)
+
         except RecursionError:
             raise InterpreterRecursionError("Recursion limit reached", label_that_crashed=label_to_run, instruction_that_crashed=code[x+1])
 

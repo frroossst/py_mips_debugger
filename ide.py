@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget
 from PyQt5.QtCore import Qt, QTimer
 
 # Runtime imports
@@ -34,6 +34,10 @@ class IDE(QWidget):
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
 
+        # Create the QTextEdit widget to edit the file contents
+        self.textEditEdit = QTextEdit(self)
+        self.textEditEdit.setReadOnly(False)
+
         # Registers Window
         self.register_box = QTextEdit(self)
         self.register_box.setReadOnly(True)
@@ -51,6 +55,11 @@ class IDE(QWidget):
         open_action.triggered.connect(self.open_file_dialog)
         file_menu.addAction(open_action)
 
+        # Create CLEAR button
+        clear_button = QPushButton("CLEAR", self)
+        clear_button.clicked.connect(self.clearRegisters)
+        btn_hlayout.addWidget(clear_button)
+
         # Create RUN button
         run_button = QPushButton("RUN", self)
         run_button.clicked.connect(self.runCode)
@@ -61,8 +70,20 @@ class IDE(QWidget):
         step_button.clicked.connect(self.stepCode)
         btn_hlayout.addWidget(step_button)
 
+        # Create CONTINUE button
+        continue_button = QPushButton("CONTINUE", self)
+        continue_button.clicked.connect(self.continueCode)
+        btn_hlayout.addWidget(continue_button)
+
+        # Tabs (view/ edit)
+        tab_widget = QTabWidget()
+        tab_widget.addTab(self.textEdit, "View")
+        tab_widget.addTab(self.textEditEdit, "Edit")
+
+
         main_hlayout.addWidget(self.register_box)
-        main_hlayout.addWidget(self.textEdit)
+        # main_hlayout.addWidget(self.textEdit)
+        main_hlayout.addWidget(tab_widget)
         main_hlayout.setSizes([200, 500])
 
         layout.addWidget(menu_bar)
@@ -98,10 +119,12 @@ class IDE(QWidget):
 
         # Add line numbers to the text
         lines = text.split('\n')
-        numberedText = '\n'.join([f'{i+1}: {line}' for i, line in enumerate(lines)])
+        padding = len(str(len(lines)))
+        numberedText = '\n'.join([f'{i+1:0{padding}d}: {line}' for i, line in enumerate(lines)])
 
         # Set the text of the QTextEdit widget to the numbered text
         self.textEdit.setText(numberedText)
+        self.textEditEdit.setText('\n'.join(lines))
 
     def open_file_dialog(self):
         file_dialog = QFileDialog(self)
@@ -137,7 +160,7 @@ class IDE(QWidget):
             breakpoints.GLOBAL_BREAKPOINTS[lineNumber] = lineText
             try:
                 extracted_instruction = lineText.split(" ")[5] 
-                if extracted_instruction in Instructions.get_all_instructions() and not Instructions.isLabel(breakpoints.consume_line_number_and_return_line(lineText)): 
+                if (((extracted_instruction in Instructions.get_all_instructions()) and (not Instructions.isLabel(breakpoints.consume_line_number_and_return_line(lineText)))) and (not Instructions.isDirective(breakpoints.consume_line_number_and_return_line(lineText)))): 
                     fmt = QTextBlockFormat()
                     fmt.setBackground(Qt.red)
 
@@ -155,11 +178,20 @@ class IDE(QWidget):
         print(f"Interpreted breakpoints: {breakpoints.INTERPRETED_BREAKPOINTS}")
 
     def runCode(self):
+        breakpoints.STOP_NOW = False
         self.setup_runtime()
         self.I.run()
 
     def stepCode(self):
-        self.I.step()
+        breakpoints.STOP_AT_NEXT_INSTRUCTION = True
+        self.I.step_button_pressed = True
+
+    def continueCode(self):
+        raise NotImplementedError("Continue button not implemented yet")
+
+    def clearRegisters(self):
+        self.R.clear_registers()
+        self.register_box.setText("Registers:\n" + self.R.__str__())
 
     def updateRegistersGUI(self):
         # Get the current scroll position

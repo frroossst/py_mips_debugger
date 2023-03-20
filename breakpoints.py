@@ -3,6 +3,7 @@ import queue
 
 GLOBAL_BREAKPOINTS = {}
 INTERPRETED_BREAKPOINTS = {}
+STOP_AT_NEXT_INSTRUCTION = False
 MESSAGE_QUEUE = queue.Queue()
 
 
@@ -18,7 +19,7 @@ def remove_duplicate_breakpoints():
     for k, v in INTERPRETED_BREAKPOINTS.items():
         INTERPRETED_BREAKPOINTS[k] = list(set(v))
 
-def map_ide_breakpoints_to_interpreter_breakpoints(text_list, removing_breakpoints):
+def map_ide_breakpoints_to_interpreter_breakpoints(text_list, removing_breakpoints, quiet=False):
     for k, v in GLOBAL_BREAKPOINTS.items():
         last_label = None
         label_offset = 0

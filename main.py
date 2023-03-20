@@ -64,11 +64,10 @@ def setup_ide():
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    err_flag = False
     turn_on_gui = not args.no_gui_arg
 
     # show pre-alpha warning
-    fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work."
+    fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work as expected."
     cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
     if len(sys.argv) < 2:

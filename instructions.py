@@ -13,6 +13,12 @@ class Instructions:
         return False
 
     @staticmethod
+    def isDirective(line):
+        if line.startswith("."):
+            return True
+        return False
+
+    @staticmethod
     def j():
         # raise an error to inform the user that control flow shoulnd't have reached here
         raise InterpreterControlFlowError("Invalid instruction j, control flow should not have reached here!")
