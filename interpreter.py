@@ -113,6 +113,8 @@ class Interpreter:
                 if (self.step_button_pressed or self.continue_button_pressed):
                     self.continue_button_pressed = False
                     print(label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label])
+                    print(breakpoints.BUTTON_STACK.pop())
+                    print(breakpoints.BUTTON_STACK)
                     break
 
 

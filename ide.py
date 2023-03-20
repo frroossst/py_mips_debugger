@@ -182,18 +182,21 @@ class IDE(QWidget):
         breakpoints.STOP_NOW = False
         self.setup_runtime()
         self.I.run()
+        breakpoints.BUTTON_STACK.append("run")
 
     def stepCode(self):
         self.I.state_of_step = True
         breakpoints.STOP_AT_NEXT_INSTRUCTION = True
         self.I.step_button_pressed = True
         self.I.continue_button_pressed = False
+        breakpoints.BUTTON_STACK.append("step")
 
     def continueCode(self):
         self.I.state_of_step = False
         breakpoints.STOP_AT_NEXT_INSTRUCTION = False
         self.I.step_button_pressed = False
         self.I.continue_button_pressed = True
+        breakpoints.BUTTON_STACK.append("continue")
 
     def clearRegisters(self):
         self.R.clear_registers()
