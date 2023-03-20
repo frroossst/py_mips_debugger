@@ -25,7 +25,7 @@ class Interpreter:
 
     step_button_pressed = False
     continue_button_pressed = False
-    was_stopped = False
+    state_of_step = False
 
 
     def __init__(self, file_name, r):
@@ -38,7 +38,7 @@ class Interpreter:
 
         self.__processed__, self.__foundmain__ = False, False
 
-        self.step_button_pressed, self.continue_button_pressed, self.was_stopped = False, False, False
+        self.step_button_pressed, self.continue_button_pressed, self.state_of_step = False, False, False
 
         with open(file_name, 'r') as fobj:
             content = fobj.readlines()
@@ -112,6 +112,7 @@ class Interpreter:
                 QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
                 if (self.step_button_pressed or self.continue_button_pressed):
                     self.continue_button_pressed = False
+                    print(label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label])
                     break
 
 
@@ -127,10 +128,10 @@ class Interpreter:
                     print("Step hit")
                     if (self.step_button_pressed and breakpoints.STOP_AT_NEXT_INSTRUCTION):
                         self.step_button_pressed = False
-                        self.was_stopped = False
+                        self.state_of_step = False
                         break
                 
-                self.was_stopped = True
+                self.state_of_step = True
 
     def execute_label(self, label_to_run, return_control=False):
         try:

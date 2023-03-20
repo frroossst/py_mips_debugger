@@ -1,4 +1,5 @@
 - make directives not a breakpoint
+- see the difference between continue from step and continue from breakpoint (make the former work and respect subsequent breakpoints)
 - GUI buttons to step into, stop, etc
 - edit text in the editor
 - recently changed register change font colour (red, orange, yellow)
