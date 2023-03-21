@@ -14,7 +14,7 @@ class Instructions:
 
     @staticmethod
     def isDirective(line):
-        if line.startswith("."):
+        if line.strip().startswith("."):
             return True
         return False
 

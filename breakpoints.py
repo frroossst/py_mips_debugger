@@ -46,15 +46,14 @@ def map_ide_breakpoints_to_interpreter_breakpoints(text_list, removing_breakpoin
             elif v.split(":")[1].strip() == i.split(":")[1].strip():
                 # print(f"Found breakpoint at IDE line {k} in label {last_label} and is instruction number {label_offset}")
                 # TODO: remove breakpoints too at some time
-                if last_label not in list(INTERPRETED_BREAKPOINTS.keys()):
+                if (last_label is not None) and (last_label not in list(INTERPRETED_BREAKPOINTS.keys())):
                     INTERPRETED_BREAKPOINTS[last_label] = [label_offset - 1]
                     break
                 else:
-                    if not removing_breakpoints:
+                    if (not removing_breakpoints) and (not Instructions.isDirective(consume_line_number_and_return_line(i))):
                         INTERPRETED_BREAKPOINTS[last_label].append(label_offset - 1)
                         remove_duplicate_breakpoints()
-                    else:
-                        # INTERPRETED_BREAKPOINTS[last_label].remove(label_offset - 1)
+                    elif (last_label is not None):
                         print(INTERPRETED_BREAKPOINTS)
                         print("removed breakpoint: ", v)
                         print("from label: ", last_label)
@@ -79,3 +78,7 @@ def process_and_clean_breakpoints():
         # remove comments
         elif v.split(":")[1].strip()[0] == "#":
             GLOBAL_BREAKPOINTS.pop(k) 
+        # remove directives
+        elif Instructions.isDirective(v.split(":")[1].strip()):
+            GLOBAL_BREAKPOINTS.pop(k)
+        
