@@ -7,7 +7,13 @@ INTERPRETED_BREAKPOINTS = {}
 STOP_AT_NEXT_INSTRUCTION = False
 MESSAGE_QUEUE = queue.Queue()
 BUTTON_STACK = better_deque()
+CURRENT_EXECUTING_OBJECT = {}
 
+
+def subscribe_currently_executing_object(label, index, instr):
+    CURRENT_EXECUTING_OBJECT["label"] = label
+    CURRENT_EXECUTING_OBJECT["index"] = index
+    CURRENT_EXECUTING_OBJECT["instr"] = instr
 
 def consume_line_number_and_return_line(line):
     for x, i in enumerate(line):

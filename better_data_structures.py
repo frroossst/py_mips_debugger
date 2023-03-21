@@ -1,5 +1,6 @@
 from collections import deque
 
+# because the inbuild deque class doesn't have a length attribute
 class better_deque(deque):
 
     slength = 0

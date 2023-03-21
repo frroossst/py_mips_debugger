@@ -1,9 +1,10 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor
+from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QFont, QTextCharFormat
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget
 from PyQt5.QtCore import Qt, QTimer
 
 # Runtime imports
+from helper_instructions import EndOfInstruction
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
@@ -92,10 +93,17 @@ class IDE(QWidget):
 
         self.setLayout(layout)
 
-        timer = QTimer(self)
-        timer.setInterval(500)
-        timer.timeout.connect(self.updateRegistersGUI)
-        timer.start()
+        # automatically updates register every x ms
+        register_timer = QTimer(self)
+        register_timer.setInterval(500)
+        register_timer.timeout.connect(self.updateRegistersGUI)
+        register_timer.start()
+
+        # automatically updates currently executing line every x ms
+        # line_timer = QTimer(self)
+        # line_timer.setInterval(50)
+        # line_timer.timeout.connect(self.updateLineGUI)
+        # line_timer.start()
         
 
         # Load the file and display its contents
@@ -211,4 +219,43 @@ class IDE(QWidget):
 
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
+
+    def updateLineGUI(self):
+        text = self.textEdit.toPlainText()
+        lines = text.splitlines()
+        last_label = None
+
+        cursor = self.textEdit.textCursor()
+
+        # currently_executing_instruction = self.I.get_currently_executing_instruction()
+        # if currently_executing_instruction is None:
+        #     return None
+
+        print(f"currently executing object from ide: {breakpoints.CURRENT_EXECUTING_OBJECT}")
+        return None
+
+        for x, i in enumerate(lines):
+            fmt_line = breakpoints.consume_line_number_and_return_line(i).strip()
+            if Instructions.isLabel(fmt_line):
+                last_label = fmt_line[:-1:]
+            if last_label is not None:
+                if currently_executing_instruction is not None and last_label == currently_executing_instruction["label"]:
+                    print("Found label")
+                    print(f"line: {i}; executing: {currently_executing_instruction['instruction']}")
+
+                    if currently_executing_instruction["instruction"] == "EndOfInstruction":
+                        return None
+
+                    cursor.movePosition(QTextCursor.Start)
+                    cursor.movePosition(QTextCursor.Down, QTextCursor.MoveAnchor, x + 1)
+                    cursor.movePosition(QTextCursor.EndOfLine, QTextCursor.KeepAnchor)
+
+                    char_fmt = QTextCharFormat()
+                    char_fmt.setBackground(Qt.green)
+
+                    cursor.setCharFormat(char_fmt)
+
+                    break
+
+
 

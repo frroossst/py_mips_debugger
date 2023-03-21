@@ -112,7 +112,8 @@ class Interpreter:
                 QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
                 if (self.step_button_pressed or self.continue_button_pressed):
                     self.continue_button_pressed = False
-                    print(breakpoints.BUTTON_STACK)
+                    # from stop to continue         => want to break
+                    # from run  to wanting  to stop => want to NOT break
                     if breakpoints.BUTTON_STACK.get_len() >= 2: # 2 because we want to check the previous button
                         breakpoints.BUTTON_STACK.pop()
                         prev_button = breakpoints.BUTTON_STACK.pop()
@@ -120,12 +121,6 @@ class Interpreter:
                             continue
 
                     break
-                    # print(label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label])
-                    # print(breakpoints.BUTTON_STACK.pop())
-                    # print(breakpoints.BUTTON_STACK)
-
-        # from stop to continue         => want to break
-        # from run  to wanting  to stop => want to NOT break
 
         else:
             if breakpoints.STOP_AT_NEXT_INSTRUCTION:
@@ -140,11 +135,28 @@ class Interpreter:
                 
                 self.state_of_step = True
 
+    def get_currently_executing_instruction(self):
+        try:
+            return {
+                "label": self.__current_label__,
+                "instruction_index": self.__current_instruction_index__,
+                "instruction": self.__current_instruction__
+            }
+        except AttributeError:
+            return None
+
     def execute_label(self, label_to_run, return_control=False):
         try:
             code = self.labels[label_to_run].strip().splitlines()
             for x, i in enumerate(code): 
-                print(i)
+                print(f"running [{i}] at index {x} in '{label_to_run}'")
+                # setting class variables for debugging purposes
+                self.__current_label__ = label_to_run
+                self.__current_instruction_index__ = x
+                self.__current_instruction__ = i
+
+                breakpoints.subscribe_currently_executing_object(self.__current_label__, self.__current_instruction_index__, self.__current_instruction__)
+
                 # checks for breakpoints 
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True, quiet=False)
 
