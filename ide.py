@@ -1,9 +1,10 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog
-from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher
 
 # Runtime imports
+from syntax_highlighter import AssemblyHighlighter
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
@@ -39,11 +40,13 @@ class IDE(QWidget):
         self.textEdit.setReadOnly(True)
         self.textEdit.setTabStopWidth(tab_width)
 
+
         # Create the QTextEdit widget to edit the file contents
         self.textEditEdit = QTextEdit(self)
         self.textEditEdit.setReadOnly(False)
         self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize() if self.textEdit.fontPointSize() != 0.0 else 10)
         self.textEditEdit.setTabStopWidth(tab_width)
+        AssemblyHighlighter(self.textEditEdit.document())
 
         # Registers Window
         self.register_box = QTextEdit(self)
@@ -128,6 +131,13 @@ class IDE(QWidget):
         register_timer.setInterval(500)
         register_timer.timeout.connect(self.updateRegistersGUI)
         register_timer.start()
+
+        # watch the current file for changes and reload
+        self.file_watcher = QFileSystemWatcher([self.filename])
+        file_timer = QTimer()
+        file_timer.setInterval(1000)  
+        file_timer.timeout.connect(self.watchFile)
+        file_timer.start()
 
         # Load the file and display its contents
         self.loadFile()
@@ -242,6 +252,12 @@ class IDE(QWidget):
             fobj.write(self.textEditEdit.toPlainText())
 
         self.loadFile()
+
+    def watchFile(self):
+        if self.file_watcher.files():
+            print("File is being watched")
+        else:
+            print("File is not being watched")
 
     def updateRegistersGUI(self):
         # Get the current scroll position

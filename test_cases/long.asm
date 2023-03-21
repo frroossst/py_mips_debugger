@@ -29,7 +29,6 @@ main:
     li $t9, 9
 
     jal foo
-
     jal bar
 
     addi $t0, $t0, 1

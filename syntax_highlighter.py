@@ -5,13 +5,15 @@ class AssemblyHighlighter(QSyntaxHighlighter):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.highlighting_rules = []
+
         # Define the formatting for keywords
         keyword_format = QTextCharFormat()
         keyword_format.setFontWeight(QFont.Bold)
         keyword_format.setForeground(QColor("#0057e7"))  # Blue color
 
         # Define the list of assembly language keywords
-        keywords = ['add', 'sub', 'mul', 'div', 'and', 'or', 'not', 'xor', 'jmp', 'je', 'jne', 'jg', 'jge', 'jl', 'jle', 'mov', 'cmp', 'inc', 'dec', 'int']
+        keywords = ['addi']
 
         # Define the regular expression pattern for matching assembly language keywords
         self.keyword_pattern = QRegularExpression("\\b(" + "|".join(keywords) + ")\\b")
