@@ -3,6 +3,7 @@ ignore = [
     "E501",
     "E741",
 	"RET501",
+    "RET508", # some places require an explicit if-else for logic reasons
     ]
 extend-select = [
     "ARG",
