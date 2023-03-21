@@ -16,14 +16,14 @@ parser.add_argument("file_name")
 parser.add_argument("--no-gui", dest="no_gui_arg", action="store_true")
 args = parser.parse_args()
 
-R = None
+register_ref = None
 
 def exception_hook(exctype, value, traceback):
 
     if (issubclass(exctype, InterpreterException)):
         # print last known state of registers
-        print(R.__str__())
         print("*" * 80)
+        print(register_ref.__str__())
 
         fmt = "[ERROR]"
         cprint(fmt, "red", attrs=["bold"], file=sys.stderr, end=" ")
@@ -33,6 +33,9 @@ def exception_hook(exctype, value, traceback):
 
         print("\nPlease report this to the developer.")
 
+        sys.exit(1) 
+
+    elif issubclass(exctype, KeyboardInterrupt):
         sys.exit(1)
 
     else:
@@ -60,6 +63,8 @@ def setup_ide():
 
     ide = IDE(file_name)
     ide.show()
+    global register_ref # just to make registers print with the exception hook
+    register_ref = ide.R
     sys.excepthook = exception_hook
     sys.exit(app.exec_())
 
