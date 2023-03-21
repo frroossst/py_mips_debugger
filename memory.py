@@ -35,7 +35,8 @@ class Memory:
     def get_from_memory(self, addr):
         if not (self.is_text_mapped and self.is_data_mapped):
             raise InterpreterProcessError(f"incorrectly mapped memory: text: {self.is_text_mapped}, data: {self.is_data_mapped}")
+        self.check_bounds(addr)
 
     def set_in_memory(self, addr, val):
-        pass
+        self.check_bounds(addr)
 

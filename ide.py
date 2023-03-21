@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxL
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher
 
 # Runtime imports
-from syntax_highlighter import AssemblyHighlighter
+from syntax_highlighter import MIPSHighlighter
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
@@ -46,7 +46,11 @@ class IDE(QWidget):
         self.textEditEdit.setReadOnly(False)
         self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize() if self.textEdit.fontPointSize() != 0.0 else 10)
         self.textEditEdit.setTabStopWidth(tab_width)
-        AssemblyHighlighter(self.textEditEdit.document())
+
+        # Create a syntax highlighter for the textEditEdit widget
+        self.highlighter = MIPSHighlighter(self.textEditEdit.document())
+        self.highlighter.setDocument(self.textEditEdit.document())
+
 
         # Registers Window
         self.register_box = QTextEdit(self)
@@ -170,6 +174,8 @@ class IDE(QWidget):
         # Set the text of the QTextEdit widget to the numbered text
         self.textEdit.setText(numberedText)
         self.textEditEdit.setText('\n'.join(lines))
+        self.textEditEdit.update()
+        self.textEditEdit.repaint()
 
     def open_file_dialog(self):
         file_dialog = QFileDialog(self)

@@ -1,28 +1,31 @@
-from PyQt5.QtGui import QTextCharFormat, QFont, QColor, QSyntaxHighlighter
-from PyQt5.QtCore import QRegularExpression, QRegularExpressionMatch
+from PyQt5.QtCore import Qt, QRegExp
+from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
-class AssemblyHighlighter(QSyntaxHighlighter):
+class MIPSHighlighter(QSyntaxHighlighter):
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super(MIPSHighlighter, self).__init__(parent)
 
-        self.highlighting_rules = []
+        keywordFormat = QTextCharFormat()
+        keywordFormat.setForeground(Qt.darkBlue)
+        keywordFormat.setFontWeight(QFont.Bold)
 
-        # Define the formatting for keywords
-        keyword_format = QTextCharFormat()
-        keyword_format.setFontWeight(QFont.Bold)
-        keyword_format.setForeground(QColor("#0057e7"))  # Blue color
+        registerFormat = QTextCharFormat()
+        registerFormat.setForeground(Qt.darkGreen)
 
-        # Define the list of assembly language keywords
-        keywords = ['addi']
+        commentFormat = QTextCharFormat()
+        commentFormat.setForeground(Qt.gray)
 
-        # Define the regular expression pattern for matching assembly language keywords
-        self.keyword_pattern = QRegularExpression("\\b(" + "|".join(keywords) + ")\\b")
-        self.keyword_format = keyword_format
+        instructionList = ["add", "addi", "sub", "and", "or", "nor", "slt", "lw", "sw", "beq", "j", "jal", "jr"]
+        self.highlightingRules = [(QRegExp("\\b%s\\b" % word), keywordFormat) for word in instructionList]
+        self.highlightingRules += [(QRegExp("\\$[a-z]+\\d"), registerFormat)]
+        self.highlightingRules.append((QRegExp("#[^\n]*"), commentFormat))
 
     def highlightBlock(self, text):
-        # Apply keyword formatting
-        match_iterator = self.keyword_pattern.globalMatch(text)
-        while match_iterator.hasNext():
-            match = match_iterator.next()
-            self.setFormat(match.capturedStart(), match.capturedLength(), self.keyword_format)
-
+        for pattern, format in self.highlightingRules:
+            expression = QRegExp(pattern)
+            index = expression.indexIn(text)
+            while index >= 0:
+                length = expression.matchedLength()
+                self.setFormat(index, length, format)
+                index = expression.indexIn(text, index + length)
+        self.setCurrentBlockState(0)
