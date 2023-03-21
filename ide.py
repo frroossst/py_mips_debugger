@@ -1,7 +1,7 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy
-from PyQt5.QtCore import Qt, QTimer, pyqtSlot
+from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings
 
 # Runtime imports
 from instructions import Instructions
@@ -13,6 +13,7 @@ import breakpoints
 class IDE(QWidget):
 
     filename = None
+    settings = QSettings("PyMIPS", "PyMIPS Emulator")
     last_added_breakpoint = None
 
     R = None
@@ -61,6 +62,11 @@ class IDE(QWidget):
         open_action.triggered.connect(self.open_file_dialog)
         file_menu.addAction(open_action)
 
+        edit_menu = menu_bar.addMenu("Edit")
+        font_action = QAction("Font", self)
+        font_action.triggered.connect(self.changeFont)
+        edit_menu.addAction(font_action)
+
         # Instructin viewer window
         self.instruction_box = QTextEdit(self)
         self.instruction_box.setReadOnly(True)
@@ -103,6 +109,7 @@ class IDE(QWidget):
         self.console.setReadOnly(True)
         self.console.setLineWrapMode(QTextEdit.NoWrap)
         self.console.setAcceptRichText(False)
+        self.console.setText("Console:\n")
 
         main_hlayout.addWidget(self.register_box)
         # main_hlayout.addWidget(self.textEdit)
@@ -127,6 +134,9 @@ class IDE(QWidget):
 
         # Connect the cursor position changed signal to the onCursorPositionChanged method
         self.textEdit.mouseDoubleClickEvent = self.onMouseDoubleClickEvent
+
+        # Load previously saved settings
+        self.loadSettings()
 
         self.setup_runtime()
 
@@ -300,6 +310,34 @@ class IDE(QWidget):
                 break
 
             count_from_label += 1
+
+    def changeFont(self, from_settings=None):
+        if from_settings is not None:
+            font = QFont(from_settings)
+            ok = True
+
+        if from_settings is None:
+            font, ok = QFontDialog.getFont()
+        if ok:
+            self.textEdit.setFont(font)
+            self.textEditEdit.setFont(font)
+            self.register_box.setFont(font)
+            self.console.setFont(font)
+            self.instruction_box.setFont(font)
+
+            self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize() if self.textEdit.fontPointSize() != 0.0 else 10)
+
+            tab_width = self.textEditEdit.fontMetrics().width(' ') * 4
+            self.textEdit.setTabStopWidth(tab_width)
+            self.textEditEdit.setTabStopWidth(tab_width)
+
+            self.settings.setValue("font", font.toString())
+
+    def loadSettings(self):
+        settings = self.settings
+
+        if settings.contains("font"):
+            self.changeFont(from_settings=settings.value("font"))
 
     def closeEvent(self, _event):
         self.saveFile()
