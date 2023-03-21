@@ -1,3 +1,19 @@
+# Installation and Usage
+
+## Prerequisites
+- have python >= 3.10 installed
+- have access to the pip python manager (or install the dependencies from requirements.txt)
+
+## Installation
+
+`pip3 install -r requirements.txt`  
+> NOTE: some installation will require you to use `pip` instead of `pip3`  
+
+
+
+`make build`  
+
+this build an executable for your platform be it linux, windows or macOS, an executable will be created in dist/ subdirectory, simply run that executable from the terminal with the path to your assembly file as an argument.
 
 # Goals
 
