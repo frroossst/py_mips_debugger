@@ -162,7 +162,6 @@ class Interpreter(QObject):
 
                 self.highlight_line.emit(breakpoints.CURRENT_EXECUTING_OBJECT)
 
-
                 # checks for breakpoints 
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True, quiet=False)
 

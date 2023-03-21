@@ -237,6 +237,10 @@ class IDE(QWidget):
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):
         self.instruction_box.setText(f"{currently_executing_object['instr']} at offset {currently_executing_object['index']} from {currently_executing_object['label']}")
+        self.instruction_box.update()
+
+        if currently_executing_object["instr"] == "EndOfInstruction":
+            return None
 
         text = self.textEdit.toPlainText()
         lines = text.splitlines()
