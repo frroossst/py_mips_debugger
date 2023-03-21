@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QDockWidget
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 
 # Runtime imports
@@ -248,6 +248,7 @@ class IDE(QWidget):
         last_label = None
         count_from_label = 0
         for x, i in enumerate(lines):
+            line_number_from_instruction = breakpoints.return_line_number_from_GUI_instruction_line(i)
             fmt_line = breakpoints.consume_line_number_and_return_line(i).strip()
             if Instructions.isLabel(fmt_line):
                 fmt_line = fmt_line[0:-1].strip() # remove colon and whitespace
@@ -255,9 +256,15 @@ class IDE(QWidget):
                 count_from_label = 0
                 continue
 
+            if fmt_line == "":
+                continue
+
+            if fmt_line == "jal foo":
+                pass
+
             if (currently_executing_object["label"] == last_label) and (currently_executing_object["index"] == count_from_label) and (currently_executing_object["instr"] == fmt_line):
                 doc = self.textEdit.document()
-                block = doc.findBlockByLineNumber(x)
+                block = doc.findBlockByLineNumber(line_number_from_instruction - 1)
                 char_fmt = QTextCharFormat()
                 char_fmt.setForeground(Qt.yellow) 
 
@@ -267,7 +274,7 @@ class IDE(QWidget):
 
                 # clear previous line
                 if self.last_highlighted_line is not None:
-                    block = doc.findBlockByLineNumber(self.last_highlighted_line)
+                    block = doc.findBlockByLineNumber(self.last_highlighted_line - 1)
                     char_fmt = QTextCharFormat()
                     char_fmt.setForeground(Qt.white)
 
@@ -276,7 +283,7 @@ class IDE(QWidget):
                     cursor.setCharFormat(char_fmt)
 
                 self.textEdit.repaint()
-                self.last_highlighted_line = x
+                self.last_highlighted_line = line_number_from_instruction
                 break
 
             count_from_label += 1

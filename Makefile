@@ -16,7 +16,7 @@ help:
 	@echo "    Remove the build files"
 	
 build:
-	pyinstaller main.py *.py --onefile --icon assets/icon.png 
+	pyinstaller main.py *.py --onefile --icon assets/icon.png  -n PyMIPS
 
 dependencies:
 	@echo "********** Installing dependencies **********"

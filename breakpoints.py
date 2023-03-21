@@ -22,6 +22,13 @@ def consume_line_number_and_return_line(line):
         else:
             return line[x:]
 
+def return_line_number_from_GUI_instruction_line(line):
+    for x, i in enumerate(line):
+        if i.isnumeric() or i == ":":
+            continue
+        else:
+            return int(line[:x - 1])
+
 def remove_duplicate_breakpoints():
     # remove duplicate values in the list
     for k, v in INTERPRETED_BREAKPOINTS.items():
