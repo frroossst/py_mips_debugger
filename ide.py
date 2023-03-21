@@ -1,5 +1,5 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat
+from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 
@@ -31,14 +31,18 @@ class IDE(QWidget):
         self.setWindowTitle("PyMIPS Emulator")
         self.setWindowIcon(QIcon('./assets/icon.png'))
 
+        tab_width = 4 * QFontMetrics(self.font()).width(' ')
+
         # Create the QTextEdit widget to display the file contents
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
+        self.textEdit.setTabStopWidth(tab_width)
 
         # Create the QTextEdit widget to edit the file contents
         self.textEditEdit = QTextEdit(self)
         self.textEditEdit.setReadOnly(False)
         self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize() if self.textEdit.fontPointSize() != 0.0 else 10)
+        self.textEditEdit.setTabStopWidth(tab_width)
 
         # Registers Window
         self.register_box = QTextEdit(self)
@@ -296,4 +300,7 @@ class IDE(QWidget):
                 break
 
             count_from_label += 1
+
+    def closeEvent(self, _event):
+        self.saveFile()
 
