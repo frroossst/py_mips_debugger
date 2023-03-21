@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QDockWidget
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 
 # Runtime imports
@@ -91,11 +91,17 @@ class IDE(QWidget):
         tab_widget.addTab(self.textEdit, "View")
         tab_widget.addTab(self.textEditEdit, "Edit")
 
+        # Constructing the console window
+        self.console = QTextEdit(self)
+        self.console.setReadOnly(True)
+        self.console.setLineWrapMode(QTextEdit.NoWrap)
+        self.console.setAcceptRichText(False)
 
         main_hlayout.addWidget(self.register_box)
         # main_hlayout.addWidget(self.textEdit)
         main_hlayout.addWidget(tab_widget)
         main_hlayout.setSizes([200, 500])
+        main_hlayout.addWidget(self.console)
 
         layout.addWidget(menu_bar)
         layout.addWidget(main_hlayout, 2)
@@ -225,6 +231,10 @@ class IDE(QWidget):
         scroll_bar.setValue(scroll_pos)
 
     @pyqtSlot(dict)
+    def updateConsoleGUI(self, text):
+        raise NotImplementedError("This method is not implemented yet")
+
+    @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):
         self.instruction_box.setText(f"{currently_executing_object['instr']} at offset {currently_executing_object['index']} from {currently_executing_object['label']}")
 
@@ -263,13 +273,7 @@ class IDE(QWidget):
 
                 self.textEdit.repaint()
                 self.last_highlighted_line = x
-
-                print("did it change?")
-
                 break
-
-
-
 
             count_from_label += 1
 
