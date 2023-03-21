@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 
 # Runtime imports
@@ -38,6 +38,7 @@ class IDE(QWidget):
         # Create the QTextEdit widget to edit the file contents
         self.textEditEdit = QTextEdit(self)
         self.textEditEdit.setReadOnly(False)
+        self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize())
 
         # Registers Window
         self.register_box = QTextEdit(self)
@@ -55,6 +56,15 @@ class IDE(QWidget):
         open_action = QAction("Open", self)
         open_action.triggered.connect(self.open_file_dialog)
         file_menu.addAction(open_action)
+
+        # Instructin viewer window
+        self.instruction_box = QTextEdit(self)
+        self.instruction_box.setReadOnly(True)
+        self.instruction_box.setText("Hit RUN to start the emulator")
+        self.instruction_box.setMaximumWidth(250)
+        self.instruction_box.setMaximumHeight(30)
+        self.instruction_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        btn_hlayout.addWidget(self.instruction_box)
 
         # Create CLEAR button
         clear_button = QPushButton("CLEAR", self)
@@ -98,13 +108,6 @@ class IDE(QWidget):
         register_timer.setInterval(500)
         register_timer.timeout.connect(self.updateRegistersGUI)
         register_timer.start()
-
-        # automatically updates currently executing line every x ms
-        # line_timer = QTimer(self)
-        # line_timer.setInterval(50)
-        # line_timer.timeout.connect(self.updateLineGUI)
-        # line_timer.start()
-
 
         # Load the file and display its contents
         self.loadFile()
@@ -223,6 +226,8 @@ class IDE(QWidget):
 
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):
+        self.instruction_box.setText(f"{currently_executing_object['instr']} at offset {currently_executing_object['index']} from {currently_executing_object['label']}")
+
         text = self.textEdit.toPlainText()
         lines = text.splitlines()
 
