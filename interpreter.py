@@ -165,7 +165,7 @@ class Interpreter(QObject):
                 # checks for breakpoints 
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True, quiet=False)
 
-                instruction = i.split(" ")
+                instruction = [x.strip(",") for x in i.split(" ")]
                 if Multiplexer.reached_end_of_instruction(instruction[0]):
                     return None
                 if Multiplexer.is_a_jump_instruction(instruction[0]):

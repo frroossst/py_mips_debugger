@@ -38,7 +38,7 @@ class IDE(QWidget):
         # Create the QTextEdit widget to edit the file contents
         self.textEditEdit = QTextEdit(self)
         self.textEditEdit.setReadOnly(False)
-        self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize())
+        self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize() if self.textEdit.fontPointSize() != 0.0 else 10)
 
         # Registers Window
         self.register_box = QTextEdit(self)
@@ -90,6 +90,9 @@ class IDE(QWidget):
         tab_widget = QTabWidget()
         tab_widget.addTab(self.textEdit, "View")
         tab_widget.addTab(self.textEditEdit, "Edit")
+        
+        # to save the file when switching tabs
+        tab_widget.currentChanged.connect(self.saveFile)
 
         # Constructing the console window
         self.console = QTextEdit(self)
@@ -197,7 +200,7 @@ class IDE(QWidget):
 
     def runCode(self):
         self.I.state_of_step = False
-        breakpoints.STOP_NOW = False
+        self.saveFile()
         self.setup_runtime()
         self.I.run()
         breakpoints.BUTTON_STACK.append("run")
@@ -219,6 +222,12 @@ class IDE(QWidget):
     def clearRegisters(self):
         self.R.clear_registers()
         self.register_box.setText("Registers:\n" + self.R.__str__())
+
+    def saveFile(self):
+        with open(self.filename, 'w') as fobj:
+            fobj.write(self.textEditEdit.toPlainText())
+
+        self.loadFile()
 
     def updateRegistersGUI(self):
         # Get the current scroll position
