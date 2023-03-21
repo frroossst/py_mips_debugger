@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QObject, pyqtSignal
 
 from exceptions import InterpreterSyntaxError, InterpreterProcessError, InterpreterRecursionError
 from helper_instructions import EndOfInstruction
@@ -7,7 +7,9 @@ from multiplexer import Multiplexer
 from collections import OrderedDict
 import breakpoints
 
-class Interpreter:
+class Interpreter(QObject):
+
+    highlight_line = pyqtSignal(dict)
 
     file_name = ""
     text = ""
@@ -29,6 +31,8 @@ class Interpreter:
 
 
     def __init__(self, file_name, r):
+        super().__init__()
+
         self.file_name = file_name
         self.text, self.data = "", ""
 
@@ -150,12 +154,14 @@ class Interpreter:
             code = self.labels[label_to_run].strip().splitlines()
             for x, i in enumerate(code): 
                 print(f"running [{i}] at index {x} in '{label_to_run}'")
-                # setting class variables for debugging purposes
-                self.__current_label__ = label_to_run
-                self.__current_instruction_index__ = x
-                self.__current_instruction__ = i
 
-                breakpoints.subscribe_currently_executing_object(self.__current_label__, self.__current_instruction_index__, self.__current_instruction__)
+                # setting class variables for debugging purposes
+                breakpoints.CURRENT_EXECUTING_OBJECT["label"] = label_to_run
+                breakpoints.CURRENT_EXECUTING_OBJECT["index"] = x
+                breakpoints.CURRENT_EXECUTING_OBJECT["instr"] = i
+
+                self.highlight_line.emit(breakpoints.CURRENT_EXECUTING_OBJECT)
+
 
                 # checks for breakpoints 
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True, quiet=False)

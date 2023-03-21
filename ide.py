@@ -1,10 +1,9 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QFont, QTextCharFormat
+from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot
 
 # Runtime imports
-from helper_instructions import EndOfInstruction
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
@@ -19,7 +18,8 @@ class IDE(QWidget):
     R = None
     I = None
 
-    register_box = None
+    register_box = None 
+    last_highlighted_line = None
 
     def __init__(self, filename):
         self.filename = filename
@@ -104,7 +104,7 @@ class IDE(QWidget):
         # line_timer.setInterval(50)
         # line_timer.timeout.connect(self.updateLineGUI)
         # line_timer.start()
-        
+
 
         # Load the file and display its contents
         self.loadFile()
@@ -118,6 +118,7 @@ class IDE(QWidget):
         self.R = Registers()
         self.I = Interpreter(self.filename, self.R)
         self.I.process()
+        self.I.highlight_line.connect(self.updateLineGUI)
         self.register_box.setText("Registers:\n" + self.R.__str__())
 
     def loadFile(self):
@@ -220,42 +221,50 @@ class IDE(QWidget):
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
 
-    def updateLineGUI(self):
+    @pyqtSlot(dict)
+    def updateLineGUI(self, currently_executing_object):
         text = self.textEdit.toPlainText()
         lines = text.splitlines()
+
         last_label = None
-
-        cursor = self.textEdit.textCursor()
-
-        # currently_executing_instruction = self.I.get_currently_executing_instruction()
-        # if currently_executing_instruction is None:
-        #     return None
-
-        print(f"currently executing object from ide: {breakpoints.CURRENT_EXECUTING_OBJECT}")
-        return None
-
+        count_from_label = 0
         for x, i in enumerate(lines):
             fmt_line = breakpoints.consume_line_number_and_return_line(i).strip()
             if Instructions.isLabel(fmt_line):
-                last_label = fmt_line[:-1:]
-            if last_label is not None:
-                if currently_executing_instruction is not None and last_label == currently_executing_instruction["label"]:
-                    print("Found label")
-                    print(f"line: {i}; executing: {currently_executing_instruction['instruction']}")
+                fmt_line = fmt_line[0:-1].strip() # remove colon and whitespace
+                last_label = fmt_line
+                count_from_label = 0
+                continue
 
-                    if currently_executing_instruction["instruction"] == "EndOfInstruction":
-                        return None
+            if (currently_executing_object["label"] == last_label) and (currently_executing_object["index"] == count_from_label) and (currently_executing_object["instr"] == fmt_line):
+                doc = self.textEdit.document()
+                block = doc.findBlockByLineNumber(x)
+                char_fmt = QTextCharFormat()
+                char_fmt.setForeground(Qt.yellow) 
 
-                    cursor.movePosition(QTextCursor.Start)
-                    cursor.movePosition(QTextCursor.Down, QTextCursor.MoveAnchor, x + 1)
-                    cursor.movePosition(QTextCursor.EndOfLine, QTextCursor.KeepAnchor)
+                cursor = QTextCursor(block)
+                cursor.select(QTextCursor.BlockUnderCursor)
+                cursor.setCharFormat(char_fmt)
 
+                # clear previous line
+                if self.last_highlighted_line is not None:
+                    block = doc.findBlockByLineNumber(self.last_highlighted_line)
                     char_fmt = QTextCharFormat()
-                    char_fmt.setBackground(Qt.green)
+                    char_fmt.setForeground(Qt.white)
 
+                    cursor = QTextCursor(block)
+                    cursor.select(QTextCursor.BlockUnderCursor)
                     cursor.setCharFormat(char_fmt)
 
-                    break
+                self.textEdit.repaint()
+                self.last_highlighted_line = x
+
+                print("did it change?")
+
+                break
 
 
+
+
+            count_from_label += 1
 
