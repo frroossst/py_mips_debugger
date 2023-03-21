@@ -6,18 +6,44 @@ class MIPSHighlighter(QSyntaxHighlighter):
         super(MIPSHighlighter, self).__init__(parent)
 
         keywordFormat = QTextCharFormat()
-        keywordFormat.setForeground(Qt.darkBlue)
-        keywordFormat.setFontWeight(QFont.Bold)
+        keywordFormat.setForeground(QColor(199, 76, 178)) #C74CB2
 
         registerFormat = QTextCharFormat()
-        registerFormat.setForeground(Qt.darkGreen)
+        registerFormat.setForeground(QColor(129, 154, 116)) #819A74
 
         commentFormat = QTextCharFormat()
         commentFormat.setForeground(Qt.gray)
 
-        instructionList = ["add", "addi", "sub", "and", "or", "nor", "slt", "lw", "sw", "beq", "j", "jal", "jr"]
-        self.highlightingRules = [(QRegExp("\\b%s\\b" % word), keywordFormat) for word in instructionList]
+        numberFormat = QTextCharFormat()
+        numberFormat.setForeground(QColor(233, 124, 68)) #E97C44
+
+        labelFormat = QTextCharFormat()
+        labelFormat.setForeground(QColor(248, 221, 93)) #F8DD5D
+        labelFormat.setFontWeight(QFont.Bold)
+
+        stringFormat = QTextCharFormat()
+        stringFormat.setForeground(QColor(175, 178, 43)) #AFB22B
+        stringFormat.setFontItalic(True)
+
+        directiveFormat = QTextCharFormat()
+        directiveFormat.setForeground(QColor(245, 72, 53)) #F54835
+        directiveFormat.setFontItalic(True)
+
+        sectionFormat = QTextCharFormat()
+        sectionFormat.setForeground(QColor(205, 131, 123)) #CD837B
+        sectionFormat.setFontWeight(QFont.Bold)
+
+        instructions = ["li", "add", "addi", "sub", "and", "or", "nor", "slt", "lw", "sw", "beq", "j", "jal", "jr"]
+
+        self.highlightingRules = [(QRegExp("\\b%s\\b" % word), keywordFormat) for word in instructions]
+        # self.highlightingRules += [(QRegExp("\\$"), registerFormat)]
         self.highlightingRules += [(QRegExp("\\$[a-z]+\\d"), registerFormat)]
+        self.highlightingRules += [(QRegExp("\\b[0-9]+\\b"), numberFormat)]
+        self.highlightingRules += [(QRegExp("\\b[a-z]+\\b:"), labelFormat)]
+        self.highlightingRules += [(QRegExp("\".*\""), stringFormat)]
+        self.highlightingRules += [(QRegExp("\\.[a-z]+"), directiveFormat)]
+        self.highlightingRules += [(QRegExp("\\.text"), sectionFormat)]
+        self.highlightingRules += [(QRegExp("\\.data"), sectionFormat)]
         self.highlightingRules.append((QRegExp("#[^\n]*"), commentFormat))
 
     def highlightBlock(self, text):
