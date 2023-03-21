@@ -1,4 +1,5 @@
 - recently changed register change font colour (red, orange, yellow)
+- javadoc style comments and instruction examples and usage
 - figure out memory layout and file IO
 - figure out a program counter of sorts
 - add a console, impl syscalls

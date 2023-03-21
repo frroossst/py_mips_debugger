@@ -51,7 +51,6 @@ class IDE(QWidget):
         self.highlighter = MIPSHighlighter(self.textEditEdit.document())
         self.highlighter.setDocument(self.textEditEdit.document())
 
-
         # Registers Window
         self.register_box = QTextEdit(self)
         self.register_box.setReadOnly(True)
@@ -175,7 +174,6 @@ class IDE(QWidget):
         self.textEdit.setText(numberedText)
         self.textEditEdit.setText('\n'.join(lines))
         self.textEditEdit.update()
-        self.textEditEdit.repaint()
 
     def open_file_dialog(self):
         file_dialog = QFileDialog(self)
@@ -304,9 +302,6 @@ class IDE(QWidget):
             if fmt_line == "":
                 continue
 
-            if fmt_line == "jal foo":
-                pass
-
             if (currently_executing_object["label"] == last_label) and (currently_executing_object["index"] == count_from_label) and (currently_executing_object["instr"] == fmt_line):
                 doc = self.textEdit.document()
                 block = doc.findBlockByLineNumber(line_number_from_instruction - 1)
@@ -327,8 +322,18 @@ class IDE(QWidget):
                     cursor.select(QTextCursor.BlockUnderCursor)
                     cursor.setCharFormat(char_fmt)
 
-                self.textEdit.repaint()
+                self.textEdit.update()
                 self.last_highlighted_line = line_number_from_instruction
+                
+                # set red bg for breakpoints
+                for breakpoint_line in breakpoints.GLOBAL_BREAKPOINTS:
+                    block = doc.findBlockByLineNumber(breakpoint_line - 1)
+                    fmt = QTextBlockFormat()
+                    fmt.setBackground(Qt.red)
+
+                    cursor = QTextCursor(block)
+                    cursor.setBlockFormat(fmt)
+
                 break
 
             count_from_label += 1
@@ -360,6 +365,8 @@ class IDE(QWidget):
 
         if settings.contains("font"):
             self.changeFont(from_settings=settings.value("font"))
+
+        # TODO: allow custom syntax highlighting
 
     def closeEvent(self, _event):
         self.saveFile()
