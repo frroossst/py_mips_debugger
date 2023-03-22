@@ -1,13 +1,14 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog
-from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QLabel
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QPoint
 
 # Runtime imports
 from syntax_highlighter import MIPSHighlighter
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
+from asm_doc import AsmDoc
 import breakpoints
 
 
@@ -39,7 +40,6 @@ class IDE(QWidget):
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
         self.textEdit.setTabStopWidth(tab_width)
-
 
         # Create the QTextEdit widget to edit the file contents
         self.textEditEdit = QTextEdit(self)
@@ -141,6 +141,10 @@ class IDE(QWidget):
         file_timer.setInterval(1000)  
         file_timer.timeout.connect(self.watchFile)
         file_timer.start()
+
+        # attach tooltips to text
+        self.textEdit.setMouseTracking(True)
+        self.textEdit.mouseMoveEvent = self.showTooltip
 
         # Load the file and display its contents
         self.loadFile()
@@ -367,6 +371,16 @@ class IDE(QWidget):
             self.changeFont(from_settings=settings.value("font"))
 
         # TODO: allow custom syntax highlighting
+
+    def showTooltip(self, event):
+        cursor = self.textEdit.cursorForPosition(event.pos())
+        line_number = cursor.blockNumber() + 1
+        line_text = cursor.block().text()
+        tip = AsmDoc.get_asm_doc("test")
+
+        fmt_tip = f"{line_number}: {line_text}\n{tip}"
+
+        QToolTip.showText(event.globalPos(), fmt_tip)
 
     def closeEvent(self, _event):
         self.saveFile()
