@@ -142,20 +142,12 @@ class IDE(QWidget):
         file_timer.timeout.connect(self.watchFile)
         file_timer.start()
 
-        # attach tooltips to text
-        self.prev_tip_pos = None 
-        self.tip_showing = False
-
-        # self.tip_timer = QTimer()
-        # self.tip_timer.setInterval(1000)
-        # self.tip_timer.timeout.connect(self.hideTooltip)
-        # self.tip_timer.start()
-
         # Load the file and display its contents
         self.loadFile()
 
         # Connect the cursor position changed signal to the onCursorPositionChanged method
         self.textEdit.mouseDoubleClickEvent = self.onMouseDoubleClickEvent
+        self.textEdit.mousePressEvent = self.onMouseSingleClickEvent
 
         # Load previously saved settings
         self.loadSettings()
@@ -195,6 +187,16 @@ class IDE(QWidget):
         self.R.clear_registers()
         self.setup_runtime()
 
+
+    def onMouseSingleClickEvent(self, event):
+        cursor = self.textEdit.cursorForPosition(event.pos())
+        block = cursor.block()
+
+        lineText = block.text()
+
+        fmt_tip = AsmDoc.get_asm_doc(lineText)
+
+        QToolTip.showText(event.globalPos(), fmt_tip, self.textEdit)
 
     def onMouseDoubleClickEvent(self, _event):
         # Get the current line number
@@ -377,34 +379,15 @@ class IDE(QWidget):
 
         # TODO: allow custom syntax highlighting
 
-    def hideTooltip(self, exit=False):
-        if exit:
-            QToolTip.hideText()
-            return None
+    def showLabelTip(self, event):
+        cursor = self.textEdit.cursorForPosition(event.pos())
+        line = cursor.blockNumber()
+        txt = cursor.block().text() 
+        QToolTip.showText(event.globalPos(), txt, self.textEdit)
+    
+    
 
-        print("timer triggered")
-        cursor = self.textEdit.textCursor()
-        if self.prev_tip_pos is not None:
-            cursor = self.textEdit.textCursor()
-            current_pos = cursor.blockNumber() + 1
-            if current_pos == self.prev_tip_pos:
-                print("timeour same line")
-                line_text = cursor.block().text()
-                tip = AsmDoc.get_asm_doc("test")
-                fmt_tip = f"{current_pos}: {line_text}\n{tip}"
-
-                mouse_pos = QCursor.pos()
-                widget_pos = self.textEdit.mapFromGlobal(mouse_pos)
-
-                QToolTip.showText(mouse_pos, fmt_tip)
-                self.tip_showing = True
-
-            elif self.tip_showing and current_pos != self.prev_tip_pos:
-                QToolTip.hideText()
-                self.tip_showing = False
-
-        self.prev_tip_pos = cursor.blockNumber() + 1
-
+    
     def closeEvent(self, _event):
         self.saveFile()
 
