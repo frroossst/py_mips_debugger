@@ -1,5 +1,5 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
+from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont, QCursor, QMouseEvent
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QLabel
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QPoint
 
@@ -143,8 +143,16 @@ class IDE(QWidget):
         file_timer.start()
 
         # attach tooltips to text
-        self.textEdit.setMouseTracking(True)
-        self.textEdit.mouseMoveEvent = self.showTooltip
+        # self.textEdit.setMouseTracking(True)
+        # self.textEdit.mouseMoveEvent = self.showTooltip
+        # self.cursor_stat_count = 0
+        self.prev_tip_pos = None 
+        self.tip_showing = False
+
+        self.tip_timer = QTimer()
+        self.tip_timer.setInterval(1000)
+        self.tip_timer.timeout.connect(self.hideTooltip)
+        self.tip_timer.start()
 
         # Load the file and display its contents
         self.loadFile()
@@ -372,15 +380,68 @@ class IDE(QWidget):
 
         # TODO: allow custom syntax highlighting
 
+    def hideTooltip(self):
+        print("timer triggered")
+        cursor = self.textEdit.textCursor()
+        if self.prev_tip_pos is not None:
+            cursor = self.textEdit.textCursor()
+            current_pos = cursor.blockNumber() + 1
+            if current_pos == self.prev_tip_pos:
+                print("timeour same line")
+                line_text = cursor.block().text()
+                tip = AsmDoc.get_asm_doc("test")
+                fmt_tip = f"{current_pos}: {line_text}\n{tip}"
+
+                curr_pos_local = self.textEdit.cursorRect(cursor).center()
+                curr_pos_glbl = self.textEdit.mapToGlobal(curr_pos_local)
+                curr_pos_glbl.setY(curr_pos_glbl.y() + QCursor.pos().y())
+
+                QToolTip.showText(curr_pos_glbl, fmt_tip)
+                # QToolTip.showText(QCursor.pos(), self.textEdit.toolTip())
+                self.tip_showing = True
+
+            elif self.tip_showing and current_pos != self.prev_tip_pos:
+                QToolTip.hideText()
+                self.tip_showing = False
+
+        self.prev_tip_pos = cursor.blockNumber() + 1
+
     def showTooltip(self, event):
-        cursor = self.textEdit.cursorForPosition(event.pos())
-        line_number = cursor.blockNumber() + 1
-        line_text = cursor.block().text()
-        tip = AsmDoc.get_asm_doc("test")
+        return None
+        if self.prev_tip_pos is None:
+            cursor = self.textEdit.cursorForPosition(event.pos())
+            self.prev_tip_pos = cursor.blockNumber() + 1
 
-        fmt_tip = f"{line_number}: {line_text}\n{tip}"
+        if self.prev_tip_pos is not None:
+            cursor = self.textEdit.cursorForPosition(event.pos())
+            current_pos = cursor.blockNumber() + 1
+            if current_pos == self.prev_tip_pos:
+                if self.cursor_stat_count == 125:
+                    cursor = self.textEdit.cursorForPosition(event.pos())
+                    line_number = cursor.blockNumber() + 1
+                    line_text = cursor.block().text()
+                    tip = AsmDoc.get_asm_doc("test")
 
-        QToolTip.showText(event.globalPos(), fmt_tip)
+                    fmt_tip = f"{line_number}: {line_text}\n{tip}"
+
+                    QToolTip.showText(event.globalPos(), fmt_tip)
+                    print("mouse stationary")
+                    self.cursor_stat_count = 0
+                self.cursor_stat_count += 1
+            else:
+                QToolTip.hideText()
+                print("mouse moved")
+            self.prev_tip_pos = current_pos
+
+        # if event.modifiers() == Qt.ControlModifier:
+        #     cursor = self.textEdit.cursorForPosition(event.pos())
+        #     line_number = cursor.blockNumber() + 1
+        #     line_text = cursor.block().text()
+        #     tip = AsmDoc.get_asm_doc("test")
+
+        #     fmt_tip = f"{line_number}: {line_text}\n{tip}"
+
+        #     QToolTip.showText(event.globalPos(), fmt_tip)
 
     def closeEvent(self, _event):
         self.saveFile()

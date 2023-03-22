@@ -28,4 +28,4 @@ dependencies:
 clean:
 	rm -rf dist/
 	rm -rf build/
-	rm main.spec
+	rm *.spec
