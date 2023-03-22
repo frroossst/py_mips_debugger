@@ -146,10 +146,10 @@ class IDE(QWidget):
         self.prev_tip_pos = None 
         self.tip_showing = False
 
-        self.tip_timer = QTimer()
-        self.tip_timer.setInterval(1000)
-        self.tip_timer.timeout.connect(self.hideTooltip)
-        self.tip_timer.start()
+        # self.tip_timer = QTimer()
+        # self.tip_timer.setInterval(1000)
+        # self.tip_timer.timeout.connect(self.hideTooltip)
+        # self.tip_timer.start()
 
         # Load the file and display its contents
         self.loadFile()
@@ -348,11 +348,11 @@ class IDE(QWidget):
             count_from_label += 1
 
     def changeFont(self, from_settings=None):
-        if from_settings is not None:
+        if from_settings is not None and from_settings is not False:
             font = QFont(from_settings)
             ok = True
 
-        if from_settings is None:
+        if from_settings is None or from_settings is False:
             font, ok = QFontDialog.getFont()
         if ok:
             self.textEdit.setFont(font)

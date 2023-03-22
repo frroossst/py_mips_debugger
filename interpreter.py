@@ -5,6 +5,7 @@ from helper_instructions import EndOfInstruction
 from instructions import Instructions
 from multiplexer import Multiplexer
 from collections import OrderedDict
+from memory import Memory
 import breakpoints
 
 class Interpreter(QObject):
@@ -19,6 +20,8 @@ class Interpreter(QObject):
     label_index = {}
 
     registers_ref = None
+    memory_ref = None
+
     __breakpoints__ = {}
     __call_stack__ = []
 
@@ -33,12 +36,14 @@ class Interpreter(QObject):
     def __init__(self, file_name, r):
         super().__init__()
 
+        m = Memory()
+
         self.file_name = file_name
         self.text, self.data = "", ""
 
         self.labels, self.label_index = OrderedDict(), {}
 
-        self.registers_ref, self.__breakpoints__, self.__call_stack__ = r, {}, []
+        self.registers_ref, self.memory_ref, self.__breakpoints__, self.__call_stack__ = r, m, {}, []
 
         self.__processed__, self.__foundmain__ = False, False
 
@@ -99,6 +104,9 @@ class Interpreter(QObject):
 
         print(self.label_index)
         print(self.labels)
+
+        self.memory_ref.map_text(self.labels)
+        self.memory_ref.map_data(self.data)
 
         self.__processed__ = True
 

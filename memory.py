@@ -20,12 +20,17 @@ class Memory:
         self.is_data_mapped = False
 
     def __str__(self) -> str:
-        pass
+        fmt = ""
+        for k, v in self.memmap.items():
+            fmt += f"{k}: {v}\n"
+        return fmt
 
     def map_text(self, text):
+        self.is_text_mapped = True
         pass
 
     def map_data(self, data):
+        self.is_data_mapped = True
         pass
 
     def check_bounds(self, addr):
@@ -38,5 +43,7 @@ class Memory:
         self.check_bounds(addr)
 
     def set_in_memory(self, addr, val):
+        if not (self.is_text_mapped and self.is_data_mapped):
+            raise InterpreterProcessError(f"incorrectly mapped memory: text: {self.is_text_mapped}, data: {self.is_data_mapped}")
         self.check_bounds(addr)
 

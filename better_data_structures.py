@@ -3,7 +3,7 @@ from collections import deque
 # because the inbuild deque class doesn't have a length attribute
 class better_deque(deque):
 
-    slength = 0
+    length = 0
 
     def __init__(self, *args, **kwargs):
         self.length = 0
