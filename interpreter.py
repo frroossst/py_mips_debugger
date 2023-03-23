@@ -5,6 +5,7 @@ from helper_instructions import EndOfInstruction
 from instructions import Instructions
 from multiplexer import Multiplexer
 from collections import OrderedDict
+from asm_doc import AsmDoc
 from memory import Memory
 import breakpoints
 
@@ -87,10 +88,14 @@ class Interpreter(QObject):
                         if not i.startswith("#"):
                             val += i
                             val += "\n"
+
                         self.labels[last_label] = val
 
                         if last_label not in list(self.label_index):
                             self.label_index[last_label] = self.text_starts_at_line + x + 1
+
+                elif i.startswith("#"):
+                    continue
                 else:
                     raise InterpreterSyntaxError("Instruction found before label")
 
@@ -104,6 +109,8 @@ class Interpreter(QObject):
 
         print(self.label_index)
         print(self.labels)
+
+        AsmDoc.generate_asm_doc(self.text)
 
         self.memory_ref.map_text(self.labels)
         self.memory_ref.map_data(self.data)

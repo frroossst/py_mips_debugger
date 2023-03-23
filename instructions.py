@@ -7,6 +7,22 @@ class Instructions:
         return [ x for x in dir(Instructions) if not x.startswith("__") and x != "get_all_instructions" ]
 
     @staticmethod
+    def extract_instruction_from_line(line):
+        for i in Instructions.get_all_instructions():
+            if i in line:
+                return i
+        
+        return None
+
+    @staticmethod
+    def extract_label_from_line(line):
+        if Instructions.isLabel(line):
+            # remove the colon and get the label
+            return line.split(":")[1].strip()
+
+        return None
+
+    @staticmethod
     def isLabel(line):
         if ":" in line:
             return True

@@ -189,14 +189,16 @@ class IDE(QWidget):
 
 
     def onMouseSingleClickEvent(self, event):
-        cursor = self.textEdit.cursorForPosition(event.pos())
-        block = cursor.block()
+        if event.modifiers() == Qt.ControlModifier:
+            cursor = self.textEdit.cursorForPosition(event.pos())
+            block = cursor.block()
 
-        lineText = block.text()
+            # get word under cursor
+            cursor.select(QTextCursor.WordUnderCursor)
+            word_under_cursor = cursor.selectedText().strip().strip(":")
+            fmt_tip = AsmDoc.get_asm_doc(word_under_cursor)
 
-        fmt_tip = AsmDoc.get_asm_doc(lineText)
-
-        QToolTip.showText(event.globalPos(), fmt_tip, self.textEdit)
+            QToolTip.showText(event.globalPos(), fmt_tip, self.textEdit)
 
     def onMouseDoubleClickEvent(self, _event):
         # Get the current line number
