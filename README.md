@@ -16,7 +16,8 @@
 this build an executable for your platform be it linux, windows or macOS, an executable will be created in dist/ subdirectory, simply run that executable from the terminal with the path to your assembly file as an argument.  
 
 
-`./PyMIPS hello.asm`
+`./PyMIPS hello.asm`  
+`<path to executable> <path to asm file>`
 
 # Goals
 
