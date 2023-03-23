@@ -8,6 +8,7 @@ from syntax_highlighter import MIPSHighlighter
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
+from memory import Memory
 from asm_doc import AsmDoc
 import breakpoints
 
@@ -19,6 +20,7 @@ class IDE(QWidget):
     last_added_breakpoint = None
 
     R = None
+    M = None
     I = None
 
     register_box = None 
@@ -55,6 +57,11 @@ class IDE(QWidget):
         self.register_box = QTextEdit(self)
         self.register_box.setReadOnly(True)
         self.register_box.setText("Registers:\n" + self.R.__str__())
+
+        # Memory Window
+        self.memory_box = QTextEdit(self)
+        self.memory_box.setReadOnly(True)
+        self.memory_box.setText("Memory:\n" + self.M.__str__())
 
         # Create a layout for the window and add the QTextEdit widget to it
         layout = QVBoxLayout()
@@ -110,6 +117,11 @@ class IDE(QWidget):
         # to save the file when switching tabs
         tab_widget.currentChanged.connect(self.saveFile)
 
+        # Tabs     registers, memory
+        tab_widget2 = QTabWidget()
+        tab_widget2.addTab(self.register_box, "Registers")
+        tab_widget2.addTab(self.memory_box, "Memory")
+
         # Constructing the console window
         self.console = QTextEdit(self)
         self.console.setReadOnly(True)
@@ -117,11 +129,13 @@ class IDE(QWidget):
         self.console.setAcceptRichText(False)
         self.console.setText("Console:\n")
 
-        main_hlayout.addWidget(self.register_box)
+        main_hlayout.addWidget(tab_widget2)
+        main_hlayout.setSizes([200, 500])
         # main_hlayout.addWidget(self.textEdit)
         main_hlayout.addWidget(tab_widget)
         main_hlayout.setSizes([200, 500])
         main_hlayout.addWidget(self.console)
+
 
         layout.addWidget(menu_bar)
         layout.addWidget(main_hlayout, 2)
@@ -134,6 +148,12 @@ class IDE(QWidget):
         register_timer.setInterval(500)
         register_timer.timeout.connect(self.updateRegistersGUI)
         register_timer.start()
+
+        # automatically updates memory every x ms
+        memory_timer = QTimer(self)
+        memory_timer.setInterval(500)
+        memory_timer.timeout.connect(self.updateMemoryGUI)
+        memory_timer.start()
 
         # watch the current file for changes and reload
         self.file_watcher = QFileSystemWatcher([self.filename])
@@ -156,7 +176,8 @@ class IDE(QWidget):
 
     def setup_runtime(self):
         self.R = Registers()
-        self.I = Interpreter(self.filename, self.R)
+        self.M = Memory()
+        self.I = Interpreter(self.filename, self.R, self.M)
         self.I.process()
         self.I.highlight_line.connect(self.updateLineGUI)
         self.register_box.setText("Registers:\n" + self.R.__str__())
@@ -284,6 +305,16 @@ class IDE(QWidget):
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
 
+    def updateMemoryGUI(self):
+        # Get the current scroll position
+        scroll_bar = self.memory_box.verticalScrollBar()
+        scroll_pos = scroll_bar.value()
+
+        self.memory_box.setText("Memory:\n" + self.M.__str__())
+
+        # Restore the scroll position
+        scroll_bar.setValue(scroll_pos)
+
     @pyqtSlot(dict)
     def updateConsoleGUI(self, text):
         raise NotImplementedError("This method is not implemented yet")
@@ -360,6 +391,7 @@ class IDE(QWidget):
             self.textEdit.setFont(font)
             self.textEditEdit.setFont(font)
             self.register_box.setFont(font)
+            self.memory_box.setFont(font)
             self.console.setFont(font)
             self.instruction_box.setFont(font)
 

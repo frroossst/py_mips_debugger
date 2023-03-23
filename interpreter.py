@@ -36,10 +36,8 @@ class Interpreter(QObject):
     state_of_step = False
 
 
-    def __init__(self, file_name, r):
+    def __init__(self, file_name, r, m):
         super().__init__()
-
-        m = Memory()
 
         self.file_name = file_name
         self.text, self.data = "", ""

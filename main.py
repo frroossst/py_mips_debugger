@@ -17,6 +17,7 @@ parser.add_argument("--no-gui", dest="no_gui_arg", action="store_true")
 args = parser.parse_args()
 
 register_ref = None
+memory_ref = None
 
 def exception_hook(exctype, value, traceback):
 
@@ -65,6 +66,8 @@ def setup_ide():
     ide.show()
     global register_ref # just to make registers print with the exception hook
     register_ref = ide.R
+    global memory_ref
+    memory_ref = ide.M
     sys.excepthook = exception_hook
     sys.exit(app.exec_())
 

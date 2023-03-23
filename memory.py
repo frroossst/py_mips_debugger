@@ -25,8 +25,24 @@ class Memory:
 
     def __str__(self) -> str:
         fmt = ""
-        for k, v in self.memmap.items():
-            fmt += f"{k}: {v}\n"
+        keys = sorted((self.memmap.keys()), key=lambda k: (1, k) if isinstance(k, int) else (0, k))  
+
+        label_insert, data_insert = True, True
+        for k in keys:
+            try:
+                int(k)
+                if label_insert:
+                    fmt += "\n"
+                    label_insert = False
+
+                if data_insert and k > self.data_addr_start:
+                    fmt += "\n"
+                    data_insert = False
+                
+                fmt += f"{k}: {self.memmap[k]}\n"
+            except ValueError:
+                fmt += f"{k}: {self.memmap[k]}\n"
+
         return fmt
 
     def map_text(self, text):
