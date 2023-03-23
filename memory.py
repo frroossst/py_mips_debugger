@@ -35,7 +35,7 @@ class Memory:
                     fmt += "\n"
                     label_insert = False
 
-                if data_insert and k > self.data_addr_start:
+                if data_insert and k >= self.data_addr_start:
                     fmt += "\n"
                     data_insert = False
                 
