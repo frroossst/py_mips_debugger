@@ -44,14 +44,17 @@ class Memory:
 
     def map_data(self, data):
         self.data_curr_addr = self.data_addr_start
+        starter_ptr = 0
 
         # data = {directive: value, value: value}
 
         for i in data:
             val = self.process_directive(data[i]["directive"], data[i]["value"])
+            starter_ptr = self.data_curr_addr
             for j in bytes(val, "ascii"):
                 self.memmap[self.data_curr_addr] = j
                 self.data_curr_addr += 1
+            self.memmap[i] = starter_ptr
             
         self.is_data_mapped = True
 
