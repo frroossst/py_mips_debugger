@@ -18,7 +18,15 @@ class Instructions:
     def extract_label_from_line(line):
         if Instructions.isLabel(line):
             # remove the colon and get the label
-            return line.split(":")[1].strip()
+            return line.split(":")[0].strip()
+
+        return None
+
+    @staticmethod
+    def consume_directive_from_line(line):
+        if Instructions.isDirective(line):
+            split = line.split(" ")
+            return {"directive": split[0], "value": " ".join(split[1::])}
 
         return None
 
@@ -48,8 +56,15 @@ class Instructions:
     def li(r, reg, val):
         if reg[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
-        if reg[1] == "t":
-            r.set_temporary_register(reg[1:], int(val))
+
+        r.set_register(reg[1:], int(val))
+
+    @staticmethod
+    def la(r, m, reg, val):
+        if reg[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        r.set_register(reg[1:], m.get_address(val))
 
     @staticmethod
     def addi(r, reg_save, reg_get, val):

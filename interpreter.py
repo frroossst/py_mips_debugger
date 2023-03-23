@@ -20,6 +20,8 @@ class Interpreter(QObject):
     labels = OrderedDict()
     label_index = {}
 
+    data_labels = OrderedDict()
+
     registers_ref = None
     memory_ref = None
 
@@ -42,7 +44,7 @@ class Interpreter(QObject):
         self.file_name = file_name
         self.text, self.data = "", ""
 
-        self.labels, self.label_index = OrderedDict(), {}
+        self.labels, self.label_index, self.data_labels = OrderedDict(), {}, OrderedDict()
 
         self.registers_ref, self.memory_ref, self.__breakpoints__, self.__call_stack__ = r, m, {}, []
 
@@ -123,10 +125,12 @@ class Interpreter(QObject):
 
         # process .data section
         if self.data != []:
-            pass
+            for i in self.data:
+                curr_label = Instructions.extract_label_from_line(i)
+                self.data_labels[curr_label] = Instructions.consume_directive_from_line(i[len(curr_label) + 1:].strip())
 
         self.memory_ref.map_text(self.labels)
-        self.memory_ref.map_data(self.data)
+        self.memory_ref.map_data(self.data_labels)
 
         self.__processed__ = True
 
@@ -177,7 +181,7 @@ class Interpreter(QObject):
         except AttributeError:
             return None
 
-    def execute_label(self, label_to_run, return_control=False):
+    def execute_label(self, label_to_run):
         try:
             code = self.labels[label_to_run].strip().splitlines()
             for x, i in enumerate(code): 
@@ -199,10 +203,10 @@ class Interpreter(QObject):
                 if Multiplexer.is_a_jump_instruction(instruction[0]):
                     Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
                     if self.registers_ref.ra in list(self.labels):
-                        self.execute_label(instruction[1], return_control=True)
+                        self.execute_label(instruction[1])
                 # elif is a branch beq t0, t1, main
 
-                Multiplexer.decode_and_execute(self.registers_ref, instruction[0], instruction[1:])
+                Multiplexer.decode_and_execute(self.registers_ref, self.memory_ref, instruction[0], instruction[1:])
 
                 # checks for steps
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False)
