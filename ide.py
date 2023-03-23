@@ -1,6 +1,6 @@
 # GUI imports
-from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont, QCursor
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QLabel
+from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher
 
 # Runtime imports
@@ -187,11 +187,9 @@ class IDE(QWidget):
         self.R.clear_registers()
         self.setup_runtime()
 
-
     def onMouseSingleClickEvent(self, event):
         if event.modifiers() == Qt.ControlModifier:
             cursor = self.textEdit.cursorForPosition(event.pos())
-            block = cursor.block()
 
             # get word under cursor
             cursor.select(QTextCursor.WordUnderCursor)
@@ -200,9 +198,9 @@ class IDE(QWidget):
 
             QToolTip.showText(event.globalPos(), fmt_tip, self.textEdit)
 
-    def onMouseDoubleClickEvent(self, _event):
+    def onMouseDoubleClickEvent(self, event):
         # Get the current line number
-        cursor = self.textEdit.textCursor()
+        cursor = self.textEdit.cursorForPosition(event.pos())
         block = cursor.block()
 
         lineNumber = cursor.blockNumber() + 1
@@ -381,15 +379,6 @@ class IDE(QWidget):
 
         # TODO: allow custom syntax highlighting
 
-    def showLabelTip(self, event):
-        cursor = self.textEdit.cursorForPosition(event.pos())
-        line = cursor.blockNumber()
-        txt = cursor.block().text() 
-        QToolTip.showText(event.globalPos(), txt, self.textEdit)
-    
-    
-
-    
     def closeEvent(self, _event):
         self.saveFile()
 

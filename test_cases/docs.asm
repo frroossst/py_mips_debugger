@@ -10,7 +10,7 @@
 # @return $v0 is the return value
 foo:
     move $v0, $a0
-	li $t0, 20
+    li $t0, 20
 
 main:
     j foo

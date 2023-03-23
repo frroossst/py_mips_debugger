@@ -124,7 +124,7 @@ class Interpreter(QObject):
         # main entry point
         self.execute_label("main")
 
-    def check_and_breakpoint(self, label, instruction_number, check_for_breakpoint=True, quiet=False):
+    def check_and_breakpoint(self, label, instruction_number, check_for_breakpoint=True):
         if check_for_breakpoint:
             while (label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]):
                 print("Breakpoint hit")
@@ -178,7 +178,7 @@ class Interpreter(QObject):
                 self.highlight_line.emit(breakpoints.CURRENT_EXECUTING_OBJECT)
 
                 # checks for breakpoints 
-                self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True, quiet=False)
+                self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True)
 
                 instruction = [x.strip(",") for x in i.split(" ")]
                 if Multiplexer.reached_end_of_instruction(instruction[0]):
@@ -192,7 +192,7 @@ class Interpreter(QObject):
                 Multiplexer.decode_and_execute(self.registers_ref, instruction[0], instruction[1:])
 
                 # checks for steps
-                self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False, quiet=False)
+                self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False)
 
         except RecursionError:
             raise InterpreterRecursionError("Recursion limit reached", label_that_crashed=label_to_run, instruction_that_crashed=code[x+1])
