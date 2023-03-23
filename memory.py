@@ -1,4 +1,5 @@
 from exceptions import InterpreterMemoryError, InterpreterProcessError
+from helper_instructions import EndOfInstruction
 from collections import OrderedDict
 
 class Memory:
@@ -27,11 +28,27 @@ class Memory:
 
     def map_text(self, text):
         self.is_text_mapped = True
-        pass
+        addr = self.text_addr_start
+
+        for i in text:
+            self.memmap[i] = addr
+            for j in text[i].split("\n"):
+                if j == "" or j == EndOfInstruction().__str__().strip():
+                    continue
+                self.memmap[addr] = j
+                addr += 4
 
     def map_data(self, data):
         self.is_data_mapped = True
-        pass
+        addr = self.data_addr_start
+
+        # for i in data:
+        #     self.memmap[i] = addr
+        #     for j in data[i].split("\n"):
+        #         if j == "":
+        #             continue
+        #         self.memmap[addr] = j
+        #         addr += 4
 
     def check_bounds(self, addr):
         if (addr < self.data_addr_end and addr >= self.data_addr_start) or (addr < self.text_addr_end and addr >= self.text_addr_start):

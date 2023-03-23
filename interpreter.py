@@ -59,10 +59,19 @@ class Interpreter(QObject):
                     self.text_starts_at_line = i + 1
                     break
 
+            # find .data heading and put everything after it in data but up to the next .text heading
+            for i in range(len(content)):
+                if content[i].strip() == ".data":
+                    for j in range(i + 1, len(content)):
+                        if content[j].strip() == ".text":
+                            break
+                        self.data += content[j]
+
         if self.text == "":
             raise InterpreterSyntaxError("No .text section found in file")
 
         self.text = [ x.strip() for x in "".join(self.text).splitlines() if x.strip() != "" ]
+        self.data = [ x.strip() for x in "".join(self.data).splitlines() if x.strip() != "" ]
 
     def process(self):
         last_label = None
@@ -111,6 +120,10 @@ class Interpreter(QObject):
         print(self.labels)
 
         AsmDoc.generate_asm_doc(self.text)
+
+        # process .data section
+        if self.data != []:
+            pass
 
         self.memory_ref.map_text(self.labels)
         self.memory_ref.map_data(self.data)
