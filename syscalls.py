@@ -1,5 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
+from exceptions import InterpreterExit, InterpreterSyscallError
+
 class Syscall(QObject):
 
     console_signal = pyqtSignal(dict)
@@ -22,5 +24,12 @@ class Syscall(QObject):
             console_object["operation"] = "stdout"
             console_object["type"] = "string"
             console_object["data"] = stdout_str
+
+        # exit
+        elif code_v0 == 10:
+            raise InterpreterExit("Program exited")
+
+        else:
+            raise InterpreterSyscallError("Invalid syscall code")
 
         self.console_signal.emit(console_object)

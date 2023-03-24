@@ -5,7 +5,7 @@ from termcolor import cprint
 
 from interpreter import Interpreter
 from registers import Registers
-from exceptions import InterpreterException, InterpreterFileError
+from exceptions import InterpreterException, InterpreterFileError, InterpreterExit
 from ide import IDE
 import argparse
 import sys
@@ -22,6 +22,9 @@ memory_ref = None
 def exception_hook(exctype, value, traceback):
 
     if (issubclass(exctype, InterpreterException)):
+        if value.message == "Program exited":
+            return None # this was expected, so continue with the GUI, but stop the Interpreter
+
         # print last known state of registers
         print("*" * 80)
         print(register_ref.__str__())

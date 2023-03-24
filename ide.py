@@ -327,6 +327,8 @@ class IDE(QWidget):
         elif console_object["operation"] == "stdin":
             raise NotImplementedError("stdin not implemented yet")
 
+        self.consoleEdit.repaint()
+
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):
         self.instruction_box.setText(f"{currently_executing_object['instr']} at offset {currently_executing_object['index']} from {currently_executing_object['label']}")

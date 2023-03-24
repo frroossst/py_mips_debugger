@@ -53,3 +53,8 @@ class InterpreterMemoryError(InterpreterException):
 class InterpreterStackError(InterpreterException):
     pass
 
+class InterpreterSyscallError(InterpreterException):
+    pass
+
+class InterpreterExit(InterpreterException):
+    pass
