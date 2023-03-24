@@ -11,7 +11,7 @@ class Syscall(QObject):
         console_object = {
             "operation": None,
             "type": None,
-            "arg" : None
+            "data" : None
         }
 
         code_v0 = r.get_register("v0")
@@ -21,6 +21,6 @@ class Syscall(QObject):
             stdout_str = m.get_string(r.get_register("a0"))
             console_object["operation"] = "stdout"
             console_object["type"] = "string"
-            console_object["arg"] = stdout_str
+            console_object["data"] = stdout_str
 
         self.console_signal.emit(console_object)

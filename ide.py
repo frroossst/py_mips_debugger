@@ -124,18 +124,18 @@ class IDE(QWidget):
         tab_widget2.addTab(self.memory_box, "Memory")
 
         # Constructing the console window
-        self.console = QTextEdit(self)
-        self.console.setReadOnly(True)
-        self.console.setLineWrapMode(QTextEdit.NoWrap)
-        self.console.setAcceptRichText(False)
-        self.console.setText("Console:\n")
+        self.consoleEdit = QTextEdit(self)
+        self.consoleEdit.setReadOnly(True)
+        self.consoleEdit.setLineWrapMode(QTextEdit.NoWrap)
+        self.consoleEdit.setAcceptRichText(False)
+        self.consoleEdit.setText("Console:\n")
 
         main_hlayout.addWidget(tab_widget2)
         main_hlayout.setSizes([200, 500])
         # main_hlayout.addWidget(self.textEdit)
         main_hlayout.addWidget(tab_widget)
         main_hlayout.setSizes([200, 500])
-        main_hlayout.addWidget(self.console)
+        main_hlayout.addWidget(self.consoleEdit)
 
 
         layout.addWidget(menu_bar)
@@ -321,8 +321,11 @@ class IDE(QWidget):
 
     @pyqtSlot(dict)
     def updateConsoleGUI(self, console_object):
-        print(console_object)
-        raise NotImplementedError("This method is not implemented yet")
+        if console_object["operation"] == "stdout":
+            self.consoleEdit.append(console_object["data"])
+
+        elif console_object["operation"] == "stdin":
+            raise NotImplementedError("stdin not implemented yet")
 
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):
@@ -397,7 +400,7 @@ class IDE(QWidget):
             self.textEditEdit.setFont(font)
             self.register_box.setFont(font)
             self.memory_box.setFont(font)
-            self.console.setFont(font)
+            self.consoleEdit.setFont(font)
             self.instruction_box.setFont(font)
 
             self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize() if self.textEdit.fontPointSize() != 0.0 else 10)
