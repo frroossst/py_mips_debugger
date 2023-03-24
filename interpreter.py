@@ -43,9 +43,7 @@ class Interpreter(QObject):
 
         self.labels, self.label_index, self.data_labels = OrderedDict(), {}, OrderedDict()
 
-        self.registers_ref, self.memory_ref, self.__breakpoints__, self.__call_stack__ = r, m, {}, []
-
-        self.syscall_ref = s
+        self.registers_ref, self.memory_ref, self.syscall_ref, self.__breakpoints__, self.__call_stack__ = r, m, s, {}, []
 
         self.__processed__, self.__foundmain__ = False, False
 

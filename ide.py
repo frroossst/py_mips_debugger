@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxL
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher
 
 # Runtime imports
+from better_data_structures import better_deque
 from syntax_highlighter import MIPSHighlighter
 from instructions import Instructions
 from interpreter import Interpreter
@@ -12,6 +13,7 @@ from syscalls import Syscall
 from memory import Memory
 from asm_doc import AsmDoc
 import breakpoints
+import queue
 
 
 class IDE(QWidget):
@@ -205,6 +207,15 @@ class IDE(QWidget):
         file_dialog.setNameFilter("Assembly Files (*.asm, *.s); All Files (*)")
 
         file_path, _ = file_dialog.getOpenFileName(self, "Open file", "", "Assembly Files (*.asm, *.s); All Files (*)")
+
+        if file_path != self.filename:
+            breakpoints.GLOBAL_BREAKPOINTS = {}
+            breakpoints.INTERPRETED_BREAKPOINTS = {}
+            breakpoints.STOP_AT_NEXT_INSTRUCTION = False
+            breakpoints.MESSAGE_QUEUE = queue.Queue()
+            breakpoints.BUTTON_STACK = better_deque()
+            breakpoints.CURRENT_EXECUTING_OBJECT = {}
+
 
         self.filename = file_path
         self.loadFile()
