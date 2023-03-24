@@ -1,7 +1,7 @@
 from exceptions import InterpreterControlFlowError, InterpreterRegisterError
 
 class Instructions:
-
+    
     @staticmethod
     def get_all_instructions():
         return [ x for x in dir(Instructions) if not x.startswith("__") and x != "get_all_instructions" ]
@@ -41,6 +41,10 @@ class Instructions:
         if line.strip().startswith("."):
             return True
         return False
+
+    @staticmethod
+    def process_syscall(r, m, s):
+        s.execute_syscall(r, m)
 
     @staticmethod
     def j():

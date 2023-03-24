@@ -8,6 +8,7 @@ from syntax_highlighter import MIPSHighlighter
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
+from syscalls import Syscall
 from memory import Memory
 from asm_doc import AsmDoc
 import breakpoints
@@ -177,9 +178,11 @@ class IDE(QWidget):
     def setup_runtime(self):
         self.R = Registers()
         self.M = Memory()
-        self.I = Interpreter(self.filename, self.R, self.M)
+        self.S = Syscall()
+        self.I = Interpreter(self.filename, self.R, self.M, self.S)
         self.I.process()
         self.I.highlight_line.connect(self.updateLineGUI)
+        self.S.console_signal.connect(self.updateConsoleGUI)
         self.register_box.setText("Registers:\n" + self.R.__str__())
 
     def loadFile(self):
@@ -282,6 +285,7 @@ class IDE(QWidget):
     def clearRegisters(self):
         self.R.clear_registers()
         self.register_box.setText("Registers:\n" + self.R.__str__())
+        self.memory_box.setText("Memory:\n" + self.M.__str__())
 
     def saveFile(self):
         with open(self.filename, 'w') as fobj:
@@ -316,7 +320,8 @@ class IDE(QWidget):
         scroll_bar.setValue(scroll_pos)
 
     @pyqtSlot(dict)
-    def updateConsoleGUI(self, text):
+    def updateConsoleGUI(self, console_object):
+        print(console_object)
         raise NotImplementedError("This method is not implemented yet")
 
     @pyqtSlot(dict)

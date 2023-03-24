@@ -141,6 +141,26 @@ class Registers:
         else:
             raise InterpreterRegisterError(f"Invalid register name: {register}")
 
+    def get_register(self, register):
+        if register[0] == "t":
+            return self.get_temporary_register(register)
+        if register[0] == "s":
+            return self.get_saved_register(register)
+        if register[0] == "v":
+            return self.get_value_register(register)
+        if register[0] == "a":
+            return self.get_argument_register(register)
+        if register[0] == "r":
+            return self.get_return_address()
+        if register == "hi":
+            return self.get_hi_register()
+        if register == "lo":
+            return self.get_lo_register()
+        if register[0] == "f":
+            return self.get_floating_point_register(register)
+
+        raise InterpreterRegisterError(f"Invalid register name: {register}")
+
     def set_temporary_register(self, register, value):
         if not isinstance(value, int):
             raise InterpreterTypeError("Value must be an integer")

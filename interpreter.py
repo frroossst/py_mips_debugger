@@ -6,7 +6,6 @@ from instructions import Instructions
 from multiplexer import Multiplexer
 from collections import OrderedDict
 from asm_doc import AsmDoc
-from memory import Memory
 import breakpoints
 
 class Interpreter(QObject):
@@ -36,7 +35,7 @@ class Interpreter(QObject):
     state_of_step = False
 
 
-    def __init__(self, file_name, r, m):
+    def __init__(self, file_name, r, m, s):
         super().__init__()
 
         self.file_name = file_name
@@ -45,6 +44,8 @@ class Interpreter(QObject):
         self.labels, self.label_index, self.data_labels = OrderedDict(), {}, OrderedDict()
 
         self.registers_ref, self.memory_ref, self.__breakpoints__, self.__call_stack__ = r, m, {}, []
+
+        self.syscall_ref = s
 
         self.__processed__, self.__foundmain__ = False, False
 
@@ -204,7 +205,7 @@ class Interpreter(QObject):
                         self.execute_label(instruction[1])
                 # elif is a branch beq t0, t1, main
 
-                Multiplexer.decode_and_execute(self.registers_ref, self.memory_ref, instruction[0], instruction[1:])
+                Multiplexer.decode_and_execute(self.registers_ref, self.memory_ref, self.syscall_ref, instruction[0], instruction[1:])
 
                 # checks for steps
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False)

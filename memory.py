@@ -1,4 +1,4 @@
-from exceptions import InterpreterMemoryError, InterpreterProcessError
+from exceptions import InterpreterMemoryError, InterpreterProcessError, InterpreterValueError
 from helper_instructions import EndOfInstruction
 from collections import OrderedDict
 
@@ -56,6 +56,7 @@ class Memory:
                 self.memmap[addr] = j
                 addr += 4
 
+        self.text_addr_end = addr - 4
         self.is_text_mapped = True
 
     def map_data(self, data):
@@ -72,6 +73,8 @@ class Memory:
                 self.data_curr_addr += 1
             self.memmap[i] = starter_ptr
             
+        self.data_addr_end = self.data_curr_addr - 1
+        self.data_curr_addr = None
         self.is_data_mapped = True
 
     def process_directive(self, directive, value):
@@ -83,12 +86,20 @@ class Memory:
 
         return value
 
-    def check_bounds(self, addr):
-        if (addr < self.data_addr_end and addr >= self.data_addr_start) or (addr < self.text_addr_end and addr >= self.text_addr_start):
-            raise InterpreterMemoryError("Memory address out of bounds")
+    def check_bounds(self, addr, type=None):
+        if type == "data":
+            if addr > self.data_addr_end and addr < self.data_addr_start:
+                raise InterpreterMemoryError("Memory address out of bounds")
+        
+        elif type == "text":
+            if addr > self.text_addr_end and addr < self.text_addr_start:
+                raise InterpreterMemoryError("Memory address out of bounds")
 
-        if addr not in self.memmap.values():
+        elif addr not in self.memmap.keys():
             raise InterpreterMemoryError("Memory address not found")
+
+        else:
+            raise InterpreterValueError("Invalid memory or type of")
         
     def get_address(self, label):
         if label not in self.memmap:
@@ -101,8 +112,32 @@ class Memory:
             raise InterpreterProcessError(f"incorrectly mapped memory: text: {self.is_text_mapped}, data: {self.is_data_mapped}")
         self.check_bounds(addr)
 
+        try:
+            val =  self.memmap[addr]
+        except KeyError:
+            raise InterpreterMemoryError(f"Memory address {addr} not found")
+
+        return val
+
     def set_in_memory(self, addr, val):
         if not (self.is_text_mapped and self.is_data_mapped):
             raise InterpreterProcessError(f"incorrectly mapped memory: text: {self.is_text_mapped}, data: {self.is_data_mapped}")
         self.check_bounds(addr)
+        
+        self.memmap[addr] = val
 
+    def get_string(self, addr):
+        self.check_bounds(addr, type="data")
+
+        string = ""
+
+        while True:
+            if self.memmap[addr] == 0:
+                break
+
+            string += chr(self.memmap[addr])
+            addr += 1
+
+        return string
+
+        

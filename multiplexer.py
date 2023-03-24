@@ -3,13 +3,15 @@ from instructions import Instructions
 
 class Multiplexer:
 
-    def decode_and_execute(r, m, ins, args):
+    def decode_and_execute(r, m, s, ins, args):
         if ins == "li":
             Instructions.li(r, args[0].strip(","), args[1])
         elif ins == "la":
             Instructions.la(r, m, args[0].strip(","), args[1])
         elif ins == "addi":
             Instructions.addi(r, args[0].strip(","), args[1].strip(","), args[2])
+        elif ins == "syscall":
+            Instructions.process_syscall(r, m, s)
 
     def reached_end_of_instruction(ins):
         if ins == EndOfInstruction().__str__():
