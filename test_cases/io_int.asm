@@ -1,9 +1,14 @@
 .data
-
+prompt: .asciiz "Enter an integer: "
 
 .text
 
 main:
+    # print prompt
+    la $a0, prompt
+    li $v0, 4
+    syscall
+
     # read an int
     li $v0, 5
     syscall

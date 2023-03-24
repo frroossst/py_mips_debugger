@@ -340,6 +340,7 @@ class IDE(QWidget):
 
     @pyqtSlot(dict)
     def updateConsoleGUI(self, console_object):
+        prev_console_content = self.consoleEdit.toPlainText()
         if console_object["operation"] == "stdout":
             self.consoleEdit.append(console_object["data"])
 
@@ -358,7 +359,7 @@ class IDE(QWidget):
 
             if console_object["type"] == "int":
                 try:
-                    input_received = int(self.consoleEdit.toPlainText().removeprefix("Console:\n") .strip("\n"))
+                    input_received = int(self.consoleEdit.toPlainText().removeprefix(prev_console_content) .strip("\n"))
                     self.R.set_register("v0", input_received)
                 except Exception:
                     raise InterpreterConversionError("Input was not an integer")
