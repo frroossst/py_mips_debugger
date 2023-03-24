@@ -92,7 +92,7 @@ class IDE(QWidget):
 
         # Create CLEAR button
         clear_button = QPushButton("CLEAR", self)
-        clear_button.clicked.connect(self.clearRegisters)
+        clear_button.clicked.connect(self.clearButton)
         btn_hlayout.addWidget(clear_button)
 
         # Create RUN button
@@ -282,10 +282,12 @@ class IDE(QWidget):
         self.I.continue_button_pressed = True
         breakpoints.BUTTON_STACK.append("continue")
 
-    def clearRegisters(self):
+    def clearButton(self):
         self.R.clear_registers()
         self.register_box.setText("Registers:\n" + self.R.__str__())
         self.memory_box.setText("Memory:\n" + self.M.__str__())
+        self.consoleEdit.setText("Console:\n")
+
 
     def saveFile(self):
         with open(self.filename, 'w') as fobj:

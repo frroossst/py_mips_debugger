@@ -1,11 +1,12 @@
 class InterpreterException(Exception):
 
-    def __init__(self, message, label_that_crashed=None, instruction_that_crashed=None):
+    def __init__(self, message, label_that_crashed=None, instruction_that_crashed=None, exit_code=None):
         if self.__class__ is InterpreterException:
             raise TypeError("InterpreterException is an abstract class and cannot be instantiated")
         self.message = message
         self.label_that_crashed = label_that_crashed
         self.instruction_that_crashed = instruction_that_crashed
+        self.exit_code = exit_code
         super().__init__(self.message)
 
     def __str__(self):

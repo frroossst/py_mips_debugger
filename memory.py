@@ -63,8 +63,6 @@ class Memory:
         self.data_curr_addr = self.data_addr_start
         starter_ptr = 0
 
-        # data = {directive: value, value: value}
-
         for i in data:
             val = self.process_directive(data[i]["directive"], data[i]["value"])
             starter_ptr = self.data_curr_addr

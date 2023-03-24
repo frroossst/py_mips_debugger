@@ -27,7 +27,7 @@ class Syscall(QObject):
 
         # exit
         elif code_v0 == 10:
-            raise InterpreterExit("Program exited")
+            raise InterpreterExit("Program exited", exit_code=0)
 
         else:
             raise InterpreterSyscallError("Invalid syscall code")
