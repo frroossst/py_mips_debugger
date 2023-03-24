@@ -71,6 +71,13 @@ class Instructions:
         r.set_register(reg[1:], m.get_address(val))
 
     @staticmethod
+    def move(r, reg_save, reg_get):
+        if reg_save[0] != "$" or reg_get[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        r.set_register(reg_save[1:], r.get_register(reg_get[1:]))
+
+    @staticmethod
     def addi(r, reg_save, reg_get, val):
         if reg_save[0] != "$" and reg_get[0] != "$":
             raise InterpreterRegisterError("Invalid register name")

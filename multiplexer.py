@@ -8,6 +8,8 @@ class Multiplexer:
             Instructions.li(r, args[0].strip(","), args[1])
         elif ins == "la":
             Instructions.la(r, m, args[0].strip(","), args[1])
+        elif ins == "move":
+            Instructions.move(r, args[0].strip(","), args[1].strip(","))
         elif ins == "addi":
             Instructions.addi(r, args[0].strip(","), args[1].strip(","), args[2])
         elif ins == "syscall":

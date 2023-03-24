@@ -1,9 +1,10 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
 from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip
-from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher
+from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QEvent, QCoreApplication
 
 # Runtime imports
+from exceptions import InterpreterConversionError
 from better_data_structures import better_deque
 from syntax_highlighter import MIPSHighlighter
 from instructions import Instructions
@@ -131,6 +132,7 @@ class IDE(QWidget):
         self.consoleEdit.setLineWrapMode(QTextEdit.NoWrap)
         self.consoleEdit.setAcceptRichText(False)
         self.consoleEdit.setText("Console:\n")
+        # self.consoleEdit.installEventFilter(self.consoleEdit)
 
         main_hlayout.addWidget(tab_widget2)
         main_hlayout.setSizes([200, 500])
@@ -332,15 +334,34 @@ class IDE(QWidget):
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
 
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress and event.key() == 16777220:
+            self.consoleEdit.setReadOnly(True)
+
     @pyqtSlot(dict)
     def updateConsoleGUI(self, console_object):
         if console_object["operation"] == "stdout":
             self.consoleEdit.append(console_object["data"])
 
         elif console_object["operation"] == "stdin":
-            raise NotImplementedError("stdin not implemented yet")
+            self.consoleEdit.setReadOnly(False)
+            self.consoleEdit.setFocus()
+            self.consoleEdit.moveCursor(QTextCursor.End)
+            while (True):
+                print("waiting for input")
+                QCoreApplication.processEvents()
+                if (self.consoleEdit.toPlainText().removeprefix("Console:\n") .endswith("\n")):
+                    break
 
-        self.consoleEdit.repaint()
+            self.consoleEdit.setReadOnly(True)
+            self.consoleEdit.clearFocus()
+
+            if console_object["type"] == "int":
+                try:
+                    input_received = int(self.consoleEdit.toPlainText().removeprefix("Console:\n") .strip("\n"))
+                    self.R.set_register("v0", input_received)
+                except Exception:
+                    raise InterpreterConversionError("Input was not an integer")
 
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):

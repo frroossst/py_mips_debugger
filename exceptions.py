@@ -27,6 +27,9 @@ class InterpreterControlFlowError(InterpreterException):
 class InterpreterValueError(InterpreterException):
     pass
 
+class InterpreterConversionError(InterpreterException):
+    pass
+
 class InterpreterRuntimeError(InterpreterException):
     pass
 
