@@ -4,7 +4,6 @@ prompt: .asciiz "Enter an integer: "
 .text
 
 main:
-    # print prompt
     la $a0, prompt
     li $v0, 4
     syscall

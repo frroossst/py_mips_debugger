@@ -409,7 +409,6 @@ class IDE(QWidget):
 
     @pyqtSlot()
     def reHighlightLines(self):
-        print("Re-highlighting lines")
         doc = self.textEdit.document()
 
         for i in breakpoints.GLOBAL_BREAKPOINTS:
@@ -420,7 +419,7 @@ class IDE(QWidget):
             cursor = QTextCursor(block)
             cursor.setBlockFormat(fmt)
 
-        if breakpoints.CURRENT_EXECUTING_OBJECT != {}:
+        if {} != breakpoints.CURRENT_EXECUTING_OBJECT:
             self.updateLineGUI(breakpoints.CURRENT_EXECUTING_OBJECT)
 
     @pyqtSlot(dict)
@@ -446,6 +445,9 @@ class IDE(QWidget):
                 continue
 
             if fmt_line == "":
+                continue
+
+            if fmt_line.startswith("#"):
                 continue
 
             if (currently_executing_object["label"] == last_label) and (currently_executing_object["index"] == count_from_label) and (currently_executing_object["instr"] == fmt_line):

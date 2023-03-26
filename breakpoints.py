@@ -43,6 +43,9 @@ def map_ide_breakpoints_to_interpreter_breakpoints(text_list, removing_breakpoin
             if Instructions.isLabel(consume_line_number_and_return_line(i)):
                 last_label = i.split(":")[1].strip()
                 label_offset = 0
+            elif consume_line_number_and_return_line(i).strip().startswith("#") or consume_line_number_and_return_line(i).strip() == "":
+                label_offset -= 1
+                continue
             elif v.split(":")[1].strip() == i.split(":")[1].strip():
                 # print(f"Found breakpoint at IDE line {k} in label {last_label} and is instruction number {label_offset}")
                 # TODO: remove breakpoints too at some time
