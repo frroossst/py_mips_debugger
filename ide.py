@@ -324,6 +324,34 @@ class IDE(QWidget):
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
 
+        # look through each line and highgliht if dounf
+        cursor = self.register_box.textCursor()
+
+        for i in range(self.register_box.document().blockCount()):
+            cursor.setPosition(self.register_box.document().findBlockByLineNumber(i).position())
+
+            if cursor.block().text().startswith(self.R.register_hotmap[2]):
+                char_fmt = QTextCharFormat()
+                char_fmt.setForeground(Qt.red)
+                cursor.setCharFormat(char_fmt)
+                cursor.select(QTextCursor.LineUnderCursor)
+                cursor.setCharFormat(char_fmt)
+
+            elif cursor.block().text().startswith(self.R.register_hotmap[1]):
+                char_fmt = QTextCharFormat()
+                char_fmt.setForeground(QColor(255, 128, 0)) # orange
+                cursor.setCharFormat(char_fmt)
+                cursor.select(QTextCursor.LineUnderCursor)
+                cursor.setCharFormat(char_fmt)
+
+            elif cursor.block().text().startswith(self.R.register_hotmap[0]):
+                char_fmt = QTextCharFormat()
+                char_fmt.setForeground(Qt.yellow)
+                cursor.setCharFormat(char_fmt)
+                cursor.select(QTextCursor.LineUnderCursor)
+                cursor.setCharFormat(char_fmt)
+
+
     def updateMemoryGUI(self):
         # Get the current scroll position
         scroll_bar = self.memory_box.verticalScrollBar()

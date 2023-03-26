@@ -6,7 +6,7 @@ class Registers:
     # print in hexadecimal, octal
     # print only some registers etc.
 
-    regsiter_hotmap = []
+    register_hotmap = []
 
     # $zero
     zero = 0
@@ -113,13 +113,13 @@ class Registers:
 
     def add_to_register_hotmap(self, register):
         if register in self.register_hotmap:
-            self.regsiter_hotmap.remove(register)
+            self.register_hotmap.remove(register)
         
-        if len(self.regsiter_hotmap) > 3:
-            self.regsiter_hotmap.pop(0)
-            self.regsiter_hotmap.append(register)
+        if len(self.register_hotmap) >= 3:
+            self.register_hotmap.pop(0)
+            self.register_hotmap.append(register)
         else:
-            self.regsiter_hotmap.append(register)
+            self.register_hotmap.append(register)
 
     def set_register(self, register, value):
         if register[0] == "t":
@@ -188,6 +188,8 @@ class Registers:
         else:
             raise InterpreterRegisterError(f"Invalid register name: {register}")
 
+        self.add_to_register_hotmap(register)
+
     def get_temporary_register(self, register):
         if register == "t0":
             return self.t0
@@ -222,6 +224,8 @@ class Registers:
             self.v1 = value
         else:
             raise InterpreterRegisterError("Invalid register name")
+
+        self.add_to_register_hotmap(register)
     
     def get_value_register(self, register):
         if register == "v0":
@@ -245,6 +249,8 @@ class Registers:
             self.a3 = value
         else:
             raise InterpreterRegisterError("Invalid register name")
+
+        self.add_to_register_hotmap(register)
         
     def get_argument_register(self, register):
         if register == "a0":
@@ -280,6 +286,8 @@ class Registers:
             self.s7 = value
         else:
             raise InterpreterRegisterError("Invalid register name")
+
+        self.add_to_register_hotmap(register)
         
     def get_saved_register(self, register):
         if register == "s0":
@@ -304,17 +312,23 @@ class Registers:
     def set_return_address(self, value):
         self.ra = value
 
+        self.add_to_register_hotmap("ra")
+
     def get_return_address(self):
         return self.ra
 
     def set_hi_register(self, value):
         self.hi = value
 
+        self.add_to_register_hotmap("hi")
+
     def get_hi_register(self):
         return self.hi
     
     def set_lo_register(self, value):
         self.lo = value
+
+        self.add_to_register_hotmap("lo")
 
     def get_lo_register(self):
         return self.lo
@@ -389,6 +403,8 @@ class Registers:
             self.f31 = value
         else:
             raise InterpreterRegisterError("Invalid register name")
+
+        self.add_to_register_hotmap(register)
         
     def get_floating_point_register(self, register):
         if register == "f0":
