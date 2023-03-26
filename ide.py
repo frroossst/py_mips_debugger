@@ -30,7 +30,7 @@ class IDE(QWidget):
     register_box = None 
     last_highlighted_line = None
 
-    highlighter_object = {"breakpoints": [], "current_line": None}
+
 
     def __init__(self, filename):
         self.filename = filename
@@ -190,7 +190,6 @@ class IDE(QWidget):
         self.S = Syscall()
         self.I = Interpreter(self.filename, self.R, self.M, self.S)
         self.I.process()
-        self.highlighter_object = {"breakpoints": [], "current_line": None}
         self.I.highlight_line.connect(self.updateLineGUI)
         self.S.console_signal.connect(self.updateConsoleGUI)
         self.I.rehighlight_signal.connect(self.reHighlightLines)
@@ -224,7 +223,6 @@ class IDE(QWidget):
             breakpoints.MESSAGE_QUEUE = queue.Queue()
             breakpoints.BUTTON_STACK = better_deque()
             breakpoints.CURRENT_EXECUTING_OBJECT = {}
-
 
         self.filename = file_path
         self.loadFile()
@@ -274,8 +272,6 @@ class IDE(QWidget):
         finally:
             breakpoints.process_and_clean_breakpoints()
             breakpoints.map_ide_breakpoints_to_interpreter_breakpoints(self.textEdit.toPlainText().splitlines(), removing_breakpoint)
-
-            self.highlighter_object["breakpoints"] = breakpoints.GLOBAL_BREAKPOINTS
 
             if removing_breakpoint: # removing early to ensure that map_ide_breakpoints_to_interpreter_breakpoints works correctly
                 breakpoints.GLOBAL_BREAKPOINTS.pop(lineNumber)
@@ -400,6 +396,7 @@ class IDE(QWidget):
 
             self.consoleEdit.setReadOnly(True)
             self.consoleEdit.clearFocus()
+            self.reHighlightLines()
 
             if console_object["type"] == "int":
                 try:
@@ -408,13 +405,14 @@ class IDE(QWidget):
                 except Exception:
                     raise InterpreterConversionError("Input was not an integer")
 
+        self.reHighlightLines()
+
     @pyqtSlot()
     def reHighlightLines(self):
         print("Re-highlighting lines")
-        print(self.highlighter_object)
         doc = self.textEdit.document()
 
-        for i in self.highlighter_object["breakpoints"]:
+        for i in breakpoints.GLOBAL_BREAKPOINTS:
             block = doc.findBlockByLineNumber(i - 1)
             fmt = QTextBlockFormat()
             fmt.setBackground(Qt.red)
@@ -422,13 +420,8 @@ class IDE(QWidget):
             cursor = QTextCursor(block)
             cursor.setBlockFormat(fmt)
 
-        if self.highlighter_object["current_line"] is not None:
-            block = doc.findBlockByLineNumber(self.highlighter_object["current_line"] - 1)
-            fmt = QTextBlockFormat()
-            fmt.setForeground(Qt.yellow)
-
-            cursor = QTextCursor(block)
-            cursor.setBlockFormat(fmt)
+        if breakpoints.CURRENT_EXECUTING_OBJECT != {}:
+            self.updateLineGUI(breakpoints.CURRENT_EXECUTING_OBJECT)
 
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):
@@ -490,8 +483,6 @@ class IDE(QWidget):
                 break
 
             count_from_label += 1
-        self.highlighter_object["current_line"] = line_number_from_instruction
-
 
     def changeFont(self, from_settings=None):
         if from_settings is not None and from_settings is not False:
