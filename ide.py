@@ -30,6 +30,8 @@ class IDE(QWidget):
     register_box = None 
     last_highlighted_line = None
 
+    highlighter_object = {"breakpoints": [], "current_line": None}
+
     def __init__(self, filename):
         self.filename = filename
         super().__init__()
@@ -160,6 +162,12 @@ class IDE(QWidget):
         memory_timer.timeout.connect(self.updateMemoryGUI)
         memory_timer.start()
 
+        # automatically re-highlight breakpoints and current line every x ms
+        highlight_timer = QTimer(self)
+        highlight_timer.setInterval(250)
+        highlight_timer.timeout.connect(self.reHighlightLines)
+        highlight_timer.start()
+
         # watch the current file for changes and reload
         self.file_watcher = QFileSystemWatcher([self.filename])
         self.file_watcher.fileChanged.connect(self.loadFile)
@@ -182,8 +190,10 @@ class IDE(QWidget):
         self.S = Syscall()
         self.I = Interpreter(self.filename, self.R, self.M, self.S)
         self.I.process()
+        self.highlighter_object = {"breakpoints": [], "current_line": None}
         self.I.highlight_line.connect(self.updateLineGUI)
         self.S.console_signal.connect(self.updateConsoleGUI)
+        self.I.rehighlight_signal.connect(self.reHighlightLines)
         self.register_box.setText("Registers:\n" + self.R.__str__())
 
     def loadFile(self):
@@ -265,6 +275,8 @@ class IDE(QWidget):
             breakpoints.process_and_clean_breakpoints()
             breakpoints.map_ide_breakpoints_to_interpreter_breakpoints(self.textEdit.toPlainText().splitlines(), removing_breakpoint)
 
+            self.highlighter_object["breakpoints"] = breakpoints.GLOBAL_BREAKPOINTS
+
             if removing_breakpoint: # removing early to ensure that map_ide_breakpoints_to_interpreter_breakpoints works correctly
                 breakpoints.GLOBAL_BREAKPOINTS.pop(lineNumber)
 
@@ -318,8 +330,6 @@ class IDE(QWidget):
 
         self.register_box.setText("Registers:\n" + self.R.__str__())
 
-        # Restore the scroll position
-        scroll_bar.setValue(scroll_pos)
         # look through each line and highgliht if dounf
         cursor = self.register_box.textCursor()
 
@@ -354,6 +364,9 @@ class IDE(QWidget):
                 cursor.select(QTextCursor.LineUnderCursor)
                 cursor.setCharFormat(char_fmt)
 
+        # Restore the scroll position
+        scroll_bar.setValue(scroll_pos)
+
     def updateMemoryGUI(self):
         # Get the current scroll position
         scroll_bar = self.memory_box.verticalScrollBar()
@@ -381,6 +394,7 @@ class IDE(QWidget):
             while (True):
                 print("waiting for input")
                 QCoreApplication.processEvents()
+                self.reHighlightLines()
                 if (self.consoleEdit.toPlainText().removeprefix("Console:\n") .endswith("\n")):
                     break
 
@@ -393,6 +407,28 @@ class IDE(QWidget):
                     self.R.set_register("v0", input_received)
                 except Exception:
                     raise InterpreterConversionError("Input was not an integer")
+
+    @pyqtSlot()
+    def reHighlightLines(self):
+        print("Re-highlighting lines")
+        print(self.highlighter_object)
+        doc = self.textEdit.document()
+
+        for i in self.highlighter_object["breakpoints"]:
+            block = doc.findBlockByLineNumber(i - 1)
+            fmt = QTextBlockFormat()
+            fmt.setBackground(Qt.red)
+
+            cursor = QTextCursor(block)
+            cursor.setBlockFormat(fmt)
+
+        if self.highlighter_object["current_line"] is not None:
+            block = doc.findBlockByLineNumber(self.highlighter_object["current_line"] - 1)
+            fmt = QTextBlockFormat()
+            fmt.setForeground(Qt.yellow)
+
+            cursor = QTextCursor(block)
+            cursor.setBlockFormat(fmt)
 
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):
@@ -454,6 +490,8 @@ class IDE(QWidget):
                 break
 
             count_from_label += 1
+        self.highlighter_object["current_line"] = line_number_from_instruction
+
 
     def changeFont(self, from_settings=None):
         if from_settings is not None and from_settings is not False:

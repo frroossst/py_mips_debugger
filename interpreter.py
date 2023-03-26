@@ -11,6 +11,7 @@ import breakpoints
 class Interpreter(QObject):
 
     highlight_line = pyqtSignal(dict)
+    rehighlight_signal = pyqtSignal()
 
     file_name = ""
     text = ""
@@ -143,6 +144,7 @@ class Interpreter(QObject):
             while (label in list(breakpoints.INTERPRETED_BREAKPOINTS.keys()) and instruction_number in breakpoints.INTERPRETED_BREAKPOINTS[label]):
                 print("Breakpoint hit")
                 QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
+                self.rehighlight_signal.emit()
                 if (self.step_button_pressed or self.continue_button_pressed):
                     self.continue_button_pressed = False
                     # from stop to continue         => want to break
@@ -160,6 +162,7 @@ class Interpreter(QObject):
                 breakpoints.STOP_AT_NEXT_INSTRUCTION = False
                 while (True and not self.continue_button_pressed):
                     QCoreApplication.processEvents() # process events to allow the GUI to update and not freeze
+                    self.rehighlight_signal.emit()
                     print("Step hit")
                     if (self.step_button_pressed and breakpoints.STOP_AT_NEXT_INSTRUCTION):
                         self.step_button_pressed = False
