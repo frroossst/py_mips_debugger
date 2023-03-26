@@ -162,10 +162,7 @@ class IDE(QWidget):
 
         # watch the current file for changes and reload
         self.file_watcher = QFileSystemWatcher([self.filename])
-        file_timer = QTimer()
-        file_timer.setInterval(1000)  
-        file_timer.timeout.connect(self.watchFile)
-        file_timer.start()
+        self.file_watcher.fileChanged.connect(self.loadFile)
 
         # Load the file and display its contents
         self.loadFile()
@@ -323,34 +320,39 @@ class IDE(QWidget):
 
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
-
         # look through each line and highgliht if dounf
         cursor = self.register_box.textCursor()
+
+        prev_hotmap = self.R.register_hotmap
+        curr_hotmap = []
+        if len(prev_hotmap) < 3:
+            curr_hotmap.extend(["invalid", "invalid", "invalid"])
+        else:
+            curr_hotmap = self.R.register_hotmap
 
         for i in range(self.register_box.document().blockCount()):
             cursor.setPosition(self.register_box.document().findBlockByLineNumber(i).position())
 
-            if cursor.block().text().startswith(self.R.register_hotmap[2]):
+            if cursor.block().text().startswith(curr_hotmap[2]):
                 char_fmt = QTextCharFormat()
                 char_fmt.setForeground(Qt.red)
                 cursor.setCharFormat(char_fmt)
                 cursor.select(QTextCursor.LineUnderCursor)
                 cursor.setCharFormat(char_fmt)
 
-            elif cursor.block().text().startswith(self.R.register_hotmap[1]):
+            elif cursor.block().text().startswith(curr_hotmap[1]):
                 char_fmt = QTextCharFormat()
                 char_fmt.setForeground(QColor(255, 128, 0)) # orange
                 cursor.setCharFormat(char_fmt)
                 cursor.select(QTextCursor.LineUnderCursor)
                 cursor.setCharFormat(char_fmt)
 
-            elif cursor.block().text().startswith(self.R.register_hotmap[0]):
+            elif cursor.block().text().startswith(curr_hotmap[0]):
                 char_fmt = QTextCharFormat()
                 char_fmt.setForeground(Qt.yellow)
                 cursor.setCharFormat(char_fmt)
                 cursor.select(QTextCursor.LineUnderCursor)
                 cursor.setCharFormat(char_fmt)
-
 
     def updateMemoryGUI(self):
         # Get the current scroll position
@@ -362,7 +364,7 @@ class IDE(QWidget):
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
 
-    def eventFilter(self, obj, event):
+    def eventFilter(self, _obj, event):
         if event.type() == QEvent.KeyPress and event.key() == 16777220:
             self.consoleEdit.setReadOnly(True)
 
