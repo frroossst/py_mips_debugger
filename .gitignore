@@ -17,3 +17,6 @@ dist/
 dist/*
 
 *.spec
+
+research/
+research/*
