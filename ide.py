@@ -420,7 +420,19 @@ class IDE(QWidget):
             cursor.setBlockFormat(fmt)
 
         if {} != breakpoints.CURRENT_EXECUTING_OBJECT:
-            self.updateLineGUI(breakpoints.CURRENT_EXECUTING_OBJECT)
+            line_num = breakpoints.get_line_number_from_label_index(self.textEdit.toPlainText(), breakpoints.CURRENT_EXECUTING_OBJECT["label"], breakpoints.CURRENT_EXECUTING_OBJECT["index"])
+            if line_num is None:
+                return None
+            
+            block = doc.findBlockByLineNumber(line_num)
+
+            fmt = QTextBlockFormat()
+            fmt.setForeground(Qt.yellow)
+
+            cursor = QTextCursor(block)
+            cursor.setBlockFormat(fmt)
+
+            self.textEdit.repaint()
 
     @pyqtSlot(dict)
     def updateLineGUI(self, currently_executing_object):

@@ -29,6 +29,33 @@ def return_line_number_from_GUI_instruction_line(line):
         else:
             return int(line[:x - 1])
 
+def get_line_number_from_label_index(text, label, index):
+    lines = text.splitlines()
+
+    last_label = None
+    count_from_label = 0
+    for x, i in enumerate(lines):
+        line_number_from_instruction = return_line_number_from_GUI_instruction_line(i)
+        fmt_line = consume_line_number_and_return_line(i).strip()
+        if Instructions.isLabel(fmt_line):
+            fmt_line = fmt_line[0:-1].strip() # remove colon and whitespace
+            last_label = fmt_line
+            count_from_label = 0
+            continue
+
+        if fmt_line == "":
+            continue
+
+        if fmt_line.startswith("#"):
+            continue
+
+        if (label == last_label) and (index == count_from_label):
+            return line_number_from_instruction
+
+        count_from_label += 1
+
+    return None
+
 def remove_duplicate_breakpoints():
     # remove duplicate values in the list
     for k, v in INTERPRETED_BREAKPOINTS.items():
@@ -69,8 +96,7 @@ def map_ide_breakpoints_to_interpreter_breakpoints(text_list, removing_breakpoin
 
 
 def process_and_clean_breakpoints():
-    
-    # remove all breakpoints that are not instructions
+        # remove all breakpoints that are not instructions
     for k, v in GLOBAL_BREAKPOINTS.copy().items():
         # removing labels
         if Instructions.isLabel(v.split(" ")[1]):
