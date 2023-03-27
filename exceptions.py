@@ -62,3 +62,18 @@ class InterpreterSyscallError(InterpreterException):
 
 class InterpreterExit(InterpreterException):
     pass
+
+class InterpreterTooLargeToFit(InterpreterException):
+    pass
+
+class InterpreterTooSmallToFit(InterpreterException):
+    pass
+
+class InterpreterOverflow(InterpreterException):
+    pass
+
+class InterpreterUnderflow(InterpreterException):
+    pass
+
+
+
