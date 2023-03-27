@@ -196,6 +196,9 @@ class IDE(QWidget):
         self.S.console_signal.connect(self.updateConsoleGUI)
         self.I.rehighlight_signal.connect(self.reHighlightLines)
         self.register_box.setText("Registers:\n" + self.R.__str__())
+        self.consoleEdit.blockSignals(True)
+        self.consoleEdit.setText("Console:\n")
+        self.consoleEdit.blockSignals(False)
 
     def loadFile(self):
         # Open the file and read its contents
@@ -382,10 +385,13 @@ class IDE(QWidget):
 
     def onConsoleTextChange(self):
         curr_text = self.consoleEdit.toPlainText()
-        if self.reference_console_text not in curr_text:
-            QMessageBox.warning(self, "Error", "You cannot edit the stdout console")
-            self.consoleEdit.setText(self.reference_console_text)
-            self.consoleEdit.moveCursor(QTextCursor.End)
+        try:
+            if self.reference_console_text not in curr_text:
+                QMessageBox.warning(self, "Error", "You cannot edit the stdout console")
+                self.consoleEdit.setText(self.reference_console_text)
+                self.consoleEdit.moveCursor(QTextCursor.End)
+        except AttributeError:
+            pass
 
     @pyqtSlot(dict)
     def updateConsoleGUI(self, console_object):
