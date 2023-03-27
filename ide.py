@@ -95,10 +95,8 @@ class IDE(QWidget):
         self.instruction_box = QTextEdit(self)
         self.instruction_box.setReadOnly(True)
         self.instruction_box.setText("Hit RUN to start the emulator")
-        self.instruction_box.setMaximumWidth(250)
-        self.instruction_box.setMinimumHeight(30)
+        self.instruction_box.setMaximumHeight(45)
         self.instruction_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        btn_hlayout.addWidget(self.instruction_box)
 
         # Create CLEAR button
         clear_button = QPushButton("CLEAR", self)
@@ -133,6 +131,12 @@ class IDE(QWidget):
         tab_widget2.addTab(self.register_box, "Registers")
         tab_widget2.addTab(self.memory_box, "Memory")
 
+        # registers, mems, instructions
+        regmem_ins_lay = QSplitter(Qt.Vertical)
+        regmem_ins_lay.addWidget(tab_widget2)
+        regmem_ins_lay.addWidget(self.instruction_box)
+        regmem_ins_lay.setSizes([200, 10])
+
         # Constructing the console window
         self.consoleEdit = QTextEdit(self)
         self.consoleEdit.setReadOnly(True)
@@ -142,7 +146,7 @@ class IDE(QWidget):
         self.consoleEdit.textChanged.connect(self.onConsoleTextChange)
         # self.consoleEdit.installEventFilter(self.consoleEdit)
 
-        main_hlayout.addWidget(tab_widget2)
+        main_hlayout.addWidget(regmem_ins_lay)
         main_hlayout.setSizes([200, 500])
         # main_hlayout.addWidget(self.textEdit)
         main_hlayout.addWidget(tab_widget)
