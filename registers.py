@@ -95,7 +95,7 @@ class Registers:
         saved_registers = f"s0: {self.s0} \ns1: {self.s1} \ns2: {self.s2} \ns3: {self.s3} \ns4: {self.s4} \ns5: {self.s5} \ns6: {self.s6} \ns7: {self.s7}\n"
         return_address = f"ra: {self.ra}\n"
         hi_lo = f"hi: {self.hi} \nlo: {self.lo}\n"
-        floating_point_registers = f"f0:   {self.f0} \nf1:   {self.f1} \nf2:   {self.f2} \nf3:   {self.f3} \nf4:   {self.f4} \nf5:   {self.f5} \nf6:   {self.f6} \nf7:   {self.f7} \nf8:   {self.f8} \nf9:   {self.f9} \nf10: {self.f10} \nf11: {self.f11} \nf12: {self.f12} \nf13: {self.f13} \nf14: {self.f14} \nf15: {self.f15} \nf16: {self.f16} \nf17: {self.f17} \nf18: {self.f18} \nf19: {self.f19} \nf20: {self.f20} \nf21: {self.f21} \nf22: {self.f22} \nf23: {self.f23} \nf24: {self.f24} \nf25: {self.f25} \nf26: {self.f26} \nf27: {self.f27} \nf28: {self.f28} \nf29: {self.f29} \nf30: {self.f30} \nf31: {self.f31}\n"
+        floating_point_registers = f"f0:  {self.f0} \nf1:  {self.f1} \nf2:  {self.f2} \nf3:  {self.f3} \nf4:  {self.f4} \nf5:  {self.f5} \nf6:  {self.f6} \nf7:  {self.f7} \nf8:  {self.f8} \nf9:  {self.f9} \nf10: {self.f10} \nf11: {self.f11} \nf12: {self.f12} \nf13: {self.f13} \nf14: {self.f14} \nf15: {self.f15} \nf16: {self.f16} \nf17: {self.f17} \nf18: {self.f18} \nf19: {self.f19} \nf20: {self.f20} \nf21: {self.f21} \nf22: {self.f22} \nf23: {self.f23} \nf24: {self.f24} \nf25: {self.f25} \nf26: {self.f26} \nf27: {self.f27} \nf28: {self.f28} \nf29: {self.f29} \nf30: {self.f30} \nf31: {self.f31}\n"
         return f"{value_registers}\n{argument_registers}\n{temporary_registers}\n{saved_registers}\n{return_address}\n{hi_lo}\n{floating_point_registers}"
 
     def clear_registers(self):

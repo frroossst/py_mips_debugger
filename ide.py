@@ -144,15 +144,12 @@ class IDE(QWidget):
         self.consoleEdit.setAcceptRichText(False)
         self.consoleEdit.setText("Console:\n")
         self.consoleEdit.textChanged.connect(self.onConsoleTextChange)
-        # self.consoleEdit.installEventFilter(self.consoleEdit)
 
         main_hlayout.addWidget(regmem_ins_lay)
         main_hlayout.setSizes([200, 500])
-        # main_hlayout.addWidget(self.textEdit)
         main_hlayout.addWidget(tab_widget)
         main_hlayout.setSizes([200, 500])
         main_hlayout.addWidget(self.consoleEdit)
-
 
         layout.addWidget(menu_bar)
         layout.addWidget(main_hlayout, 2)
