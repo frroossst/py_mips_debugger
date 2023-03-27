@@ -303,11 +303,12 @@ class IDE(QWidget):
         breakpoints.BUTTON_STACK.append("continue")
 
     def clearButton(self):
+        self.consoleEdit.blockSignals(True)
         self.R.clear_registers()
         self.register_box.setText("Registers:\n" + self.R.__str__())
         self.memory_box.setText("Memory:\n" + self.M.__str__())
         self.consoleEdit.setText("Console:\n")
-
+        self.consoleEdit.blockSignals(False)
 
     def saveFile(self):
         with open(self.filename, 'w') as fobj:
@@ -396,8 +397,8 @@ class IDE(QWidget):
             self.consoleEdit.setReadOnly(False)
             self.consoleEdit.setFocus()
             self.consoleEdit.moveCursor(QTextCursor.End)
-            self.console_valid_cursor = self.consoleEdit.cursor().pos()
             self.reference_console_text = self.consoleEdit.toPlainText()
+
             while (True):
                 print("waiting for input")
                 QCoreApplication.processEvents()
