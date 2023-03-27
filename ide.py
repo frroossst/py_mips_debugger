@@ -91,7 +91,7 @@ class IDE(QWidget):
         self.instruction_box.setReadOnly(True)
         self.instruction_box.setText("Hit RUN to start the emulator")
         self.instruction_box.setMaximumWidth(250)
-        self.instruction_box.setMaximumHeight(30)
+        self.instruction_box.setMinimumHeight(30)
         self.instruction_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         btn_hlayout.addWidget(self.instruction_box)
 
@@ -134,6 +134,7 @@ class IDE(QWidget):
         self.consoleEdit.setLineWrapMode(QTextEdit.NoWrap)
         self.consoleEdit.setAcceptRichText(False)
         self.consoleEdit.setText("Console:\n")
+        self.consoleEdit.textChanged.connect(self.onConsoleTextChange)
         # self.consoleEdit.installEventFilter(self.consoleEdit)
 
         main_hlayout.addWidget(tab_widget2)
@@ -377,6 +378,9 @@ class IDE(QWidget):
         if event.type() == QEvent.KeyPress and event.key() == 16777220:
             self.consoleEdit.setReadOnly(True)
 
+    def onConsoleTextChange(self):
+        print("text changed")
+
     @pyqtSlot(dict)
     def updateConsoleGUI(self, console_object):
         prev_console_content = self.consoleEdit.toPlainText()
@@ -387,6 +391,7 @@ class IDE(QWidget):
             self.consoleEdit.setReadOnly(False)
             self.consoleEdit.setFocus()
             self.consoleEdit.moveCursor(QTextCursor.End)
+            self.console_valid_cursor = self.consoleEdit.cursor().pos()
             while (True):
                 print("waiting for input")
                 QCoreApplication.processEvents()
