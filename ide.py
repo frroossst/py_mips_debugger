@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QEvent, QCoreApplication
 
 # Runtime imports
@@ -43,11 +43,6 @@ class IDE(QWidget):
         self.setWindowIcon(QIcon('./assets/icon.png'))
 
         tab_width = 4 * QFontMetrics(self.font()).width(' ')
-
-        # Layout
-        # h_lay_one = textEdit tabs + console
-        # v_lay_one = registers + instructions
-        # v_lay_two = h_lay_one + buttons
 
         # Create the QTextEdit widget to display the file contents
         self.textEdit = QTextEdit(self)
@@ -385,7 +380,11 @@ class IDE(QWidget):
             self.consoleEdit.setReadOnly(True)
 
     def onConsoleTextChange(self):
-        print("text changed")
+        curr_text = self.consoleEdit.toPlainText()
+        if self.reference_console_text not in curr_text:
+            QMessageBox.warning(self, "Error", "You cannot edit the console")
+            self.consoleEdit.setText(self.reference_console_text)
+            self.consoleEdit.moveCursor(QTextCursor.End)
 
     @pyqtSlot(dict)
     def updateConsoleGUI(self, console_object):
@@ -399,6 +398,7 @@ class IDE(QWidget):
             self.consoleEdit.moveCursor(QTextCursor.End)
             self.console_valid_cursor = self.consoleEdit.cursor().pos()
             while (True):
+                self.reference_console_text = self.consoleEdit.toPlainText()
                 print("waiting for input")
                 QCoreApplication.processEvents()
                 self.reHighlightLines()
