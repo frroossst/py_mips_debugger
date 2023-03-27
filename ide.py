@@ -44,6 +44,11 @@ class IDE(QWidget):
 
         tab_width = 4 * QFontMetrics(self.font()).width(' ')
 
+        # Layout
+        # h_lay_one = textEdit tabs + console
+        # v_lay_one = registers + instructions
+        # v_lay_two = h_lay_one + buttons
+
         # Create the QTextEdit widget to display the file contents
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
