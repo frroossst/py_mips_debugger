@@ -185,7 +185,7 @@ class Interpreter(QObject):
         try:
             code = self.labels[label_to_run].strip().splitlines()
             for x, i in enumerate(code): 
-                print(f"running [{i}] at index {x} in '{label_to_run}'")
+                print(f"running [{i: <16}] at index {x:03} in '{label_to_run}'")
 
                 # setting class variables for debugging purposes
                 breakpoints.CURRENT_EXECUTING_OBJECT["label"] = label_to_run
@@ -213,4 +213,7 @@ class Interpreter(QObject):
 
         except RecursionError:
             raise InterpreterRecursionError("Recursion limit reached", label_that_crashed=label_to_run, instruction_that_crashed=code[x+1])
+
+
+
 
