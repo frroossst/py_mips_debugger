@@ -382,7 +382,7 @@ class IDE(QWidget):
     def onConsoleTextChange(self):
         curr_text = self.consoleEdit.toPlainText()
         if self.reference_console_text not in curr_text:
-            QMessageBox.warning(self, "Error", "You cannot edit the console")
+            QMessageBox.warning(self, "Error", "You cannot edit the stdout console")
             self.consoleEdit.setText(self.reference_console_text)
             self.consoleEdit.moveCursor(QTextCursor.End)
 
@@ -397,8 +397,8 @@ class IDE(QWidget):
             self.consoleEdit.setFocus()
             self.consoleEdit.moveCursor(QTextCursor.End)
             self.console_valid_cursor = self.consoleEdit.cursor().pos()
+            self.reference_console_text = self.consoleEdit.toPlainText()
             while (True):
-                self.reference_console_text = self.consoleEdit.toPlainText()
                 print("waiting for input")
                 QCoreApplication.processEvents()
                 self.reHighlightLines()
