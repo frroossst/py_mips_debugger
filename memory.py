@@ -65,9 +65,9 @@ class Memory:
         for i in data:
             val = self.process_directive(data[i]["directive"], data[i]["value"])
             if val["directive"] == "word":
-                self.store_word(val["value"], i)
+                self.store_new_word(val["value"], i)
             elif val["directive"] == "asciiz":
-                self.store_string(val["value"], i)
+                self.store_new_string(val["value"], i)
             
         self.data_addr_end = self.data_curr_addr - 1
         self.data_curr_addr = None
@@ -96,9 +96,6 @@ class Memory:
 
         elif addr not in self.memmap.keys():
             raise InterpreterMemoryError("Memory address not found")
-
-        else:
-            raise InterpreterValueError("Invalid memory or type of")
         
     def get_address(self, label):
         if label not in self.memmap:
@@ -151,7 +148,10 @@ class Memory:
 
         return word
 
-    def store_string(self, val, label):
+    def store_new_string(self, val, label):
+        """
+        @note this should not be called directly when executing instructions
+        """
         starter_ptr = self.data_curr_addr
         for i in bytes(val, "ascii"):
             self.memmap[self.data_curr_addr] = i
@@ -159,7 +159,10 @@ class Memory:
 
         self.memmap[label] = starter_ptr
 
-    def store_word(self, val, label):
+    def store_new_word(self, val, label):
+        """
+        @note this should not be called directly when executing instructions
+        """
         starter_ptr = self.data_curr_addr
         word_size = 4
 
@@ -169,3 +172,24 @@ class Memory:
 
         self.memmap[label] = starter_ptr
 
+    def store_existing_word(self, label, val):
+        starter_ptr = self.get_address(label)
+        word_size = 4
+
+        barr = bytearray(val.to_bytes(word_size, "little"))
+
+        for i in range(word_size):
+            self.set_in_memory(starter_ptr, barr[i])
+            starter_ptr += 1
+
+    def load_existing_word(self, label):
+        starter_ptr = self.get_address(label)
+        word_size = 4
+
+        li = []
+
+        for i in range(word_size):
+            li.append(self.get_from_memory(starter_ptr))
+            starter_ptr += 1
+
+        return int.from_bytes(bytes(li), "little")

@@ -1,4 +1,5 @@
 from helper_instructions import EndOfInstruction
+from exceptions import InterpreterSyntaxError
 from instructions import Instructions
 
 class Multiplexer:
@@ -14,6 +15,12 @@ class Multiplexer:
             Instructions.addi(r, args[0].strip(","), args[1].strip(","), args[2])
         elif ins == "syscall":
             Instructions.process_syscall(r, m, s)
+        elif ins == "sw":
+            Instructions.sw(r, m, args[0].strip(","), args[1].strip(","))
+        elif ins == "lw":
+            Instructions.lw(r, m, args[0].strip(","), args[1].strip(","))
+        else:
+            raise InterpreterSyntaxError("Invalid instruction: " + ins)
 
     def reached_end_of_instruction(ins):
         if ins == EndOfInstruction().__str__():
@@ -30,7 +37,7 @@ class Multiplexer:
         if ins == "ja" or ins == "jal": 
             r.ra = args[0]
         elif ins == "j":
-            pass
+            r.ra = args[0] # this might need to change later on
             
         return None
 

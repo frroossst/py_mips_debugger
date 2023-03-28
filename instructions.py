@@ -83,4 +83,18 @@ class Instructions:
             raise InterpreterRegisterError("Invalid register name")
         if reg_save[1] == "t" and reg_get[1] == "t":
             r.set_temporary_register(reg_save[1:], r.get_temporary_register(reg_get[1:]) + int(val))
+            
+    @staticmethod
+    def sw(r, m, reg, val):
+        if reg[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        m.store_existing_word(val, r.get_register(reg[1:]))
+
+    @staticmethod
+    def lw(r, m, reg, val):
+        if reg[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        r.set_register(reg[1:], m.load_existing_word(val))
 

@@ -211,7 +211,7 @@ class Interpreter(QObject):
                 # checks for steps
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False)
 
-        except RecursionError:
+        except RecursionError: 
             raise InterpreterRecursionError("Recursion limit reached", label_that_crashed=label_to_run, instruction_that_crashed=code[x+1])
 
 
