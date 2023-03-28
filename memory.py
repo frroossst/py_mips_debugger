@@ -61,15 +61,13 @@ class Memory:
 
     def map_data(self, data):
         self.data_curr_addr = self.data_addr_start
-        starter_ptr = 0
 
         for i in data:
             val = self.process_directive(data[i]["directive"], data[i]["value"])
-            starter_ptr = self.data_curr_addr
-            for j in bytes(val, "ascii"):
-                self.memmap[self.data_curr_addr] = j
-                self.data_curr_addr += 1
-            self.memmap[i] = starter_ptr
+            if val["directive"] == "word":
+                self.store_word(val["value"], i)
+            elif val["directive"] == "asciiz":
+                self.store_string(val["value"], i)
             
         self.data_addr_end = self.data_curr_addr - 1
         self.data_curr_addr = None
@@ -80,7 +78,10 @@ class Memory:
             value = value.strip("\"").strip("'") + "\x00"
             byte_string = bytes(value, "ascii").replace(b"\\n", b"\x0A")
             byte_string = byte_string.decode("ascii").strip("\"").strip("'")
-            return byte_string
+            return {"directive": "asciiz", "value": byte_string }
+
+        if directive == ".word":
+            return {"directive": "word", "value": int(value) }
 
         return value
 
@@ -138,4 +139,33 @@ class Memory:
 
         return string
 
-        
+    def get_word(self, addr):
+        self.check_bounds(addr, type="data")
+
+        word_size = 4
+        word = 0
+
+        for i in range(word_size):
+            word += self.memmap[addr] << (i * 8)
+            addr += 1
+
+        return word
+
+    def store_string(self, val, label):
+        starter_ptr = self.data_curr_addr
+        for i in bytes(val, "ascii"):
+            self.memmap[self.data_curr_addr] = i
+            self.data_curr_addr += 1
+
+        self.memmap[label] = starter_ptr
+
+    def store_word(self, val, label):
+        starter_ptr = self.data_curr_addr
+        word_size = 4
+
+        for i in range(word_size):
+            self.memmap[self.data_curr_addr] = val
+            self.data_curr_addr += 1
+
+        self.memmap[label] = starter_ptr
+

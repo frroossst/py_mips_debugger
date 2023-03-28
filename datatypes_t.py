@@ -1,4 +1,5 @@
 from exceptions import InterpreterOverflow, InterpreterUnderflow
+import struct
 
 class twos_complement:
 
@@ -15,13 +16,15 @@ class twos_complement:
 
 class uint8_t(twos_complement):
 
+    value = None
+
     def __init__(self, value) -> None:
         if value > 255:
             raise InterpreterOverflow("Value too large for uint8_t")
         if value < 0:
             raise InterpreterUnderflow("Value too small for uint8_t")
 
-        super().__init__(value)
+        self.value = struct.pack("I", value)
 
     def __add__(self, other):
         sum_num = self.value + other.value
