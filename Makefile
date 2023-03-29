@@ -25,6 +25,10 @@ dependencies:
 	@echo "********** Installing PyQt5 *****************"
 	pip3 install PyQt5
 
+docs:
+	@echo "********** Generating documentation **********"
+	mdbook build docs/
+
 clean:
 	rm -rf dist/
 	rm -rf build/
