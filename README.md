@@ -1,3 +1,5 @@
+[![pages-build-deployment](https://github.com/frroossst/py_mips_debugger/actions/workflows/pages/pages-build-deployment/badge.svg?branch=master&event=deployment_status)](https://github.com/frroossst/py_mips_debugger/actions/workflows/pages/pages-build-deployment)
+
 # Installation and Usage
 
 ## Prerequisites
