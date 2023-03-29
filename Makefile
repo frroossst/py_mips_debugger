@@ -28,6 +28,7 @@ dependencies:
 docs:
 	@echo "********** Generating documentation **********"
 	mdbook build docs/
+	mv -f docs/book/* docs/	
 
 clean:
 	rm -rf dist/
