@@ -1,20 +1,7 @@
-from exceptions import InterpreterOverflow, InterpreterUnderflow
+from exceptions import InterpreterOverflow, InterpreterUnderflow, InterpreterTypeError
 import struct
 
-class twos_complement:
-
-    value = 0
-
-    def __init__(self, value) -> None:
-        self.value = value
-
-    def __repr__(self) -> str:
-        return str(f"{self.__class__.__name__}({self.value})")
-
-    def get_value(self):
-        return self.value
-
-class uint8_t(twos_complement):
+class uint8_t:
 
     value = None
 
@@ -24,7 +11,10 @@ class uint8_t(twos_complement):
         if value < 0:
             raise InterpreterUnderflow("Value too small for uint8_t")
 
-        self.value = struct.pack("I", value)
+        self.value = struct.pack("H", value)
+
+    def __repr__(self) -> str:
+        return f"uint8_t({int.from_bytes(self.value, 'little')})"
 
     def __add__(self, other):
         sum_num = self.value + other.value
@@ -48,7 +38,10 @@ class int8_t:
         if value < -128:
             raise InterpreterUnderflow("Value too small for int8_t")
 
-        super().__init__(value)
+        self.value = struct.pack("h", value)
+
+    def __repr__(self) -> str:
+        return f"int8_t({int.from_bytes(self.value, 'little')})"
 
     def __add__(self, other):
         sum_num = self.value + other.value
@@ -71,8 +64,39 @@ class int16_t:
     pass
 
 class uint32_t:
-    pass
 
+    def __init__(self, value) -> None:
+        if value > 4294967295:
+            raise InterpreterOverflow("Value too large for uint32_t")
+        if value < 0:
+            raise InterpreterUnderflow("Value too small for uint32_t")
+
+        self.value = struct.pack("I", value)
+
+    def __repr__(self) -> str:
+        return f"uint32_t({int.from_bytes(self.value, 'little')})"
+    
+    def __add__(self, other):
+        if not isinstance(other, uint32_t):
+            raise InterpreterTypeError("unsupported operand type(s) for +: 'uint32_t' and '{}'".format(type(other).__name__))
+
+        curr = int.from_bytes(self.value, 'little')
+        other = int.from_bytes(other.value, 'little')
+
+        result = curr+ other
+
+        if result > 4294967295:
+            raise InterpreterOverflow("uint32_t addition resulted in overflow")
+
+        return uint32_t(result)
+    
+    def __sub__(self, other):
+        sum_num = self.value - other.value
+        if sum_num.bit_length() > 32:
+            raise InterpreterOverflow("Overflow while subtracting uint32_t")
+
+        return uint32_t(sum_num)
+    
 class int32_t:
     pass
 

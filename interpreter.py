@@ -213,7 +213,3 @@ class Interpreter(QObject):
 
         except RecursionError: 
             raise InterpreterRecursionError("Recursion limit reached", label_that_crashed=label_to_run, instruction_that_crashed=code[x+1])
-
-
-
-

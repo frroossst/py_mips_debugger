@@ -3,9 +3,9 @@ from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import Qt
 from termcolor import cprint
 
+from exceptions import InterpreterException, InterpreterFileError
 from interpreter import Interpreter
 from registers import Registers
-from exceptions import InterpreterException, InterpreterFileError
 from ide import IDE
 import argparse
 import sys
@@ -96,6 +96,4 @@ if __name__ == '__main__':
         I = Interpreter(file_name, R)
         I.process()
         I.run()
-
-
 

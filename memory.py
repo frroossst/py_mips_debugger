@@ -1,4 +1,4 @@
-from exceptions import InterpreterMemoryError, InterpreterProcessError, InterpreterValueError
+from exceptions import InterpreterMemoryError, InterpreterProcessError
 from helper_instructions import EndOfInstruction
 from collections import OrderedDict
 

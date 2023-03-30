@@ -18,7 +18,7 @@ class Syscall(QObject):
 
         code_v0 = r.get_register("v0")
 
-        # print int
+        # print the int
         if code_v0 == 1:
             stdout_int = r.get_register("a0")
             console_object["operation"] = "stdout"
