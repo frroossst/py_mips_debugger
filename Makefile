@@ -34,3 +34,7 @@ clean:
 	rm -rf dist/
 	rm -rf build/
 	rm *.spec
+	rm -rf ./docs/FontAwesome
+	rm -rf ./docs/css
+	rm -rf ./docs/fonts
+

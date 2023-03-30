@@ -19,6 +19,8 @@ class Multiplexer:
             Instructions.sw(r, m, args[0].strip(","), args[1].strip(","))
         elif ins == "lw":
             Instructions.lw(r, m, args[0].strip(","), args[1].strip(","))
+        elif ins == "EndOfInstruction" or ins in ["j", "ja", "jal"]:
+            pass
         else:
             raise InterpreterSyntaxError("Invalid instruction: " + ins)
 
