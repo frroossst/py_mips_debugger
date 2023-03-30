@@ -184,6 +184,7 @@ class IDE(QWidget):
         # Load previously saved settings
         self.loadSettings()
 
+        # Setup the runtime environment for the Interpreter
         self.setup_runtime()
 
     def setup_runtime(self):
@@ -549,4 +550,5 @@ class IDE(QWidget):
 
     def closeEvent(self, _event):
         self.saveFile()
+
 
