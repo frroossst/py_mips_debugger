@@ -12,6 +12,12 @@ while you are in the root of your project run:
 
 > NOTE: on some installations it is simply pip, while others use pip3
 
+Currently there are only two dependencies:
+- `pyQt5`
+- `termcolor`
+
+This project could probably do without termcolor but, for now, it is fine as it is. 
+
 ### Running the emulator
 Now you can simply run the main.py file with the path to an assembly file as an argument    
 `python3 main.py <path_to_assembly_file>`  
