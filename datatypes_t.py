@@ -16,12 +16,22 @@ class uint8_t:
     def __repr__(self) -> str:
         return f"uint8_t({int.from_bytes(self.value, 'little')})"
 
-    def __add__(self, other):
-        sum_num = self.value + other.value
-        if sum_num.bit_length() > 8:
-            raise InterpreterOverflow("Overflow while adding uint8_t")
+    def unwrap(self):
+        return int.from_bytes(self.value, 'little')
 
-        return uint8_t(sum_num)
+    def __add__(self, other):
+        if not isinstance(other, uint8_t):
+            raise InterpreterTypeError("unsupported operand type(s) for +: 'uint8_t' and '{}'".format(type(other).__name__))
+
+        curr = int.from_bytes(self.value, 'little')
+        other = int.from_bytes(other.value, 'little')
+
+        result = curr + other
+
+        if result > 255:
+            raise InterpreterOverflow("uint8_t addition resulted in overflow")
+
+        return uint8_t(result)
 
     def __sub__(self, other):
         sum_num = self.value - other.value
@@ -42,6 +52,9 @@ class int8_t:
 
     def __repr__(self) -> str:
         return f"int8_t({int.from_bytes(self.value, 'little')})"
+
+    def unwrap(self):
+        return int.from_bytes(self.value, 'little')
 
     def __add__(self, other):
         sum_num = self.value + other.value
@@ -75,6 +88,9 @@ class uint32_t:
 
     def __repr__(self) -> str:
         return f"uint32_t({int.from_bytes(self.value, 'little')})"
+
+    def unwrap(self):
+        return int.from_bytes(self.value, 'little')
     
     def __add__(self, other):
         if not isinstance(other, uint32_t):
