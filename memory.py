@@ -45,6 +45,9 @@ class Memory:
 
         return fmt
 
+    def get_memory_keys(self):
+        return list(self.memmap.keys())
+
     def map_text(self, text):
         addr = self.text_addr_start
 

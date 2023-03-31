@@ -1,6 +1,45 @@
-from exceptions import InterpreterControlFlowError, InterpreterRegisterError
+from exceptions import InterpreterControlFlowError, InterpreterRegisterError, InterpreterSyntaxError
 
 class Instructions:
+
+    @staticmethod
+    def sanitise_instruction(r, m, ins):
+        rem_com_li = []
+        # remove comments till the end of the line
+        for x, i in enumerate(ins):
+            if i.startswith("#"):
+                rem_com_li = ins[:x:]
+
+        # instruction not found
+        if rem_com_li[0] not in Instructions.get_all_instructions:
+            raise InterpreterSyntaxError(f"invalid instruction: {rem_com_li[0]}")
+
+        # check instruction type and check arg valifity
+        j_format = ["j", "jal", "jr"]
+        r_format = ["add", "sub"]
+        i_format = ["li", "addi", "subi"]
+        b_format = ["beq", "bne", "bgt", "blt", "bge", "ble", "bgtz", "bltz", "bgez", "blez"]
+        l_format = ["lw", "sw"]
+
+        if rem_com_li[0] in j_format:
+            if len(rem_com_li) != 2:
+                raise InterpreterSyntaxError(f"invalid number of arguments for instruction {rem_com_li[0]}")
+            if rem_com_li[1] not in m.get_memory_keys():
+                raise InterpreterSyntaxError(f"invalid label and/or memory address {rem_com_li[1]}")
+
+        elif rem_com_li[0] in r_format:
+            pass
+
+        elif rem_com_li[0] in i_format:
+            pass
+
+        elif rem_com_li[0] in b_format:
+            pass
+
+        elif rem_com_li[0] in l_format:
+            pass
+
+
     
     @staticmethod
     def get_all_instructions():
