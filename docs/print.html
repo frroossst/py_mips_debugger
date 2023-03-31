@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">3.</strong> Usage</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="archutecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -170,6 +170,12 @@
 <blockquote>
 <p>NOTE: on some installations it is simply pip, while others use pip3</p>
 </blockquote>
+<p>Currently there are only two dependencies:</p>
+<ul>
+<li><code>pyQt5</code></li>
+<li><code>termcolor</code></li>
+</ul>
+<p>This project could probably do without termcolor but, for now, it is fine as it is. </p>
 <h3 id="running-the-emulator"><a class="header" href="#running-the-emulator">Running the emulator</a></h3>
 <p>Now you can simply run the main.py file with the path to an assembly file as an argument<br />
 <code>python3 main.py &lt;path_to_assembly_file&gt;</code></p>
@@ -181,7 +187,37 @@ to be available as a shell command by moving it to <code>~/.local/bin</code> or 
 <p>this will compile a binary in the <code>dist/</code> subdiretory of the project</p>
 <p>to run the emulator simply <code>./dist/PyMIPS &lt;path_to_assembly_file&gt;</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
-
+<div style="break-before: page; page-break-before: always;"></div><h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mainpy"><a class="header" href="#mainpy">main.py</a></h1>
+<p>This is the main entry point for the entire program</p>
+<h2 id="taking-in-arguments"><a class="header" href="#taking-in-arguments">Taking in arguments</a></h2>
+<p>We take in two inputs using the stdlib's argparse module, the first argument is a path to the assembly file that
+you want to run, this does not check for the validity of the <code>.asm</code> or <code>.s</code> file, which is you could conceivably 
+load a python file or a simple text file, and only the pre-processor might throw an error, if not then the interpreter
+will further downstream. The <code>--no-gui</code> arg can be passed to disable the GUI and just run the Interpreter.</p>
+<h2 id="setting-things-up"><a class="header" href="#setting-things-up">Setting things up</a></h2>
+<p>Setup, the IDE and colour palette (dark theme). We also set up an exception hook, this exception hook allows us
+to catch our custom defined exceptions in <a href="./exceptions.html">exceptions.py</a> and catch them to act appropriately, like
+catching an exit code or RecursionError. </p>
+<p>This however still allows us to continue on general Python exceptions, which are handled by PyQt.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="exceptionspy"><a class="header" href="#exceptionspy">exceptions.py</a></h1>
+<p>There is a general base/ parent class for all custom exceptions called InterpreterException which inherits from the 
+in-built Exception class. This class is an abstract class cannot be instantiated on its own, you need to instantiate
+one of it's many subclasses.</p>
+<p>The InterpreterException class takes in a message that will be displayed to the user upon encountering the exception, 
+it can also take in three optional keyword arguments: <code>label_that_crashed</code>, <code>instruction_that_crashed</code> and <code>exit_code</code>.</p>
+<h2 id="interpreter-exceptions"><a class="header" href="#interpreter-exceptions">Interpreter Exceptions</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th><th>Example</th></tr></thead><tbody>
+<tr><td>InterpreterSyntaxError</td><td>when a syntax error is encountered in the assembly code</td><td>an empty label or out of place label</td></tr>
+<tr><td>InterpreterProcessError</td><td>when functions are called out of the expected order</td><td>the Interpreter is run before the labels and memory is mapped</td></tr>
+<tr><td>InterpreterRegisterError</td><td>when an invalid register is used</td><td>some value is set to register $t55</td></tr>
+<tr><td>InterpreterControlFlowError</td><td>when an unexpected control flow event occurs</td><td>the code has reached someplace it shouldn't, processing a jump instruction from the Multiplexer</td></tr>
+<tr><td>InterpreterValueError</td><td></td><td></td></tr>
+<tr><td>InterpreterConversionError</td><td>an invalid conversion took place</td><td></td></tr>
+<tr><td>InterpreterRuntimeError</td><td>a general runtime exception</td><td></td></tr>
+<tr><td>InterpreterInstructionError</td><td>an instruction is encountered that is not valid</td><td>an invalid instruction xyz is encountered</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">

@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html" class="active"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">3.</strong> Usage</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html" class="active"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="archutecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -156,6 +156,12 @@
 <blockquote>
 <p>NOTE: on some installations it is simply pip, while others use pip3</p>
 </blockquote>
+<p>Currently there are only two dependencies:</p>
+<ul>
+<li><code>pyQt5</code></li>
+<li><code>termcolor</code></li>
+</ul>
+<p>This project could probably do without termcolor but, for now, it is fine as it is. </p>
 <h3 id="running-the-emulator"><a class="header" href="#running-the-emulator">Running the emulator</a></h3>
 <p>Now you can simply run the main.py file with the path to an assembly file as an argument<br />
 <code>python3 main.py &lt;path_to_assembly_file&gt;</code></p>

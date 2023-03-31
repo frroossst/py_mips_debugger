@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Usage - PyMIPS</title>
+        <title>main.py - PyMIPS</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html" class="active"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="archutecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="archutecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html" class="active"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,17 +144,28 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
+                        <h1 id="mainpy"><a class="header" href="#mainpy">main.py</a></h1>
+<p>This is the main entry point for the entire program</p>
+<h2 id="taking-in-arguments"><a class="header" href="#taking-in-arguments">Taking in arguments</a></h2>
+<p>We take in two inputs using the stdlib's argparse module, the first argument is a path to the assembly file that
+you want to run, this does not check for the validity of the <code>.asm</code> or <code>.s</code> file, which is you could conceivably 
+load a python file or a simple text file, and only the pre-processor might throw an error, if not then the interpreter
+will further downstream. The <code>--no-gui</code> arg can be passed to disable the GUI and just run the Interpreter.</p>
+<h2 id="setting-things-up"><a class="header" href="#setting-things-up">Setting things up</a></h2>
+<p>Setup, the IDE and colour palette (dark theme). We also set up an exception hook, this exception hook allows us
+to catch our custom defined exceptions in <a href="./exceptions.html">exceptions.py</a> and catch them to act appropriately, like
+catching an exit code or RecursionError. </p>
+<p>This however still allows us to continue on general Python exceptions, which are handled by PyQt.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="archutecture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="archutecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="exceptions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -164,11 +175,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="archutecture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="archutecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="exceptions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -14,6 +14,8 @@ help:
 	@echo "    Install the dependencies"
 	@echo "make clean"
 	@echo "    Remove the build files"
+	@echo "make docs"
+	@echo "    Generate the documentation"
 	
 build:
 	pyinstaller main.py *.py --onefile --icon assets/icon.png  -n PyMIPS

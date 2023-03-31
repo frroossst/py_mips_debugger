@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Usage - PyMIPS</title>
+        <title>exceptions.py - PyMIPS</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html" class="active"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="archutecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="archutecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html" class="active"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,19 +144,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
-
+                        <h1 id="exceptionspy"><a class="header" href="#exceptionspy">exceptions.py</a></h1>
+<p>There is a general base/ parent class for all custom exceptions called InterpreterException which inherits from the 
+in-built Exception class. This class is an abstract class cannot be instantiated on its own, you need to instantiate
+one of it's many subclasses.</p>
+<p>The InterpreterException class takes in a message that will be displayed to the user upon encountering the exception, 
+it can also take in three optional keyword arguments: <code>label_that_crashed</code>, <code>instruction_that_crashed</code> and <code>exit_code</code>.</p>
+<h2 id="interpreter-exceptions"><a class="header" href="#interpreter-exceptions">Interpreter Exceptions</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Name</th><th>Description</th><th>Example</th></tr></thead><tbody>
+<tr><td>InterpreterSyntaxError</td><td>when a syntax error is encountered in the assembly code</td><td>an empty label or out of place label</td></tr>
+<tr><td>InterpreterProcessError</td><td>when functions are called out of the expected order</td><td>the Interpreter is run before the labels and memory is mapped</td></tr>
+<tr><td>InterpreterRegisterError</td><td>when an invalid register is used</td><td>some value is set to register $t55</td></tr>
+<tr><td>InterpreterControlFlowError</td><td>when an unexpected control flow event occurs</td><td>the code has reached someplace it shouldn't, processing a jump instruction from the Multiplexer</td></tr>
+<tr><td>InterpreterValueError</td><td></td><td></td></tr>
+<tr><td>InterpreterConversionError</td><td>an invalid conversion took place</td><td></td></tr>
+<tr><td>InterpreterRuntimeError</td><td>a general runtime exception</td><td></td></tr>
+<tr><td>InterpreterInstructionError</td><td>an instruction is encountered that is not valid</td><td>an invalid instruction xyz is encountered</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="installation.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="main.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="archutecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -164,13 +177,10 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="installation.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="main.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="archutecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>
