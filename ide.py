@@ -48,12 +48,14 @@ class IDE(QWidget):
         self.textEdit = QTextEdit(self)
         self.textEdit.setReadOnly(True)
         self.textEdit.setTabStopWidth(tab_width)
+        self.textEdit.setLineWrapMode(QTextEdit.NoWrap)
 
         # Create the QTextEdit widget to edit the file contents
         self.textEditEdit = QTextEdit(self)
         self.textEditEdit.setReadOnly(False)
         self.textEditEdit.setFontPointSize(self.textEdit.fontPointSize() if self.textEdit.fontPointSize() != 0.0 else 10)
         self.textEditEdit.setTabStopWidth(tab_width)
+        self.textEditEdit.setLineWrapMode(QTextEdit.NoWrap)
 
         # Create a syntax highlighter for the textEditEdit widget
         self.highlighter = MIPSHighlighter(self.textEditEdit.document())

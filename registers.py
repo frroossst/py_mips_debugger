@@ -111,6 +111,13 @@ class Registers:
         for register in all_registers:
             self.set_register(register, 0)
 
+    def get_register_validity(self, register):
+        try:
+            self.get_register(register)
+            return True
+        except InterpreterRegisterError:
+            return False
+
     def add_to_register_hotmap(self, register):
         if register in self.register_hotmap:
             self.register_hotmap.remove(register)
@@ -138,6 +145,8 @@ class Registers:
             self.set_lo_register(value)
         elif register[0] == "f":
             self.set_floating_point_register(register, float(value))
+        elif register[0] == "zero":
+            pass
         else:
             raise InterpreterRegisterError(f"Invalid register name: {register}")
 
@@ -158,6 +167,8 @@ class Registers:
             return self.get_lo_register()
         if register[0] == "f":
             return self.get_floating_point_register(register)
+        if register == "zero":
+            return 0
 
         raise InterpreterRegisterError(f"Invalid register name: {register}")
 

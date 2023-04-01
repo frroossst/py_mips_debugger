@@ -1,4 +1,5 @@
 from exceptions import InterpreterControlFlowError, InterpreterRegisterError, InterpreterSyntaxError
+from error_messages import ErrorMessages
 
 class Instructions:
 
@@ -9,17 +10,20 @@ class Instructions:
         for x, i in enumerate(ins):
             if i.startswith("#"):
                 rem_com_li = ins[:x:]
+                break
+        else:
+            rem_com_li = ins
 
         # instruction not found
-        if rem_com_li[0] not in Instructions.get_all_instructions:
+        if rem_com_li[0] not in Instructions.get_all_instructions():
             raise InterpreterSyntaxError(f"invalid instruction: {rem_com_li[0]}")
 
         # check instruction type and check arg valifity
         j_format = ["j", "jal", "jr"]
-        r_format = ["add", "sub"]
+        r_format = ["add", "sub", "move"]
         i_format = ["li", "addi", "subi"]
         b_format = ["beq", "bne", "bgt", "blt", "bge", "ble", "bgtz", "bltz", "bgez", "blez"]
-        l_format = ["lw", "sw"]
+        l_format = ["lw", "sw", "la"]
 
         if rem_com_li[0] in j_format:
             if len(rem_com_li) != 2:
@@ -28,16 +32,24 @@ class Instructions:
                 raise InterpreterSyntaxError(f"invalid label and/or memory address {rem_com_li[1]}")
 
         elif rem_com_li[0] in r_format:
-            pass
+            if not r.get_register_validity(rem_com_li[1][1::]):
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[1]))
+            if not r.get_register_validity(rem_com_li[2][1::]):
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[2]))
 
         elif rem_com_li[0] in i_format:
-            pass
+            if not r.get_register_validity(rem_com_li[1][1::]):
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[1]))
 
         elif rem_com_li[0] in b_format:
             pass
 
         elif rem_com_li[0] in l_format:
-            pass
+            if rem_com_li[0] == "la":
+                if not r.get_register_validity(rem_com_li[1][1::]):
+                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[1]))
+                if rem_com_li[2] not in m.get_memory_keys():
+                    raise InterpreterSyntaxError(f"invalid label and/or memory address {rem_com_li[2]}")
 
 
     
@@ -136,4 +148,8 @@ class Instructions:
             raise InterpreterRegisterError("Invalid register name")
 
         r.set_register(reg[1:], m.load_existing_word(val))
+
+    @staticmethod
+    def syscall():
+        raise InterpreterControlFlowError("control flow should not have reached here!")
 
