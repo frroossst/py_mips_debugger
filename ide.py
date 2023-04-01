@@ -28,8 +28,9 @@ class IDE(QWidget):
     I = None
 
     register_box = None 
-    last_highlighted_line = None
 
+    last_highlighted_line = None
+    last_console_write = None
 
 
     def __init__(self, filename):
@@ -412,7 +413,10 @@ class IDE(QWidget):
                 print("waiting for input")
                 QCoreApplication.processEvents()
                 self.reHighlightLines()
-                if (self.consoleEdit.toPlainText().removeprefix("Console:\n") .endswith("\n")):
+                newl_check = "\n"
+                if (self.last_console_write is not None and self.last_console_write.endswith("\n")):
+                    newl_check.append("\n")
+                if (self.consoleEdit.toPlainText().removeprefix("Console:\n").endswith(newl_check)):
                     break
 
             self.consoleEdit.setReadOnly(True)
@@ -421,7 +425,7 @@ class IDE(QWidget):
 
             if console_object["type"] == "int":
                 try:
-                    input_received = int(self.consoleEdit.toPlainText().removeprefix(prev_console_content) .strip("\n"))
+                    input_received = int(self.consoleEdit.toPlainText().removeprefix(prev_console_content).strip("\n"))
                     self.R.set_register("v0", input_received)
                 except Exception:
                     raise InterpreterConversionError("Input was not an integer")

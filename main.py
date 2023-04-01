@@ -32,7 +32,7 @@ def exception_hook(exctype, value, traceback):
 
         fmt = "[ERROR]"
         cprint(fmt, "red", attrs=["bold"], file=sys.stderr, end=" ")
-        err = f"Emulator errored out with errror: {str(exctype.__name__)}: {str(value)}"
+        err = f"Emulator errored out with error: {str(exctype.__name__)}: {str(value)}"
         cprint(err, "red", attrs=["bold"], file=sys.stderr)
         print(f"label: {value.label_that_crashed} (instruction: {value.instruction_that_crashed})")
 
