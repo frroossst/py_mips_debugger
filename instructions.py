@@ -33,13 +33,13 @@ class Instructions:
 
         elif rem_com_li[0] in r_format:
             if not r.get_register_validity(rem_com_li[1][1::]):
-                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[1]))
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], rem_com_li[1]))
             if not r.get_register_validity(rem_com_li[2][1::]):
-                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[2]))
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], rem_com_li[2]))
 
         elif rem_com_li[0] in i_format:
             if not r.get_register_validity(rem_com_li[1][1::]):
-                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[1]))
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], rem_com_li[1]))
 
         elif rem_com_li[0] in b_format:
             pass
@@ -47,7 +47,7 @@ class Instructions:
         elif rem_com_li[0] in l_format:
             if rem_com_li[0] == "la":
                 if not r.get_register_validity(rem_com_li[1][1::]):
-                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(rem_com_li[0], rem_com_li[1]))
+                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m ,rem_com_li[0], rem_com_li[1]))
                 if rem_com_li[2] not in m.get_memory_keys():
                     raise InterpreterSyntaxError(f"invalid label and/or memory address {rem_com_li[2]}")
 
