@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html" class="active"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="archutecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="installation.html"><strong aria-hidden="true">2.</strong> Installation</a></li><li class="chapter-item expanded "><a href="usage.html" class="active"><strong aria-hidden="true">3.</strong> Usage</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">4.</strong> Architecture</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="main.html"><strong aria-hidden="true">4.1.</strong> main.py</a></li><li class="chapter-item expanded "><a href="exceptions.html"><strong aria-hidden="true">4.2.</strong> exceptions.py</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -145,6 +145,16 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="usage"><a class="header" href="#usage">Usage</a></h1>
+<h2 id="running-the-emulator"><a class="header" href="#running-the-emulator">Running the emulator</a></h2>
+<p>Now you can simply run the main.py file with the path to an assembly file as an argument<br />
+<code>python3 main.py &lt;path_to_assembly_file&gt;</code></p>
+<p>or alterantively you can complile the python files into a c executable binary, this is useful if you want the emulator
+to be available as a shell command by moving it to <code>~/.local/bin</code> or any other executable path</p>
+<h2 id="compiling-and-running-the-emulator"><a class="header" href="#compiling-and-running-the-emulator">Compiling and running the emulator</a></h2>
+<p>To compile the emulator, first enssure that you can run the <code>make</code> command then simply run,<br />
+<code>make build</code></p>
+<p>this will compile a binary in the <code>dist/</code> subdiretory of the project</p>
+<p>to run the emulator simply <code>./dist/PyMIPS &lt;path_to_assembly_file&gt;</code></p>
 
                     </main>
 
@@ -154,7 +164,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="archutecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="architecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -168,7 +178,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="archutecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="architecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
