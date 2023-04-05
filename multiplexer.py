@@ -1,5 +1,5 @@
 from helper_instructions import EndOfInstruction
-from exceptions import InterpreterSyntaxError
+from exceptions import InterpreterSyntaxError, InterpreterRegisterError
 from instructions import Instructions
 
 class Multiplexer:
@@ -43,23 +43,57 @@ class Multiplexer:
             
         return None
 
-    def check_and_evaluate_branch(ins, args):
+    def is_a_branch_instruction(ins):
+        branch_instructions = ["beq", "bne", "bgt", "blt", "bge", "ble", "beqz", "bnez", "bgtz", "bltz", "bgez", "blez"]
+        if ins in branch_instructions:
+            return True
+        return False
+
+    def check_and_evaluate_branch(r, ins, args):
+        try:
+            r0 = r.get_register(args[0].lstrip('$'))
+            r1 = r.get_register(args[1].lstrip('$'))
+        except IndexError:
+            pass
+        except InterpreterRegisterError:
+            pass
+
         if ins == "beq":
-            if args[0] == args[1]:
+            if r0 == r1:
+                return True
+        elif ins == "beqz":
+            if r0 == 0:
                 return True
         elif ins == "bne":
-            if args[0] != args[1]:
+            if r0 != r1:
+                return True
+        elif ins == "bnez":
+            if r0 != 0:
                 return True
         elif ins == "bgt":
-            if args[0] > args[1]:
+            if r0 > r1:
+                return True
+        elif ins == "bgtz":
+            if r0 > 0:
                 return True
         elif ins == "blt":
-            if args[0] < args[1]:
+            if r0 < r1:
+                return True
+        elif ins == "bltz":
+            if r0 < 0:
                 return True
         elif ins == "bge":
-            if args[0] >= args[1]:
+            if r0 >= r1:
                 return True
-        elif ins == "ble" and args[0] <= args[1]:
+        elif ins == "bgez":
+            if r0 >= 0:
                 return True
+        elif ins == "ble":
+            if r0 <= r1:
+                return True
+        elif ins == "blez":
+            if r0 <= 0:
+                return True
+
         return False
 

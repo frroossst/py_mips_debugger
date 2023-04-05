@@ -82,6 +82,16 @@ class Instructions:
         return None
 
     @staticmethod
+    def consume_comments_and_return_line(line):
+        clean_line = ""
+        for i in line:
+            if i == "#":
+                break
+            clean_line += i
+
+        return clean_line.strip()
+
+    @staticmethod
     def isLabel(line):
         if ":" in line:
             return True
@@ -107,6 +117,66 @@ class Instructions:
         # raise an error to inform the user that control flow shoulnd't have reached here
         raise InterpreterControlFlowError("Invalid instruction jal, control flow should not have reached here!")
 
+    @staticmethod
+    def beq():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction beq, control flow should not have reached here!")
+    
+    @staticmethod
+    def beqz():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction beqz, control flow should not have reached here!")
+    
+    @staticmethod
+    def bne():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction bne, control flow should not have reached here!")
+
+    @staticmethod
+    def bnez():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction bnez, control flow should not have reached here!")
+    
+    @staticmethod
+    def bgt():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction bgt, control flow should not have reached here!")
+    
+    @staticmethod
+    def bgtz():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction bgtz, control flow should not have reached here!")
+    
+    @staticmethod
+    def blt():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction blt, control flow should not have reached here!")
+    
+    @staticmethod
+    def bltz():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction bltz, control flow should not have reached here!")
+    
+    @staticmethod
+    def ble():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction ble, control flow should not have reached here!")
+    
+    @staticmethod
+    def blez():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction blez, control flow should not have reached here!")
+    
+    @staticmethod
+    def bge():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction bge, control flow should not have reached here!") 
+    
+    @staticmethod
+    def bgez():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction bgez, control flow should not have reached here!")
+    
     @staticmethod
     def li(r, reg, val):
         if reg[0] != "$":
