@@ -419,13 +419,9 @@ class IDE(QWidget):
                 print("waiting for input")
                 QCoreApplication.processEvents()
                 self.reHighlightLines()
-                # newl_check = "\n"
-                # if (self.last_console_write is not None and self.last_console_write.endswith("\n")):
-                #     newl_check += "\n"
                 delvar = self.consoleEdit.toPlainText().removeprefix("Console:\n").lstrip().removeprefix(self.console_stdout_history)
                 if (delvar.endswith("\n")):
                     break
-
 
             self.consoleEdit.setReadOnly(True)
             self.consoleEdit.clearFocus()

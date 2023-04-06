@@ -98,8 +98,8 @@ class Registers:
         floating_point_registers = f"f0:  {self.f0} \nf1:  {self.f1} \nf2:  {self.f2} \nf3:  {self.f3} \nf4:  {self.f4} \nf5:  {self.f5} \nf6:  {self.f6} \nf7:  {self.f7} \nf8:  {self.f8} \nf9:  {self.f9} \nf10: {self.f10} \nf11: {self.f11} \nf12: {self.f12} \nf13: {self.f13} \nf14: {self.f14} \nf15: {self.f15} \nf16: {self.f16} \nf17: {self.f17} \nf18: {self.f18} \nf19: {self.f19} \nf20: {self.f20} \nf21: {self.f21} \nf22: {self.f22} \nf23: {self.f23} \nf24: {self.f24} \nf25: {self.f25} \nf26: {self.f26} \nf27: {self.f27} \nf28: {self.f28} \nf29: {self.f29} \nf30: {self.f30} \nf31: {self.f31}\n"
         return f"{value_registers}\n{argument_registers}\n{temporary_registers}\n{saved_registers}\n{return_address}\n{hi_lo}\n{floating_point_registers}"
 
-    def clear_registers(self):
-        all_registers = [
+    def get_all_registers_as_list(self):
+        return [
             "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9",
             "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
             "v0", "v1",
@@ -108,6 +108,9 @@ class Registers:
             "hi", "lo",
             "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12", "f13", "f14", "f15", "f16", "f17", "f18", "f19", "f20", "f21", "f22", "f23", "f24", "f25", "f26", "f27", "f28", "f29", "f30", "f31"
             ]
+
+    def clear_registers(self):
+        all_registers = self.get_all_registers_as_list()
         for register in all_registers:
             self.set_register(register, 0)
 

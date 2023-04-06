@@ -26,18 +26,23 @@ class Instructions:
         l_format = ["lw", "sw", "la"]
 
         if rem_com_li[0] in j_format:
+            # there should be only one argument plus the instruction
             if len(rem_com_li) != 2:
                 raise InterpreterSyntaxError(f"invalid number of arguments for instruction {rem_com_li[0]}")
+            # jump label should be valid
             if rem_com_li[1] not in m.get_memory_keys():
                 raise InterpreterSyntaxError(f"invalid label and/or memory address {rem_com_li[1]}")
 
         elif rem_com_li[0] in r_format:
+            # register 1 should be valid
             if not r.get_register_validity(rem_com_li[1][1::]):
                 raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], rem_com_li[1]))
+            # register 2 should be valid
             if not r.get_register_validity(rem_com_li[2][1::]):
                 raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], rem_com_li[2]))
 
         elif rem_com_li[0] in i_format:
+            # register 1 should be valid
             if not r.get_register_validity(rem_com_li[1][1::]):
                 raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], rem_com_li[1]))
 
@@ -47,13 +52,9 @@ class Instructions:
                 raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_label_is_invalid(r, m, rem_com_li[0], rem_com_li[-1]))
 
         elif rem_com_li[0] in l_format:
-            if rem_com_li[0] == "la":
-                if not r.get_register_validity(rem_com_li[1][1::]):
-                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m ,rem_com_li[0], rem_com_li[1]))
-                if rem_com_li[2] not in m.get_memory_keys():
-                    raise InterpreterSyntaxError(f"invalid label and/or memory address {rem_com_li[2]}")
-
-
+            # label should be valid
+            if rem_com_li[2] not in m.get_memory_keys():
+                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_memory_address_is_invalid(r, m, rem_com_li[1]))
     
     @staticmethod
     def get_all_instructions():

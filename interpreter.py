@@ -202,7 +202,6 @@ class Interpreter(QObject):
                     Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
                     if self.registers_ref.ra in list(self.labels):
                         self.execute_label(instruction[1])
-                # elif is a branch beq t0, t1, main
                 elif Multiplexer.is_a_branch_instruction(instruction[0]):
                     do_jump = Multiplexer.check_and_evaluate_branch(self.registers_ref, instruction[0], instruction[1:])
                     if do_jump:
