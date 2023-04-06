@@ -28,6 +28,10 @@ def exception_hook(exctype, value, traceback):
 
         # print last known state of registers
         print("*" * 80)
+        global register_ref # just to make registers print with the exception hook
+        register_ref = ide.R
+        global memory_ref
+        memory_ref = ide.M
         print(register_ref.__str__())
 
         fmt = "[ERROR]"
@@ -36,7 +40,9 @@ def exception_hook(exctype, value, traceback):
         cprint(err, "red", attrs=["bold"], file=sys.stderr)
         print(f"label: {value.label_that_crashed} (instruction: {value.instruction_that_crashed})")
 
-        print("\nPlease report this to the developer.")
+        print("\nPlease report this to the developer, if you think this was unexpected.")
+        link = "https://github.com/frroossst/py_mips_debugger/issues/new"
+        cprint(f"{link}\n", "blue", attrs=["underline"])
 
         sys.exit(1) 
 
@@ -66,12 +72,9 @@ def setup_ide():
     palette.setColor(QPalette.HighlightedText, Qt.black)
     app.setPalette(palette)
 
+    global ide
     ide = IDE(file_name)
     ide.show()
-    global register_ref # just to make registers print with the exception hook
-    register_ref = ide.R
-    global memory_ref
-    memory_ref = ide.M
     sys.excepthook = exception_hook
     sys.exit(app.exec_())
 

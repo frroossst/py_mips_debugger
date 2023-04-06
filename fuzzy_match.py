@@ -1,4 +1,5 @@
 def get_closest_match_from_list(string, lst):
+    lst = [str(item) for item in lst]
     closest_match = None
     highest_similarity = -1
     

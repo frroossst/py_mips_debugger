@@ -16,6 +16,10 @@ main:
     li $v0, 1
     syscall
 
+    # testing offsets
+    la $t2, foo
+    lw $t3, 0($t2)
+
     # exit
     li $v0, 10
     syscall

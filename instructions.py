@@ -49,12 +49,21 @@ class Instructions:
         elif rem_com_li[0] in b_format:
             # check if the label exists
             if rem_com_li[-1] not in m.get_memory_keys():
-                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_label_is_invalid(r, m, rem_com_li[0], rem_com_li[-1]))
 
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_label_is_invalid(r, m, rem_com_li[0], rem_com_li[-1]))
         elif rem_com_li[0] in l_format:
+            # check if it is an offset
+            if "(" in rem_com_li[2] and ")" in rem_com_li[2]:
+                # extract string between brackets
+                offset = rem_com_li[2].split("(")[0]
+                # check if it is a valid integer
+                try:
+                    int(offset)
+                except ValueError:
+                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_offset_is_invalid(r, m, rem_com_li[0], offset))
             # label should be valid
-            if rem_com_li[2] not in m.get_memory_keys():
-                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_memory_address_is_invalid(r, m, rem_com_li[1]))
+            elif rem_com_li[2] not in m.get_memory_keys():
+                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_memory_address_is_invalid(r, m, rem_com_li[2]))
     
     @staticmethod
     def get_all_instructions():
