@@ -215,6 +215,9 @@ class IDE(QWidget):
         padding = len(str(len(lines)))
         numberedText = '\n'.join([f'{i+1:0{padding}d}: {line}' for i, line in enumerate(lines)])
 
+        # make \t 4 spaces to ensure consistency in spacing
+        numberedText = numberedText.replace('\t', '    ')
+
         # Set the text of the QTextEdit widget to the numbered text
         self.textEdit.setText(numberedText)
         self.textEditEdit.setText('\n'.join(lines))
