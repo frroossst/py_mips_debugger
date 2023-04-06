@@ -212,6 +212,7 @@ class Interpreter(QObject):
                         branch_label = Instructions.consume_comments_and_return_line(" ".join(instruction)).split(" ")[-1]
                         self.execute_label(branch_label)
                         return None # so, does not come back after a branch
+                    continue
 
                 Multiplexer.decode_and_execute(self.registers_ref, self.memory_ref, self.syscall_ref, instruction[0], instruction[1:])
 

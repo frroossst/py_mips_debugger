@@ -15,7 +15,7 @@ class Instructions:
             rem_com_li = ins
 
         # instruction not found
-        if rem_com_li[0] not in Instructions.get_all_instructions():
+        if rem_com_li[0] not in Instructions.get_all_instructions() and rem_com_li[0] != "EndOfInstruction":
             raise InterpreterSyntaxError(f"invalid instruction: {rem_com_li[0]}")
 
         # check instruction type and check arg valifity
