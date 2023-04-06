@@ -116,9 +116,6 @@ class Interpreter(QObject):
         if not self.__foundmain__:
             raise InterpreterSyntaxError("No main label found")
 
-        print(self.label_index)
-        print(self.labels)
-
         AsmDoc.generate_asm_doc(self.text)
 
         # process .data section
