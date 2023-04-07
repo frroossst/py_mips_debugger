@@ -30,9 +30,6 @@ class IDE(QWidget):
     register_box = None 
 
     last_highlighted_line = None
-    last_console_write = None
-    console_stdout_history = ""
-
 
     def __init__(self, filename):
         self.filename = filename
@@ -143,6 +140,8 @@ class IDE(QWidget):
         self.consoleEdit.setAcceptRichText(False)
         self.consoleEdit.setText("Console:\n")
         self.consoleEdit.textChanged.connect(self.onConsoleTextChange)
+        self.consoleEdit.keyPressEvent = self.onConsoleKeyPressEvent
+        self.takeConsoleInput = False
 
         main_hlayout.addWidget(regmem_ins_lay)
         main_hlayout.setSizes([200, 500])
@@ -173,6 +172,12 @@ class IDE(QWidget):
         highlight_timer.setInterval(250)
         highlight_timer.timeout.connect(self.reHighlightLines)
         highlight_timer.start()
+
+        # every x ms, remind the user that the program is waiting on an input
+        self.wfi_print_timer = QTimer()
+        self.wfi_print_timer.setInterval(750)
+        self.wfi_print_timer.timeout.connect(self.print_wfi_message)
+        # ! starts when console receives stdin object
 
         # watch the current file for changes and reload
         self.file_watcher = QFileSystemWatcher([self.filename])
@@ -401,13 +406,24 @@ class IDE(QWidget):
         except AttributeError:
             pass
 
+    def print_wfi_message(self):
+        print("waiting for input")
+
+    def onConsoleKeyPressEvent(self, event):
+        if event.key() == Qt.Key_Return:
+            self.consoleEdit.setReadOnly(True)
+            self.takeConsoleInput = False
+            self.wfi_print_timer.stop()
+
+        super().keyPressEvent(event)
+        self.consoleEdit.setText(self.consoleEdit.toPlainText() + event.text())
+        self.consoleEdit.moveCursor(QTextCursor.End)
+
     @pyqtSlot(dict)
     def updateConsoleGUI(self, console_object):
         prev_console_content = self.consoleEdit.toPlainText()
         if console_object["operation"] == "stdout":
             self.consoleEdit.append(console_object["data"])
-            self.last_console_write = console_object["data"]
-            self.console_stdout_history += console_object["data"]
 
         elif console_object["operation"] == "stdin":
             self.consoleEdit.setReadOnly(False)
@@ -415,13 +431,12 @@ class IDE(QWidget):
             self.consoleEdit.moveCursor(QTextCursor.End)
             self.reference_console_text = self.consoleEdit.toPlainText()
 
-            while (True):
-                print("waiting for input")
+            self.wfi_print_timer.start()
+
+            self.takeConsoleInput = True
+            while (self.takeConsoleInput):
                 QCoreApplication.processEvents()
                 self.reHighlightLines()
-                delvar = self.consoleEdit.toPlainText().removeprefix("Console:\n").lstrip().removeprefix(self.console_stdout_history)
-                if (delvar.endswith("\n")):
-                    break
 
             self.consoleEdit.setReadOnly(True)
             self.consoleEdit.clearFocus()

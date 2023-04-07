@@ -16,8 +16,7 @@ parser.add_argument("file_name")
 parser.add_argument("--no-gui", dest="no_gui_arg", action="store_true")
 args = parser.parse_args()
 
-register_ref = None
-memory_ref = None
+
 
 def exception_hook(exctype, value, traceback):
 
@@ -28,11 +27,12 @@ def exception_hook(exctype, value, traceback):
 
         # print last known state of registers
         print("*" * 80)
-        global register_ref # just to make registers print with the exception hook
-        register_ref = ide.R
-        global memory_ref
-        memory_ref = ide.M
+        register_ref = ide.R # from the ide global
+        memory_ref   = ide.M 
+        print("Last known state of registers:")
         print(register_ref.__str__())
+        print("Last known state of memory:")
+        print(memory_ref.__str__())
 
         fmt = "[ERROR]"
         cprint(fmt, "red", attrs=["bold"], file=sys.stderr, end=" ")

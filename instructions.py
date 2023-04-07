@@ -214,8 +214,15 @@ class Instructions:
     def addi(r, reg_save, reg_get, val):
         if reg_save[0] != "$" and reg_get[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
-        if reg_save[1] == "t" and reg_get[1] == "t":
-            r.set_temporary_register(reg_save[1:], r.get_temporary_register(reg_get[1:]) + int(val))
+        
+        r.set_register(reg_save[1:], r.get_register(reg_get[1:]) + int(val))
+
+    @staticmethod
+    def add(r, reg_save, reg_get1, reg_get2):
+        if reg_save[0] != "$" and reg_get1[0] != "$" and reg_get2[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        r.set_register(reg_save[1:], r.get_register(reg_get1[1:]) + r.get_register(reg_get2[1:]))
             
     @staticmethod
     def sw(r, m, reg, val):
