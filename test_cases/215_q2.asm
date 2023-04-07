@@ -9,7 +9,7 @@
 array: .space 40
 prmpt: .asciiz "Enter 10 integers\n"
 prmpt2: .asciiz "Enter an integer i\n"
-output: .asciiz "The i’th integer is: "
+output: .asciiz "The i'th integer is: "
 newln: .asciiz "\n"
 
 .text

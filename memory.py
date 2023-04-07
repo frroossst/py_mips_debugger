@@ -71,6 +71,8 @@ class Memory:
                 self.store_new_word(val["value"], i)
             elif val["directive"] == "asciiz":
                 self.store_new_string(val["value"], i)
+            elif val["directive"] == "space":
+                self.store_new_space(val["value"], i)
             
         self.data_addr_end = self.data_curr_addr - 1
         self.data_curr_addr = None
@@ -85,6 +87,9 @@ class Memory:
 
         if directive == ".word":
             return {"directive": "word", "value": int(value) }
+
+        if directive == ".space":
+            return {"directive": "space", "value": int(value) }
 
         return value
 
@@ -171,6 +176,17 @@ class Memory:
 
         for i in range(word_size):
             self.memmap[self.data_curr_addr] = val
+            self.data_curr_addr += 1
+
+        self.memmap[label] = starter_ptr
+
+    def store_new_space(self, val, label):
+        """
+        @note this should not be called directly when executing instructions 
+        """ 
+        starter_ptr = self.data_curr_addr
+        for i in range(val):
+            self.memmap[self.data_curr_addr] = 0
             self.data_curr_addr += 1
 
         self.memmap[label] = starter_ptr
