@@ -4,6 +4,27 @@ from error_messages import ErrorMessages
 class Instructions:
 
     @staticmethod
+    def parse_instruction(instruction):
+        ins = instruction.split(" ")[0]
+
+        # get count of , 
+        argc = Instructions.consume_comments_and_return_line(instruction).count(",") + 1
+
+        # get args
+        args = instruction.removeprefix(ins).split(",")
+
+        rargs = [ins]
+        for x, i in enumerate(args):
+            if x == argc - 1:
+                rargs.append(Instructions.consume_comments_and_return_line(i))
+                break
+            if i.lstrip().startswith("#"):
+                break
+            rargs.append(i.strip())
+
+        return rargs
+
+    @staticmethod
     def sanitise_instruction(r, m, ins):
         rem_com_li = []
         # remove comments till the end of the line
