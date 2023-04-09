@@ -250,7 +250,26 @@ class Instructions:
         if reg[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
 
-        m.store_existing_word(val, r.get_register(reg[1:]))
+        # check if the value is a value or a register
+        # value can be 4($t0) or $t0 or 123
+        if "(" in val and ")" in val:
+            # value is 4($t0)
+            # get the value and the register
+            split = val.split("(")
+            # get the offset
+            offset = int(split[0])
+            # get the value
+            value = int(split[0])
+            # get the register
+            register = split[1].split(")")[0]
+
+            # get the address of the register
+            address = r.get_register(register[1:]) + offset
+            # store the value at the address
+            m.store_existing_word(address, value)
+
+        else:
+            m.store_existing_word(val, r.get_register(reg[1:]))
 
     @staticmethod
     def lw(r, m, reg, val):
