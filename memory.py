@@ -79,17 +79,14 @@ class Memory:
         self.is_data_mapped = True
 
     def process_directive(self, directive, value):
-        if directive == ".asciiz":
-            value = value.strip("\"").strip("'") + "\x00"
+        if directive == ".asciiz" or directive == ".ascii":
+            if directive == ".asciiz":
+                value = value.strip("\"").strip("'") + "\x00"
+            else:
+                value = value.strip("\"").strip("'")
             byte_string = bytes(value, "ascii").replace(b"\\n", b"\x0A")
             byte_string = byte_string.decode("ascii").strip("\"").strip("'")
             return {"directive": "asciiz", "value": byte_string }
-
-        if directive == ".ascii":
-            value = value.strip("\"").strip("'")
-            byte_string = bytes(value, "ascii").replace(b"\\n", b"\x0A")
-            byte_string = byte_string.decode("ascii").strip("\"").strip("'")
-            return {"directive": "ascii", "value": byte_string }
 
         if directive == ".word":
             return {"directive": "word", "value": int(value) }

@@ -176,8 +176,8 @@ class IDE(QWidget):
         # every x ms, remind the user that the program is waiting on an input
         self.wfi_print_timer = QTimer()
         self.wfi_print_timer.setInterval(750)
-        self.wfi_print_timer.timeout.connect(self.print_wfi_message)
         # ! starts when console receives stdin object
+        self.wfi_print_timer.timeout.connect(self.print_wfi_message)
 
         # watch the current file for changes and reload
         self.file_watcher = QFileSystemWatcher([self.filename])

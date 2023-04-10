@@ -290,10 +290,10 @@ class Instructions:
             # get the address of the register
             address = r.get_register(register[1:]) + offset
             # store the value at the address
-            m.load_existing_word(address)
+            r.set_register(reg[1::], m.load_existing_word(address))
 
         else:
-            m.load_existing_word(r.get_register(reg[1:]))
+            r.set_register(reg[1:], m.load_existing_word(r.get_register(reg[1:])))
 
     @staticmethod
     def syscall():

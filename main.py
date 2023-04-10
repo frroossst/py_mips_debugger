@@ -6,6 +6,8 @@ from termcolor import cprint
 from exceptions import InterpreterException, InterpreterFileError
 from interpreter import Interpreter
 from registers import Registers
+from syscalls import Syscall
+from memory import Memory
 from ide import IDE
 import argparse
 import sys
@@ -96,6 +98,8 @@ if __name__ == '__main__':
         cprint(fmt, "white", attrs=["reverse"], file=sys.stdout)
 
         R = Registers()
-        I = Interpreter(file_name, R)
+        M = Memory()
+        S = Syscall()
+        I = Interpreter(file_name, R, M, S)
         I.process()
         I.run()
