@@ -69,7 +69,7 @@ class Memory:
             val = self.process_directive(data[i]["directive"], data[i]["value"])
             if val["directive"] == "word":
                 self.store_new_word(val["value"], i)
-            elif val["directive"] == "asciiz":
+            elif val["directive"] == "asciiz" or val["directive"] == "ascii":
                 self.store_new_string(val["value"], i)
             elif val["directive"] == "space":
                 self.store_new_space(val["value"], i)
@@ -84,6 +84,12 @@ class Memory:
             byte_string = bytes(value, "ascii").replace(b"\\n", b"\x0A")
             byte_string = byte_string.decode("ascii").strip("\"").strip("'")
             return {"directive": "asciiz", "value": byte_string }
+
+        if directive == ".ascii":
+            value = value.strip("\"").strip("'")
+            byte_string = bytes(value, "ascii").replace(b"\\n", b"\x0A")
+            byte_string = byte_string.decode("ascii").strip("\"").strip("'")
+            return {"directive": "ascii", "value": byte_string }
 
         if directive == ".word":
             return {"directive": "word", "value": int(value) }
