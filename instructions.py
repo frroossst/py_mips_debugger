@@ -282,3 +282,26 @@ class Instructions:
     def syscall():
         raise InterpreterControlFlowError("control flow should not have reached here!")
 
+    @staticmethod
+    def nop():
+        pass
+
+    @staticmethod
+    def sll(r, reg, val):
+        if reg[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        if val.startswith("$"):
+            r.set_register(reg[1:], r.get_register(reg[1:]) << r.get_register(val[1:]))
+        else:
+            r.set_register(reg[1:], r.get_register(reg[1:]) << int(val))
+
+    @staticmethod
+    def srl(r, reg, val):
+        if reg[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        if val.startswith("$"):
+            r.set_register(reg[1:], r.get_register(reg[1:]) >> r.get_register(val[1:]))
+        else:
+            r.set_register(reg[1:], r.get_register(reg[1:]) >> int(val))

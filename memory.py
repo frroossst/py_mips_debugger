@@ -192,7 +192,10 @@ class Memory:
         self.memmap[label] = starter_ptr
 
     def store_existing_word(self, label, val):
-        starter_ptr = self.get_address(label)
+        if isinstance(label, str):
+            starter_ptr = self.get_address(label)
+
+        starter_ptr = label
         word_size = 4
 
         barr = bytearray(val.to_bytes(word_size, "little"))

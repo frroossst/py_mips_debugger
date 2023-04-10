@@ -21,6 +21,10 @@ class Multiplexer:
             Instructions.lw(r, m, args[0].strip(","), args[1].strip(","))
         elif ins == "add":
             Instructions.add(r, args[0].strip(","), args[1].strip(","), args[2].strip(","))
+        elif ins == "sll":
+            Instructions.sll(r, args[0].strip(","), args[1].strip(","))
+        elif ins == "srl":
+            Instructions.srl(r, args[0].strip(","), args[1].strip(","))
         elif ins == "EndOfInstruction" or ins in ["j", "ja", "jal"]:
             pass
         else:
@@ -58,7 +62,11 @@ class Multiplexer:
         except IndexError:
             pass
         except InterpreterRegisterError:
-            pass
+            # have to check not None because of Unreferenced Error
+            if r0 is not None: 
+                r1 = int(args[1])
+            elif r1 is not None:
+                r0 = int(args[0])
 
         if ins == "beq":
             if r0 == r1:
