@@ -205,7 +205,10 @@ class Memory:
             starter_ptr += 1
 
     def load_existing_word(self, label):
-        starter_ptr = self.get_address(label)
+        if isinstance(label, str):
+            starter_ptr = self.get_address(label)
+
+        starter_ptr = label
         word_size = 4
 
         li = []
