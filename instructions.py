@@ -258,11 +258,11 @@ class Instructions:
             split = val.split("(")
             # get the offset
             offset = int(split[0])
-            # get the value
-            value = int(split[0])
             # get the register
             register = split[1].split(")")[0]
 
+            # get the value
+            value = r.get_register(reg[1:])
             # get the address of the register
             address = r.get_register(register[1:]) + offset
             # store the value at the address
