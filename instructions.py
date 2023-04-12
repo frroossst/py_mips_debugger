@@ -293,7 +293,7 @@ class Instructions:
             r.set_register(reg[1::], m.load_existing_word(address))
 
         else:
-            r.set_register(reg[1:], m.load_existing_word(r.get_register(reg[1:])))
+            r.set_register(reg[1::], m.load_existing_word(r.get_register(reg[1:])))
 
     @staticmethod
     def syscall():
