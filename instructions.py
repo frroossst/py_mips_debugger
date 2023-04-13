@@ -52,7 +52,7 @@ class Instructions:
                 raise InterpreterSyntaxError(f"invalid number of arguments for instruction {rem_com_li[0]}")
             # jump label should be valid
             if rem_com_li[1] not in m.get_memory_keys():
-                raise InterpreterSyntaxError(f"invalid label and/or memory address {rem_com_li[1]}")
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_label_is_invalid(r, m, rem_com_li[0], rem_com_li[1]))
 
         elif rem_com_li[0] in r_format:
             # register 1 should be valid
