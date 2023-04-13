@@ -7,11 +7,15 @@ class ErrorMessages:
 
     @staticmethod    
     def consider_replacing_with_valid_register(r, reg):
-        return f"Did you mean {get_closest_match_from_list(reg, r.get_all_registers_as_list())}" 
+        return f"Did you mean {get_closest_match_from_list(reg, r.get_all_registers_as_list())} instead?" 
 
     @staticmethod
     def consider_replacing_with_valid_label(m, label):
         return f"Did you mean {get_closest_match_from_list(label, m.get_memory_keys())} instead?"
+
+    @staticmethod
+    def consider_replacing_with_valid_instruction(inst, all_instructions):
+        return f"Did you mean {get_closest_match_from_list(inst, all_instructions)} instead?"
 
     @staticmethod
     def get_error_message_where_move_register_is_invalid(r, m, instr, invalid_arg):
@@ -28,3 +32,7 @@ class ErrorMessages:
     @staticmethod
     def get_error_message_where_offset_is_invalid(r, m, inst, invalid_arg):
         return f"{inst} takes in an offset as an argument, {invalid_arg} is not a valid offset, eg: 0($t0), 4($t1), etc."
+
+    @staticmethod
+    def get_error_message_where_instruction_is_invalid(r, m, inst, all_instructions):
+        return f"{inst} is not a valid instruction" + "\n" + ErrorMessages.consider_replacing_with_valid_instruction(inst, all_instructions)

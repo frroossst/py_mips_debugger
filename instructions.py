@@ -37,7 +37,7 @@ class Instructions:
 
         # instruction not found
         if rem_com_li[0] not in Instructions.get_all_instructions() and rem_com_li[0] != "EndOfInstruction":
-            raise InterpreterSyntaxError(f"invalid instruction: {rem_com_li[0]}")
+            raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_instruction_is_invalid(r, m, rem_com_li[0], Instructions.get_all_instructions()))
 
         # check instruction type and check arg valifity
         j_format = ["j", "jal", "jr"]
@@ -70,8 +70,13 @@ class Instructions:
         elif rem_com_li[0] in b_format:
             # check if the label exists
             if rem_com_li[-1] not in m.get_memory_keys():
-
                 raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_label_is_invalid(r, m, rem_com_li[0], rem_com_li[-1]))
+
+            # check if the registers are valid
+            for i in rem_com_li[1:-1:]:
+                if not r.get_register_validity(i[1::]):
+                    raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], i))
+
         elif rem_com_li[0] in l_format:
             # check if it is an offset
             if "(" in rem_com_li[2] and ")" in rem_com_li[2]:
@@ -88,7 +93,20 @@ class Instructions:
     
     @staticmethod
     def get_all_instructions():
-        return [ x for x in dir(Instructions) if not x.startswith("__") and x != "get_all_instructions" ]
+        dont_return = [
+            'consume_comments_and_return_line',
+            'consume_directive_from_line',
+            'extract_instruction_from_line',
+            'extract_label_from_line',
+            'isDirective',
+            'isLabel',
+            'parse_instruction',
+            'process_syscall',
+            'sanitise_instruction',
+            'get_all_instructions'
+            ]
+
+        return [ x for x in dir(Instructions) if not x.startswith("__") and x not in dont_return ]
 
     @staticmethod
     def extract_instruction_from_line(line):

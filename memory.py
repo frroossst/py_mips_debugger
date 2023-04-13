@@ -86,13 +86,13 @@ class Memory:
                 value = value.strip("\"").strip("'")
             byte_string = bytes(value, "ascii").replace(b"\\n", b"\x0A")
             byte_string = byte_string.decode("ascii").strip("\"").strip("'")
-            return {"directive": "asciiz", "value": byte_string }
+            return { "directive": "asciiz", "value": byte_string }
 
         if directive == ".word":
-            return {"directive": "word", "value": int(value) }
+            return { "directive": "word", "value": int(value) }
 
         if directive == ".space":
-            return {"directive": "space", "value": int(value) }
+            return { "directive": "space", "value": int(value) }
 
         return value
 
