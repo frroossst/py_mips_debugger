@@ -56,17 +56,20 @@ class Multiplexer:
         return False
 
     def check_and_evaluate_branch(r, ins, args):
+        single_register_branches = ["beqz", "bnez", "bgtz", "bltz", "bgez", "blez"]
         try:
             r0 = r.get_register(args[0].lstrip('$'))
             r1 = r.get_register(args[1].lstrip('$'))
         except IndexError:
             pass
         except InterpreterRegisterError:
+            pass
             # have to check not None because of Unreferenced Error
-            if r0 is not None: 
-                r1 = int(args[1])
-            elif r1 is not None:
-                r0 = int(args[0])
+            if ins not in single_register_branches:
+                if r0 is not None: 
+                    r1 = int(args[1])
+                elif r1 is not None:
+                    r0 = int(args[0])
 
         if ins == "beq":
             if r0 == r1:

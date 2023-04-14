@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QCoreApplication, QObject, pyqtSignal
 
 from exceptions import InterpreterSyntaxError, InterpreterProcessError, InterpreterRecursionError
+from return_t import BranchShouldNotContinueExecution, EndOfInstructionShouldNotContinueExecution
 from helper_instructions import EndOfInstruction
 from instructions import Instructions
 from multiplexer import Multiplexer
@@ -197,7 +198,7 @@ class Interpreter(QObject):
                 instruction = Instructions.parse_instruction(i)
                 Instructions.sanitise_instruction(self.registers_ref, self.memory_ref, instruction)
                 if Multiplexer.reached_end_of_instruction(instruction[0]):
-                    return None
+                    return EndOfInstructionShouldNotContinueExecution
                 if Multiplexer.is_a_jump_instruction(instruction[0]):
                     Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
                     if self.registers_ref.ra in list(self.labels):
@@ -207,7 +208,7 @@ class Interpreter(QObject):
                     if do_jump:
                         branch_label = Instructions.consume_comments_and_return_line(" ".join(instruction)).split(" ")[-1]
                         self.execute_label(branch_label)
-                        return None # so, does not come back after a branch
+                        return BranchShouldNotContinueExecution # so, does not come back after a branch
                     continue
 
                 Multiplexer.decode_and_execute(self.registers_ref, self.memory_ref, self.syscall_ref, instruction[0], instruction[1:])

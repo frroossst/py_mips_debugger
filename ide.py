@@ -86,6 +86,9 @@ class IDE(QWidget):
         font_action = QAction("Font", self)
         font_action.triggered.connect(self.changeFont)
         edit_menu.addAction(font_action)
+        vim_action = QAction("Vim Mode", self)
+        vim_action.triggered.connect(self.toggleVimMode)
+        edit_menu.addAction(vim_action)
 
         # Instructin viewer window
         self.instruction_box = QTextEdit(self)
@@ -564,6 +567,9 @@ class IDE(QWidget):
             self.textEditEdit.setTabStopWidth(tab_width)
 
             self.settings.setValue("font", font.toString())
+
+    def toggleVimMode(self):
+        raise RuntimeError("Not implemented")
 
     def loadSettings(self):
         settings = self.settings

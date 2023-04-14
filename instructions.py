@@ -74,7 +74,7 @@ class Instructions:
 
             # check if the registers are valid
             for i in rem_com_li[1:-1:]:
-                if not r.get_register_validity(i[1::]):
+                if i.startswith("$") and not r.get_register_validity(i[1::]):
                     raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], i))
 
         elif rem_com_li[0] in l_format:
