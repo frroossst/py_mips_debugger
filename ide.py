@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QMessageBox
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QMessageBox, QListWidget, QDialog, QComboBox, QGridLayout, QLineEdit
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QEvent, QCoreApplication
 
 # Runtime imports
@@ -89,6 +89,12 @@ class IDE(QWidget):
         vim_action = QAction("Vim Mode", self)
         vim_action.triggered.connect(self.toggleVimMode)
         edit_menu.addAction(vim_action)
+
+        debug_menu = menu_bar.addMenu("Debug")
+        watch_action = QAction("Watch", self)
+        watch_action.triggered.connect(self.watchPanel)
+        debug_menu.addAction(watch_action)
+
 
         # Instructin viewer window
         self.instruction_box = QTextEdit(self)
@@ -581,6 +587,43 @@ class IDE(QWidget):
 
     def toggleVimMode(self):
         raise RuntimeError("Not implemented")
+
+    def watchPanel(self):
+        box = QDialog(self)
+        box.setWindowTitle("Watch Panel")
+
+        layout = QGridLayout(box)
+
+        watch_list = QListWidget(box)
+
+        register_dropdown = QComboBox(box)
+        register_dropdown.addItem("v0")
+        register_dropdown.addItem("v1")
+
+        operator_dropdown = QComboBox(box)
+        operator_dropdown.addItem("==")
+        operator_dropdown.addItem("!=")
+        operator_dropdown.addItem("<")
+        operator_dropdown.addItem(">")
+        operator_dropdown.addItem("<=")
+        operator_dropdown.addItem(">=")
+
+        value_input = QLineEdit(box)
+
+        add_btn = QPushButton("Add", box)
+        add_btn.clicked.connect(lambda: watch_list.addItem(f"{register_dropdown.currentText()} {operator_dropdown.currentText()} {value_input.text()}"))
+
+        remove_btn = QPushButton("Remove", box)
+        remove_btn.clicked.connect(lambda: watch_list.takeItem(watch_list.currentRow()))
+
+        layout.addWidget(watch_list, 0, 0, 1, 3)
+        layout.addWidget(register_dropdown, 1, 0)
+        layout.addWidget(operator_dropdown, 1, 1)
+        layout.addWidget(value_input, 1, 2)
+        layout.addWidget(add_btn, 2, 0, 1, 3)
+        layout.addWidget(remove_btn, 3, 0, 1, 3)
+
+        box.exec()
 
     def loadSettings(self):
         settings = self.settings
