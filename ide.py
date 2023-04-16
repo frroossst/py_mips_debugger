@@ -328,6 +328,8 @@ class IDE(QWidget):
         self.memory_box.setText("Memory:\n" + self.M.__str__())
         self.consoleEdit.setText("Console:\n")
         self.consoleEdit.blockSignals(False)
+        self.setup_runtime()
+        self.reference_console_text = self.consoleEdit.toPlainText()
 
     def saveFile(self):
         with open(self.filename, 'w') as fobj:
