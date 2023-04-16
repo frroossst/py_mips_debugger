@@ -99,21 +99,25 @@ class IDE(QWidget):
 
         # Create CLEAR button
         clear_button = QPushButton("CLEAR", self)
+        clear_button.setToolTip("Reset the emulator and clear registers and consoles")
         clear_button.clicked.connect(self.clearButton)
         btn_hlayout.addWidget(clear_button)
 
         # Create RUN button
         run_button = QPushButton("RUN", self)
+        run_button.setToolTip("Run the program")
         run_button.clicked.connect(self.runCode)
         btn_hlayout.addWidget(run_button)
 
         # Create STEP button
         step_button = QPushButton("STEP", self)
+        step_button.setToolTip("Step through the program one instruction at a time")
         step_button.clicked.connect(self.stepCode)
         btn_hlayout.addWidget(step_button)
 
         # Create CONTINUE button
         continue_button = QPushButton("CONTINUE", self)
+        continue_button.setToolTip("Continue running the program until the next breakpoint")
         continue_button.clicked.connect(self.continueCode)
         btn_hlayout.addWidget(continue_button)
 
