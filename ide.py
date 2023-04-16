@@ -420,6 +420,11 @@ class IDE(QWidget):
             self.takeConsoleInput = False
             self.wfi_print_timer.stop()
 
+        if event.key() == Qt.Key_Backspace:
+            cursor = self.consoleEdit.textCursor()
+            cursor.deletePreviousChar()
+            return None
+
         super().keyPressEvent(event)
         self.consoleEdit.setText(self.consoleEdit.toPlainText() + event.text())
         self.consoleEdit.moveCursor(QTextCursor.End)
