@@ -1,6 +1,6 @@
 # GUI imports
 from PyQt5.QtGui import QTextBlockFormat, QIcon, QColor, QTextCursor, QTextCharFormat, QFontMetrics, QFont
-from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QMessageBox, QListWidget, QDialog, QComboBox, QGridLayout, QLineEdit
+from PyQt5.QtWidgets import QWidget, QTextEdit, QVBoxLayout, QPushButton, QHBoxLayout, QMenuBar, QAction, QFileDialog, QSplitter, QTabWidget, QSizePolicy, QFontDialog, QToolTip, QMessageBox, QListWidget, QDialog, QComboBox, QGridLayout, QLineEdit, QTableWidget, QTableWidgetItem
 from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QEvent, QCoreApplication
 
 # Runtime imports
@@ -28,6 +28,7 @@ class IDE(QWidget):
     I = None
 
     register_box = None 
+    watch_singleton = None
 
     last_highlighted_line = None
 
@@ -94,6 +95,12 @@ class IDE(QWidget):
         watch_action = QAction("Watch", self)
         watch_action.triggered.connect(self.watchPanel)
         debug_menu.addAction(watch_action)
+
+        window_menu = menu_bar.addMenu("Window")
+        watchpanel_action = QAction("Watch Panel", self)
+        watchpanel_action.setCheckable(True)
+        watchpanel_action.triggered.connect(self.watchDebugPanel)
+        window_menu.addAction(watchpanel_action)
 
 
         # Instructin viewer window
@@ -625,6 +632,33 @@ class IDE(QWidget):
         layout.addWidget(remove_btn, 3, 0, 1, 3)
 
         box.exec()
+        
+    def watchDebugPanel(self, checked):
+        if checked:
+            if not self.watch_singleton:
+                self.watch_singleton = QTableWidget()
+                self.watch_singleton.setWindowTitle("Watch Panel")
+                self.watch_singleton.setColumnCount(2)
+                self.watch_singleton.setHorizontalHeaderLabels(["Expression", "Evaluation"])
+                self.watch_singleton.resizeColumnsToContents()
+
+                for k, v in breakpoints.EVALUATED_WATCHED_EXPRESSIONS.items():
+                    # put values in table
+                    rowCount = self.watch_singleton.rowCount()
+                    self.watch_singleton.insertRow(rowCount)
+                    key = QTableWidgetItem(k)
+                    key.setFlags(key.flags() & ~Qt.ItemIsEditable)
+                    self.watch_singleton.setItem(rowCount, 0, key)
+                    value = QTableWidgetItem(v)
+                    value.setFlags(value.flags() & ~Qt.ItemIsEditable)
+                    self.watch_singleton.setItem(rowCount, 1, value)
+
+                self.watch_singleton.resize(400, 400)
+                self.watch_singleton.show()
+        
+        else:
+            self.watch_singleton.close()
+            self.watch_singleton = None
 
     def verify_and_add_watch_expression(self, wlref, expression):
         li = expression.split(" ")

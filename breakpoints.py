@@ -8,6 +8,7 @@ STOP_AT_NEXT_INSTRUCTION = False
 MESSAGE_QUEUE = queue.Queue()
 BUTTON_STACK = better_deque()
 WATCHED_EXPRESSIONS = []
+EVALUATED_WATCHED_EXPRESSIONS = {}
 CURRENT_EXECUTING_OBJECT = {}
 
 
@@ -115,11 +116,9 @@ def process_and_clean_breakpoints():
 def add_watch_expression(src, op, target):
     watch_object = {"register_source": src, "register_target": target, "operator": op}
     WATCHED_EXPRESSIONS.append(watch_object)
-    print(WATCHED_EXPRESSIONS)
 
 def remove_watch_expression(expression):
     li = expression.split(" ")
     src, op, target = li[0], li[1], li[2]
     watch_object = {"register_source": src, "register_target": target, "operator": op}
     WATCHED_EXPRESSIONS.remove(watch_object)
-    print(WATCHED_EXPRESSIONS)
