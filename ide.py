@@ -611,9 +611,10 @@ class IDE(QWidget):
         value_input = QLineEdit(box)
 
         add_btn = QPushButton("Add", box)
-        add_btn.clicked.connect(lambda: watch_list.addItem(f"{register_dropdown.currentText()} {operator_dropdown.currentText()} {value_input.text()}"))
+        add_btn.clicked.connect(lambda: self.verify_and_add_watch_expression(watch_list, f"{register_dropdown.currentText()} {operator_dropdown.currentText()} {value_input.text()}"))
 
         remove_btn = QPushButton("Remove", box)
+        remove_btn.clicked.connect(lambda: breakpoints.remove_watch_expression(f"{register_dropdown.currentText()} {operator_dropdown.currentText()} {value_input.text()}"))
         remove_btn.clicked.connect(lambda: watch_list.takeItem(watch_list.currentRow()))
 
         layout.addWidget(watch_list, 0, 0, 1, 3)
@@ -624,6 +625,18 @@ class IDE(QWidget):
         layout.addWidget(remove_btn, 3, 0, 1, 3)
 
         box.exec()
+
+    def verify_and_add_watch_expression(self, wlref, expression):
+        li = expression.split(" ")
+        src, op, target = li[0], li[1], li[2]
+
+        # verify that target is a register or a number
+        if not (target.isnumeric() or self.R.get_register_validity(target)):
+            QMessageBox.warning(self, "Invalid expression", "Target must be a register or a number")
+            return None
+
+        breakpoints.add_watch_expression(src, op, target)
+        wlref.addItem(expression)
 
     def loadSettings(self):
         settings = self.settings

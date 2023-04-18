@@ -155,6 +155,12 @@ class Interpreter(QObject):
 
                     break
 
+            for i in breakpoints.WATCHED_EXPRESSIONS:
+                # check if target is a register
+                if self.registers_ref.get_register_validity(i["register_target"]):
+
+                    
+
         else:
             if breakpoints.STOP_AT_NEXT_INSTRUCTION:
                 breakpoints.STOP_AT_NEXT_INSTRUCTION = False
@@ -192,7 +198,7 @@ class Interpreter(QObject):
 
                 self.highlight_line.emit(breakpoints.CURRENT_EXECUTING_OBJECT)
 
-                # checks for breakpoints 
+                # checks for breakpoints and watch expressions
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=True)
 
                 instruction = Instructions.parse_instruction(i)

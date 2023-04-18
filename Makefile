@@ -1,11 +1,8 @@
 .PHONY: *
 
 help:
-	@echo "***********************************"
-	@echo "********** Makefile Help **********"
-	@echo "***********************************"
-	@echo "make <option>"
-	@echo "     <option> can be:"
+	@echo "Usage: make [OPTIONS]\n"
+	@echo "Options:\n"
 	@echo "help"
 	@echo "    Show this message"
 	@echo "build"
