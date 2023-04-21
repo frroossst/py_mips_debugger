@@ -225,6 +225,7 @@ class IDE(QWidget):
         self.I.highlight_line.connect(self.updateLineGUI)
         self.S.console_signal.connect(self.updateConsoleGUI)
         self.I.rehighlight_signal.connect(self.reHighlightLines)
+        self.I.watch_expression_signal.connect(self.watchDebugPanel)
         self.register_box.setText("Registers:\n" + self.R.__str__())
         self.consoleEdit.blockSignals(True)
         self.consoleEdit.setText("Console:\n")
@@ -633,7 +634,8 @@ class IDE(QWidget):
 
         box.exec()
         
-    def watchDebugPanel(self, checked):
+    @pyqtSlot(dict)
+    def watchDebugPanel(self, checked, _dict):
         if checked:
             if not self.watch_singleton:
                 self.watch_singleton = QTableWidget()

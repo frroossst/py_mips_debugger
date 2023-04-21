@@ -13,6 +13,7 @@ class Interpreter(QObject):
 
     highlight_line = pyqtSignal(dict)
     rehighlight_signal = pyqtSignal()
+    watch_expression_signal = pyqtSignal(dict)
 
     file_name = ""
     text = ""
