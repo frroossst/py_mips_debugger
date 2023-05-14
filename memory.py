@@ -6,6 +6,11 @@ class Memory:
 
     memmap = OrderedDict()
 
+    byte_size     = 1 # bytes
+    halfword_size = 2 # bytes
+    word_size     = 4 # bytes
+    quadword_size = 8 # bytes
+
     text_addr_start = 40_000
     data_addr_start = 100_000
 
@@ -99,14 +104,14 @@ class Memory:
     def check_bounds(self, addr, type=None):
         if type == "data":
             if addr > self.data_addr_end and addr < self.data_addr_start:
-                raise InterpreterMemoryError("Memory address out of bounds")
+                raise InterpreterMemoryError(f"Memory address out of bounds: {addr}")
         
         elif type == "text":
             if addr > self.text_addr_end and addr < self.text_addr_start:
-                raise InterpreterMemoryError("Memory address out of bounds")
+                raise InterpreterMemoryError(f"Memory address out of bounds: {addr}")
 
         elif addr not in self.memmap.keys():
-            raise InterpreterMemoryError("Memory address not found")
+            raise InterpreterMemoryError(f"Memory address not found: {addr}")
         
     def get_address(self, label):
         if label not in self.memmap:
@@ -117,8 +122,8 @@ class Memory:
     def get_from_memory(self, addr):
         if not (self.is_text_mapped and self.is_data_mapped):
             raise InterpreterProcessError(f"incorrectly mapped memory: text: {self.is_text_mapped}, data: {self.is_data_mapped}")
-        self.check_bounds(addr)
 
+        self.check_bounds(addr)
         try:
             val =  self.memmap[addr]
         except KeyError:
@@ -129,8 +134,8 @@ class Memory:
     def set_in_memory(self, addr, val):
         if not (self.is_text_mapped and self.is_data_mapped):
             raise InterpreterProcessError(f"incorrectly mapped memory: text: {self.is_text_mapped}, data: {self.is_data_mapped}")
+
         self.check_bounds(addr)
-        
         self.memmap[addr] = val
 
     def get_string(self, addr):
@@ -150,10 +155,9 @@ class Memory:
     def get_word(self, addr):
         self.check_bounds(addr, type="data")
 
-        word_size = 4
         word = 0
 
-        for i in range(word_size):
+        for i in range(self.word_size):
             word += self.memmap[addr] << (i * 8)
             addr += 1
 
@@ -175,9 +179,8 @@ class Memory:
         @note this should not be called directly when executing instructions
         """
         starter_ptr = self.data_curr_addr
-        word_size = 4
 
-        for _ in range(word_size):
+        for _ in range(self.word_size):
             self.memmap[self.data_curr_addr] = val
             self.data_curr_addr += 1
 
@@ -194,41 +197,43 @@ class Memory:
 
         self.memmap[label] = starter_ptr
 
-    def store_existing_word(self, label, val):
+    def store_existing_string(self, val, label):
+        starter_ptr = label
         if isinstance(label, str):
             starter_ptr = self.get_address(label)
 
+        for i in bytes(val, "ascii"):
+            self.set_in_memory(starter_ptr, i)
+            starter_ptr += 1
+
+    def store_existing_word(self, label, val):
         starter_ptr = label
-        word_size = 4
+        if isinstance(label, str):
+            starter_ptr = self.get_address(label)
 
-        barr = bytearray(val.to_bytes(word_size, "little"))
+        barr = bytearray(val.to_bytes(self.word_size, "little"))
 
-        for i in range(word_size):
+        for i in range(self.word_size):
             self.set_in_memory(starter_ptr, barr[i])
             starter_ptr += 1
 
     def load_existing_word(self, label):
+        starter_ptr = label
         if isinstance(label, str):
             starter_ptr = self.get_address(label)
 
-        starter_ptr = label
-        word_size = 4
-
         li = []
 
-        for _ in range(word_size):
+        for _ in range(self.word_size):
             li.append(self.get_from_memory(starter_ptr))
             starter_ptr += 1
 
         value =  int.from_bytes(bytes(li), "little")
         return value
 
-    def store_existing_string(self, val, label):
+    def load_existing_unsigned_byte(self, label):
+        starter_ptr = label
         if isinstance(label, str):
             starter_ptr = self.get_address(label)
 
-        starter_ptr = label
-
-        for i in bytes(val, "ascii"):
-            self.set_in_memory(starter_ptr, i)
-            starter_ptr += 1
+        return self.get_from_memory(starter_ptr)
