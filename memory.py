@@ -216,8 +216,9 @@ class Memory:
 
         li = []
 
-        for i in range(word_size):
+        for _ in range(word_size):
             li.append(self.get_from_memory(starter_ptr))
             starter_ptr += 1
 
-        return int.from_bytes(bytes(li), "little")
+        value =  int.from_bytes(bytes(li), "little")
+        return value

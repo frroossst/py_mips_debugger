@@ -322,21 +322,15 @@ class Instructions:
         pass
 
     @staticmethod
-    def sll(r, reg, val):
-        if reg[0] != "$":
+    def sll(r, reg_save, reg_get, val):
+        if reg_save[0] != "$" or reg_get[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
 
-        if val.startswith("$"):
-            r.set_register(reg[1:], r.get_register(reg[1:]) << r.get_register(val[1:]))
-        else:
-            r.set_register(reg[1:], r.get_register(reg[1:]) << int(val))
+        r.set_register(reg_save[1:], r.get_register(reg_get[1:]) << int(val))
 
     @staticmethod
-    def srl(r, reg, val):
-        if reg[0] != "$":
+    def srl(r, reg_save, reg_get, val):
+        if reg_save[0] != "$" or reg_get[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
-
-        if val.startswith("$"):
-            r.set_register(reg[1:], r.get_register(reg[1:]) >> r.get_register(val[1:]))
-        else:
-            r.set_register(reg[1:], r.get_register(reg[1:]) >> int(val))
+        
+        r.set_register(reg_save[1:], r.get_register(reg_get[1:]) >> int(val))

@@ -22,9 +22,9 @@ class Multiplexer:
         elif ins == "add":
             Instructions.add(r, args[0].strip(","), args[1].strip(","), args[2].strip(","))
         elif ins == "sll":
-            Instructions.sll(r, args[0].strip(","), args[1].strip(","))
+            Instructions.sll(r, args[0].strip(","), args[1].strip(","), args[2])
         elif ins == "srl":
-            Instructions.srl(r, args[0].strip(","), args[1].strip(","))
+            Instructions.srl(r, args[0].strip(","), args[1].strip(","), args[2])
         elif ins == "EndOfInstruction" or ins in ["j", "ja", "jal"]:
             pass
         else:

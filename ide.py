@@ -99,8 +99,9 @@ class IDE(QWidget):
         window_menu = menu_bar.addMenu("Window")
         watchpanel_action = QAction("Watch Panel", self)
         watchpanel_action.setCheckable(True)
-        watchpanel_action.triggered.connect(self.watchDebugPanel)
         window_menu.addAction(watchpanel_action)
+        # FIXME: 
+        # watchpanel_action.triggered.connect(self.watchDebugPanel)
 
 
         # Instructin viewer window
