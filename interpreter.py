@@ -229,8 +229,6 @@ class Interpreter(QObject):
 
                 Multiplexer.decode_and_execute(self.registers_ref, self.memory_ref, self.syscall_ref, instruction[0], instruction[1:])
 
-                print(f"{self.registers_ref}")
-
                 # checks for steps
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False)
 

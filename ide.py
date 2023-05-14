@@ -39,7 +39,7 @@ class IDE(QWidget):
         self.setMinimumSize(1080, 720)
 
     def initUI(self):
-        self.setWindowTitle("PyMIPS Emulator")
+        self.setWindowTitle("PyMIPS Emulator (" + self.filename + ")")
         self.setWindowIcon(QIcon('./assets/icon.png'))
 
         tab_width = 4 * QFontMetrics(self.font()).width(' ')
@@ -477,6 +477,14 @@ class IDE(QWidget):
                     self.R.set_register("v0", input_received)
                 except Exception:
                     raise InterpreterConversionError("Input was not an integer")
+
+            elif console_object["type"] == "str":
+                input_received = self.consoleEdit.toPlainText().removeprefix(prev_console_content).strip("\n")[:console_object["data"]["str_len"]:]
+                self.M.store_existing_string(input_received, console_object["data"]["str_addr"])
+
+            elif console_object["type"] == "char":
+                input_received = self.consoleEdit.toPlainText().removeprefix(prev_console_content).strip("\n")[0]
+                self.R.set_register("v0", ord(input_received))
 
         self.reHighlightLines()
 

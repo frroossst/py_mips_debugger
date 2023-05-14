@@ -35,16 +35,21 @@ class Instructions:
         else:
             rem_com_li = ins
 
-        # instruction not found
-        if rem_com_li[0] not in Instructions.get_all_instructions() and rem_com_li[0] != "EndOfInstruction":
-            raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_instruction_is_invalid(r, m, rem_com_li[0], Instructions.get_all_instructions()))
-
         # check instruction type and check arg valifity
         j_format = ["j", "jal", "jr"]
-        r_format = ["add", "sub", "move"]
+        r_format = ["add", "sub", "move", "sll", "srl"]
         i_format = ["li", "addi", "subi"]
         b_format = ["beq", "bne", "bgt", "blt", "bge", "ble", "bgtz", "bltz", "bgez", "blez"]
         l_format = ["lw", "sw", "la"]
+        s_format = ["syscall", "EndOfInstruction"]
+
+        # this is just for development purposes while adding new instructions
+        if rem_com_li[0] not in j_format and rem_com_li[0] not in r_format and rem_com_li[0] not in i_format and rem_com_li[0] not in b_format and rem_com_li[0] not in l_format and rem_com_li[0] not in s_format:
+            raise RuntimeError(f"[dev] instruction {rem_com_li[0]} not found in any format, not implemented yet")
+
+        # instruction not found
+        if rem_com_li[0] not in Instructions.get_all_instructions() and rem_com_li[0] != "EndOfInstruction":
+            raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_instruction_is_invalid(r, m, rem_com_li[0], Instructions.get_all_instructions()))
 
         if rem_com_li[0] in j_format:
             # there should be only one argument plus the instruction

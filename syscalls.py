@@ -38,9 +38,21 @@ class Syscall(QObject):
             console_object["type"] = "int"
             console_object["data"] = None
 
+        # read string
+        elif code_v0 == 8:
+            console_object["operation"] = "stdin"
+            console_object["type"] = "str"
+            console_object["data"] = {"str_addr": r.get_register("a0"), "str_len": r.get_register("a1")}
+
         # exit
         elif code_v0 == 10:
             raise InterpreterExit("Program exited", exit_code=0)
+
+        # read char
+        elif code_v0 == 12:
+            console_object["operation"] = "stdin"
+            console_object["type"] = "char"
+            console_object["data"] = None
 
         # exit2 i.e. exit with a process code
         elif code_v0 == 17:

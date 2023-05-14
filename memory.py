@@ -177,7 +177,7 @@ class Memory:
         starter_ptr = self.data_curr_addr
         word_size = 4
 
-        for i in range(word_size):
+        for _ in range(word_size):
             self.memmap[self.data_curr_addr] = val
             self.data_curr_addr += 1
 
@@ -188,7 +188,7 @@ class Memory:
         @note this should not be called directly when executing instructions 
         """ 
         starter_ptr = self.data_curr_addr
-        for i in range(val):
+        for _ in range(val):
             self.memmap[self.data_curr_addr] = 0
             self.data_curr_addr += 1
 
@@ -222,3 +222,13 @@ class Memory:
 
         value =  int.from_bytes(bytes(li), "little")
         return value
+
+    def store_existing_string(self, val, label):
+        if isinstance(label, str):
+            starter_ptr = self.get_address(label)
+
+        starter_ptr = label
+
+        for i in bytes(val, "ascii"):
+            self.set_in_memory(starter_ptr, i)
+            starter_ptr += 1
