@@ -31,7 +31,7 @@ this build an executable for your platform be it linux, windows or macOS, an exe
 - Reinvent parts of the wheel as needed, rather than the whole
 - Minimal installation and dependencies, tiny executable
 
-# Limitations
+# Design Choices
 
 These limitations primarily stem from, my laziness and the goal of the project to provide support for a minimal 
 subset of the MIPS Assembly Instruction set, this means that while most instructions are supported and this subset is
