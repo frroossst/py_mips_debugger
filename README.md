@@ -25,11 +25,13 @@ this build an executable for your platform be it linux, windows or macOS, an exe
 # Goals
 
 - A minimal MIPS interpreter in Python, (usask's CMPT 215 as a reference for what is supported)
-- Less than 5 megabyte
-- Make debugging easier
-- Ensure compatibility with VSCode using the inbuilt Python DAP
+- Make debugging MIPS assembly easier
+- Minimal dependencies
+- Easy to install
+- Tiny executable
+- ~Ensure compatibility with VSCode using the inbuilt Python DAP~   
+    - Implemented custom debugging interface   
 - Reinvent parts of the wheel as needed, rather than the whole
-- Minimal installation and dependencies, tiny executable
 
 # Design Choices
 
