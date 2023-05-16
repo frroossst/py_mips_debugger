@@ -37,7 +37,7 @@ this build an executable for your platform be it linux, windows or macOS, an exe
 
 These limitations primarily stem from, my laziness and the goal of the project to provide support for a minimal 
 subset of the MIPS Assembly Instruction set, this means that while most instructions are supported and this subset is
-intended to be Turing complete all behaviours might not work for an officially supported assembler or emulator.
+intended to be Turing complete, all behaviours might not exactly replicate an officially supported assembler or emulator.
 
 - You NEED to have a main label else the program will throw an error
 - Nested labels are not supported
