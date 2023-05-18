@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QE
 from exceptions import InterpreterConversionError
 from better_data_structures import better_deque
 from syntax_highlighter import MIPSHighlighter
+from configuration import Configuration
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
@@ -23,9 +24,10 @@ class IDE(QWidget):
     settings = QSettings("PyMIPS", "PyMIPS Emulator")
     last_added_breakpoint = None
 
-    R = None
-    M = None
-    I = None
+    R = None # Registers
+    M = None # Memory
+    I = None # Interpreter
+    C = None # Configuration
 
     register_box = None 
     watch_singleton = None
@@ -34,6 +36,7 @@ class IDE(QWidget):
 
     def __init__(self, filename):
         self.filename = filename
+        self.C = Configuration()
         super().__init__()
         self.initUI()
         self.setMinimumSize(1080, 720)
