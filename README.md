@@ -1,3 +1,4 @@
+[![.github/workflows/py_unit_test.yml](https://github.com/frroossst/py_mips_debugger/actions/workflows/py_unit_test.yml/badge.svg)](https://github.com/frroossst/py_mips_debugger/actions/workflows/py_unit_test.yml)
 [![pages-build-deployment](https://github.com/frroossst/py_mips_debugger/actions/workflows/pages/pages-build-deployment/badge.svg?branch=master)](https://github.com/frroossst/py_mips_debugger/actions/workflows/pages/pages-build-deployment)
 ![GitHub issues](https://img.shields.io/github/issues-raw/frroossst/py_mips_debugger?style=plastic)
 
