@@ -9,8 +9,10 @@ class AsmDoc:
     }
 
     instr_tip = {
-        "li" : ["load immediate", "li $t1, 100", "$t1 = 100", "Pseudo-instruction (provided by assembler, not processor!) \nLoads immediate value into register"],
-        "j" : ["jump", "j 1000", "go to address 1000", "jump to target address"],
+        "add" : ["add",            "add $t1, $t2, $t3",   "$t1 = $t2 + $t3",    "addition"],
+        "sub" : ["subtract",       "sub $t1, $t2, $t3",   "$t1 = $t2 - $t3",    "subtraction"],
+        "li"  : ["load immediate", "li $t1, 100",         "$t1 = 100",          "Pseudo-instruction (provided by assembler, not processor!) \nLoads immediate value into register"],
+        "j"   : ["jump",           "j 1000",                                    "go to address 1000", "jump to target address"],
     }
 
     @classmethod

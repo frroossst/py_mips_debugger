@@ -1,0 +1,7 @@
+# Unit Testing Action
+steps:
+- uses: actions/checkout@v3
+- uses: actions/setup-python@v4
+  with:
+    python-version: '3.10.6' 
+- run: python3 uni_tests.py

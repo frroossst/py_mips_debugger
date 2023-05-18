@@ -1,19 +1,33 @@
+from instructions import Instructions
+from registers import Registers
+from memory import Memory
+
 from datatypes_t import *
 from exceptions import *
 
-# testing datatypes_t
-count = 0
-for i in range(0, 256):
-    result = uint8_t(i).value
-    expected = i
-    assert result == expected, f"Expected {expected}, got {result}"
+import random
 
-result = uint8_t(55) + uint8_t(1)
-expected = uint8_t(56).value
-assert result.value == expected, f"Expected {expected}, got {result}"
 
-result = uint8_t(55) - uint8_t(1)
-expected = uint8_t(54).value
-assert result.value == expected, f"Expected {expected}, got {result}"
 
-exit(0)
+def get_random_value():
+    return random.randint(0, 32000)
+
+def get_random_register():
+    to_remove = ["$zero", "hi", "lo", "ra"]
+    reg_li = Registers().get_all_registers_as_list()
+    return random.choice(list(filter(lambda x: x not in to_remove, reg_li)))
+
+def test(result, expected):
+    assert result == expected, f"Expected {expected}, got {result}" 
+
+
+# testing instructions
+R = Registers()
+M = Memory()
+
+val = get_random_value()
+reg = get_random_register()
+Instructions.li(R, "$" + reg, val)
+result = R.get_register(reg)
+test(result, val)
+
