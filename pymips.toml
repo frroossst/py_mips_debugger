@@ -3,7 +3,7 @@ memory_mapped = false
 end_of_instruction = true
 
 [runner]
-entry = "main"
+entry_point = "main"
 file_to_run = "hello.asm"
 
 [debugger]
