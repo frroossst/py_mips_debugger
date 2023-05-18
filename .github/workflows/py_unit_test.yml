@@ -5,13 +5,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3
-      with:
-         path: |
-          ~/.cache/pip
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10.6' 
-    - run: python3 unit_tests.py
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+           path: |
+            ~/.cache/pip
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10.6' 
+      - run: python3 unit_tests.py
