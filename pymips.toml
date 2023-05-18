@@ -1,0 +1,11 @@
+[features]
+memory_mapped = false
+end_of_instruction = true
+
+[runner]
+entry = "main"
+file_to_run = "hello.asm"
+
+[debugger]
+breakpoints = []
+watchpoints = []

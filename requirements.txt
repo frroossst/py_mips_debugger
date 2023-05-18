@@ -1,2 +1,3 @@
 PyQt5==5.15.9
 termcolor==2.2.0
+toml==0.10.2
