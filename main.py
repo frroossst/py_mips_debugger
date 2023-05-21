@@ -29,10 +29,10 @@ def exception_hook(exctype, value, traceback):
 
         # print last known state of registers
         print("*" * 80)
-        register_ref = ide.R # from the ide global
+        registers_ref = ide.R # from the ide global
         memory_ref   = ide.M 
         print("Last known state of registers:")
-        print(register_ref.__str__())
+        print(registers_ref.__str__())
         print("Last known state of memory:")
         print(memory_ref.__str__())
 

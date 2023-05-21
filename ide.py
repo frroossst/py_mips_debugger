@@ -27,7 +27,6 @@ class IDE(QWidget):
     R = None # Registers
     M = None # Memory
     I = None # Interpreter
-    C = None # Configuration
 
     register_box = None 
     watch_singleton = None
@@ -36,8 +35,8 @@ class IDE(QWidget):
 
     def __init__(self, filename):
         self.filename = filename
-        self.C = Configuration()
         super().__init__()
+        Configuration().load()
         self.initUI()
         self.setMinimumSize(1080, 720)
 

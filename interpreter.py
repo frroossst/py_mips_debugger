@@ -1,8 +1,9 @@
 from PyQt5.QtCore import QCoreApplication, QObject, pyqtSignal
 
-from exceptions import InterpreterSyntaxError, InterpreterProcessError, InterpreterRecursionError
+from exceptions import InterpreterSyntaxError, InterpreterProcessError, InterpreterRecursionError, InterpreterRuntimeError
 from return_t import BranchShouldNotContinueExecution, EndOfInstructionShouldNotContinueExecution
 from helper_instructions import EndOfInstruction
+from configuration import Configuration
 from instructions import Instructions
 from multiplexer import Multiplexer
 from collections import OrderedDict
@@ -25,10 +26,13 @@ class Interpreter(QObject):
     data_labels = OrderedDict()
 
     registers_ref = None
-    memory_ref = None
+    memory_ref    = None
+    syscall_ref   = None
+    config_ref    = None
 
-    __breakpoints__ = {}
-    __call_stack__ = []
+    __breakpoints__     = {}
+    __call_stack__      = []
+    __program_counter__ = None
 
     __processed__ = False
     __foundmain__ = False
@@ -46,7 +50,7 @@ class Interpreter(QObject):
 
         self.labels, self.label_index, self.data_labels = OrderedDict(), {}, OrderedDict()
 
-        self.registers_ref, self.memory_ref, self.syscall_ref, self.__breakpoints__, self.__call_stack__ = r, m, s, {}, []
+        self.registers_ref, self.memory_ref, self.syscall_ref, self.config_ref, self.__breakpoints__, self.__call_stack__ = r, m, s, Configuration(), {}, []
 
         self.__processed__, self.__foundmain__ = False, False
 
@@ -185,6 +189,16 @@ class Interpreter(QObject):
                 
                 self.state_of_step = True
 
+    def get_next_label(self, curr_label):
+        flag = False
+        for i in self.labels:
+            if i == curr_label:
+                flag = True
+                continue
+            if flag:
+                return i
+        return None
+
     def get_currently_executing_instruction(self):
         try:
             return {
@@ -201,6 +215,8 @@ class Interpreter(QObject):
             for x, i in enumerate(code): 
                 print(f"running [{i: <16}] at index {x:03} in '{label_to_run}'")
 
+                self.__program_counter__ = self.memory_ref.get_address(label_to_run) + (x * 4)
+
                 # setting class variables for debugging purposes
                 breakpoints.CURRENT_EXECUTING_OBJECT["label"] = label_to_run
                 breakpoints.CURRENT_EXECUTING_OBJECT["index"] = x
@@ -214,7 +230,12 @@ class Interpreter(QObject):
                 instruction = Instructions.parse_instruction(i)
                 Instructions.sanitise_instruction(self.registers_ref, self.memory_ref, instruction)
                 if Multiplexer.reached_end_of_instruction(instruction[0]):
-                    return EndOfInstructionShouldNotContinueExecution
+                    if self.config_ref.get_config("end_of_instruction"):
+                        next_label = self.get_next_label(label_to_run)
+                        if next_label is None:
+                            raise InterpreterRuntimeError(f"No valid instruction found at instruction pointer: {self.__program_counter__}")
+                        self.execute_label(next_label)
+                    return EndOfInstructionShouldNotContinueExecution # continue, if toml config
                 if Multiplexer.is_a_jump_instruction(instruction[0]):
                     Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
                     if self.registers_ref.ra in list(self.labels):

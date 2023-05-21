@@ -33,7 +33,7 @@ class Multiplexer:
             raise InterpreterSyntaxError("Invalid instruction: " + ins)
 
     def reached_end_of_instruction(ins):
-        if ins == EndOfInstruction().__str__():
+        if ins == EndOfInstruction().__str__() or ins == EndOfInstruction().__str__().strip():
             return True
         return False
 
