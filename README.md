@@ -30,6 +30,7 @@ this build an executable for your platform be it linux, windows or macOS, an exe
 - [ ] Minimal dependencies
 - [x] Easy to install
 - [ ] Tiny executable
+    - 86.4 MB 
 - ~Ensure compatibility with VSCode using the inbuilt Python DAP~   
     - [x] Implemented custom debugging interface   
 - [ ] Reinvent parts of the wheel as needed, rather than the whole
