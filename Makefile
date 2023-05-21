@@ -29,6 +29,10 @@ dependencies:
 	pip3 install pyinstaller
 	@echo "********** Installing PyQt5 *****************"
 	pip3 install PyQt5
+	@echo "********** Installing termcolor *************"
+	pip3 install termcolor
+	@echo "********** Installing toml ******************"
+	pip3 install toml
 	@echo "******************** End ********************"
 
 docs:
