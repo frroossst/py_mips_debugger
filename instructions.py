@@ -37,9 +37,9 @@ class Instructions:
 
         # check instruction type and check arg valifity
         j_format = ["j", "jal", "jr"]
-        r_format = ["add", "sub", "move", "sll", "srl"]
+        r_format = ["add", "addiu", "sub", "move", "sll", "srl"]
         i_format = ["li", "addi", "subi"]
-        b_format = ["beq", "bne", "bgt", "blt", "bge", "ble", "bgtz", "bltz", "bgez", "blez"]
+        b_format = ["beq", "bne", "bgt", "blt", "bge", "ble", "bgtz", "bltz", "bgez", "blez", "beqz", "bnez"]
         l_format = ["lw", "sw", "la", "lbu", "lb"]
         s_format = ["syscall", "EndOfInstruction"]
 
@@ -253,6 +253,13 @@ class Instructions:
             raise InterpreterRegisterError("Invalid register name")
 
         r.set_register(reg_save[1:], r.get_register(reg_get[1:]))
+
+    @staticmethod
+    def addiu(r, reg_save, reg_get, val):
+        if reg_save[0] != "$" and reg_get[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+        
+        r.set_register(reg_save[1:], r.get_register(reg_get[1:]) + int(val))
 
     @staticmethod
     def addi(r, reg_save, reg_get, val):

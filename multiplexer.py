@@ -13,6 +13,8 @@ class Multiplexer:
             Instructions.move(r, args[0].strip(","), args[1].strip(","))
         elif ins == "addi":
             Instructions.addi(r, args[0].strip(","), args[1].strip(","), args[2])
+        elif ins == "addiu":
+            Instructions.addiu(r, args[0].strip(","), args[1].strip(","), args[2])
         elif ins == "syscall":
             Instructions.process_syscall(r, m, s)
         elif ins == "sw":
@@ -108,9 +110,8 @@ class Multiplexer:
         elif ins == "ble":
             if r0 <= r1:
                 return True
-        elif ins == "blez":
+        elif ins == "blez": # noqa: SIM102
             if r0 <= 0:
                 return True
 
         return False
-
