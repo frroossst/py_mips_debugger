@@ -1,6 +1,7 @@
 from exceptions import InterpreterMemoryError, InterpreterProcessError
 from helper_instructions import EndOfInstruction
 from collections import OrderedDict
+import struct
 
 class Memory:
 
@@ -78,6 +79,10 @@ class Memory:
                 self.store_new_string(val["value"], i)
             elif val["directive"] == "space":
                 self.store_new_space(val["value"], i)
+            elif val["directive"] == "byte":
+                self.store_new_byte(val["value"], i)
+            else:
+                raise InterpreterProcessError(f"Invalid directive: {val['directive']}")
             
         self.data_addr_end = self.data_curr_addr - 1
         self.data_curr_addr = None
@@ -98,6 +103,9 @@ class Memory:
 
         if directive == ".space":
             return { "directive": "space", "value": int(value) }
+
+        if directive == ".byte":
+            return { "directive": "byte", "value": int(value) }
 
         return value
 
@@ -179,6 +187,15 @@ class Memory:
 
         self.memmap[label] = starter_ptr
 
+    def store_new_byte(self, val, label):
+        """
+        @note this should not be called directly when executing instructions
+        """
+        starter_ptr = self.data_curr_addr
+        self.memmap[self.data_curr_addr] = val
+        self.data_curr_addr += 1
+        self.memmap[label] = starter_ptr
+
     def store_new_word(self, val, label):
         """
         @note this should not be called directly when executing instructions
@@ -241,4 +258,16 @@ class Memory:
         if isinstance(label, str):
             starter_ptr = self.get_address(label)
 
-        return self.get_from_memory(starter_ptr)
+        bytes_li = self.get_from_memory(starter_ptr).to_bytes(1, "little")
+        packed   = struct.unpack("B", bytes_li)[0]
+        return packed
+
+    def load_existing_byte(self, label):
+        starter_ptr = label
+        if isinstance(label, str):
+            starter_ptr = self.get_address(label)
+
+        bytes_li = self.get_from_memory(starter_ptr).to_bytes(1, "little")
+        packed   = struct.unpack("b", bytes_li)[0]
+        return packed
+

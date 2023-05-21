@@ -40,7 +40,7 @@ class Instructions:
         r_format = ["add", "sub", "move", "sll", "srl"]
         i_format = ["li", "addi", "subi"]
         b_format = ["beq", "bne", "bgt", "blt", "bge", "ble", "bgtz", "bltz", "bgez", "blez"]
-        l_format = ["lw", "sw", "la", "lbu"]
+        l_format = ["lw", "sw", "la", "lbu", "lb"]
         s_format = ["syscall", "EndOfInstruction"]
 
         # this is just for development purposes while adding new instructions
@@ -344,12 +344,45 @@ class Instructions:
             # get the address of the register
             address = r.get_register(val[1:])
             # store the value at the address
-            r.set_register(reg[1::], m.load_existing_unsigned_byte(address))
+            r.set_register(reg[1::], abs(m.load_existing_unsigned_byte(address)))
 
         else:
             # value is a value
             # store the value at the address
-            r.set_register(reg[1::], m.load_existing_unsigned_byte(val))
+            r.set_register(reg[1::], abs(m.load_existing_unsigned_byte(val)))
+
+    @staticmethod
+    def lb(r, m, reg, val):
+        if reg[0] != "$":
+            raise InterpreterRegisterError("Invalid register name")
+
+        # check if the value is a value or a register
+        # value can be 4($t0) or $t0 or 123
+        if "(" in val and ")" in val:
+            # value is 4($t0)
+            # get the value and the register
+            split = val.split("(")
+            # get the offset
+            offset = int(split[0])
+            # get the register
+            register = split[1].split(")")[0]
+
+            # get the address of the register
+            address = r.get_register(register[1:]) + offset
+            # store the value at the address
+            r.set_register(reg[1::], m.load_existing_byte(address))
+
+        elif r.get_register_validity(val):
+            # value is a register
+            # get the address of the register
+            address = r.get_register(val[1:])
+            # store the value at the address
+            r.set_register(reg[1::], m.load_existing_byte(address))
+
+        else:
+            # value is a value
+            # store the value at the address
+            r.set_register(reg[1::], m.load_existing_byte(val))
 
     @staticmethod
     def syscall():
