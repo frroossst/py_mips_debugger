@@ -48,6 +48,13 @@ class Syscall(QObject):
         elif code_v0 == 10:
             raise InterpreterExit("Program exited", exit_code=0)
 
+        # print char
+        elif code_v0 == 11:
+            stdout_char = chr(r.get_register("a0"))
+            console_object["operation"] = "stdout"
+            console_object["type"] = "char"
+            console_object["data"] = stdout_char
+
         # read char
         elif code_v0 == 12:
             console_object["operation"] = "stdin"

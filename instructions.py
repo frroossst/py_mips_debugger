@@ -337,7 +337,7 @@ class Instructions:
             # get the address of the register
             address = r.get_register(register[1:]) + offset
             # store the value at the address
-            r.set_register(reg[1::], m.load_existing_unsigned_byte(address))
+            r.set_register(reg[1::], abs(m.load_existing_unsigned_byte(address)))
 
         elif r.get_register_validity(val):
             # value is a register

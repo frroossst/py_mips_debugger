@@ -22,12 +22,30 @@ def test(result, expected):
 
 
 # testing instructions
+
+# test for li
 R = Registers()
 M = Memory()
 
-val = get_random_value()
-reg = get_random_register()
-Instructions.li(R, "$" + reg, val)
-result = R.get_register(reg)
-test(result, val)
+for _ in range(10):
+    val = get_random_value()
+    reg = get_random_register()
+    Instructions.li(R, "$" + reg, val)
+    result = R.get_register(reg)
+    test(result, val)
 
+# test for la
+
+
+# test for move
+R = Registers()
+M = Memory()
+
+for _ in range(10):
+    val = get_random_value()
+    reg0 = get_random_register()
+    reg1 = get_random_register()
+    Instructions.li(R, "$" + reg0, val)
+    Instructions.move(R, "$" + reg1, "$" + reg0)
+    reg1 = R.get_register(reg1)
+    test(reg0, reg1)

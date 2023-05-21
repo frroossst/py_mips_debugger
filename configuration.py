@@ -12,7 +12,29 @@ class Configuration:
         self.config = self.load()
 
     def load(self):
-        return toml.load(self.config_file)
+        try:
+            return toml.load(self.config_file)
+        except FileNotFoundError:
+            print("Configuration file not found, generating default configuration file")
+            self.generate_default_config()
+
+    def generate_default_config(self):
+        default_config = {
+            "features": {
+                "memory_mapped": False,
+                "end_of_instruction": True
+            },
+            "runner": {
+                "entry_point": "main",
+                "file_to_run": "hello.asm"
+            },
+            "debugger" : {
+                "breakpoints": [],
+                "watchpoints": []
+            }
+        }
+        with open(self.config_file, "w") as f:
+            toml.dump(default_config, f)
 
     def get_config(self, key):
         try:

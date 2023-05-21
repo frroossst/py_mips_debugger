@@ -138,6 +138,11 @@ class Memory:
         self.check_bounds(addr)
         self.memmap[addr] = val
 
+    def get_char(self, addr):
+        self.check_bounds(addr, type="data")
+
+        return chr(self.memmap[addr])
+
     def get_string(self, addr):
         self.check_bounds(addr, type="data")
 
