@@ -408,12 +408,20 @@ class IDE(QWidget):
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)
 
+    def produce_memory_table(self):
+        data = self.M.__str__().splitlines()
+        table_start = "<table>"
+        header = "<tr><th>Address</th><th>Value</th></tr>"
+        table_end = "</table>"
+        table_data = [ f"<tr><td>{x.split(':')[0]}</td> <td>{x.split(':')[1]}</td></tr>" for x in data if x != ""]
+        return table_start + header + "".join(table_data) + table_end 
+
     def updateMemoryGUI(self):
         # Get the current scroll position
         scroll_bar = self.memory_box.verticalScrollBar()
         scroll_pos = scroll_bar.value()
 
-        self.memory_box.setText("Memory:\n" + self.M.__str__())
+        self.memory_box.setHtml(self.produce_memory_table())
 
         # Restore the scroll position
         scroll_bar.setValue(scroll_pos)

@@ -56,7 +56,7 @@ mainlp:
 
 prevlp: 
     addiu $t0,$t0,1 # check if char occurs previously in 1st string
-    bleu $s2,$t0,second # if not, check if occurs in 2nd string
+    ble $s2,$t0,second # if not, check if occurs in 2nd string
     lbu $t2,-1($t0)
     beq $t2,$s4,mainlp # if yes, go on to the next char from 1st string
     j prevlp

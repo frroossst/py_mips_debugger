@@ -38,7 +38,7 @@ class Instructions:
         # check instruction type and check arg valifity
         j_format = ["j", "jal", "jr"]
         r_format = ["add", "addiu", "sub", "move", "sll", "srl"]
-        i_format = ["li", "addi", "subi"]
+        i_format = ["li", "addi", "addiu", "subi"]
         b_format = ["beq", "bne", "bgt", "blt", "bge", "ble", "bgtz", "bltz", "bgez", "blez", "beqz", "bnez"]
         l_format = ["lw", "sw", "la", "lbu", "lb"]
         s_format = ["syscall", "EndOfInstruction"]
