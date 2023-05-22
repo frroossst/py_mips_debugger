@@ -139,8 +139,8 @@ class Interpreter(QObject):
         if not self.__processed__:
             raise InterpreterProcessError("You must call process() before run()")
 
-        if entry := self.config_ref.get_config("entry_point") != "main":
-            self.execute_label(entry)
+        if self.config_ref.get_config("entry_point") != "main":
+            self.execute_label(self.config_ref.get_config("entry_point"))
         else:
             # main entry point
             self.execute_label("main")

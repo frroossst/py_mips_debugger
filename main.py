@@ -3,7 +3,8 @@ from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import Qt
 from termcolor import cprint
 
-from exceptions import InterpreterException, InterpreterFileError
+from exceptions import InterpreterException
+from configuration import Configuration
 from interpreter import Interpreter
 from registers import Registers
 from syscalls import Syscall
@@ -14,7 +15,6 @@ import sys
 
 
 parser = argparse.ArgumentParser(description="A minimal MIPS assembly emulator written in Python")
-parser.add_argument("file_name")
 parser.add_argument("--no-gui", dest="no_gui_arg", action="store_true")
 args = parser.parse_args()
 
@@ -87,9 +87,7 @@ if __name__ == '__main__':
     fmt = "WARNING: This is a pre-alpha version of the emulator. It is not guaranteed to work as expected."
     cprint(fmt, "yellow", attrs=["bold", "blink"], file=sys.stderr)
 
-    if len(sys.argv) < 2:
-        raise InterpreterFileError("No file name provided")
-    file_name = sys.argv[1]
+    file_name = Configuration().get_config("file_to_run")
 
     if turn_on_gui:
         setup_ide()

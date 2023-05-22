@@ -4,7 +4,7 @@ end_of_instruction = true
 
 [runner]
 entry_point = "main"
-file_to_run = "hello.asm"
+file_to_run = "test_cases/215_q3.asm"
 
 [debugger]
 breakpoints = []

@@ -44,6 +44,8 @@ class Configuration:
                 return self.config["features"]["end_of_instruction"]
             elif key == "entry_point":
                 return self.config["runner"]["entry_point"]
+            elif key == "file_to_run":
+                return self.config["runner"]["file_to_run"]
             
         except KeyError:
             return None
