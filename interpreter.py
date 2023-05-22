@@ -139,8 +139,11 @@ class Interpreter(QObject):
         if not self.__processed__:
             raise InterpreterProcessError("You must call process() before run()")
 
-        # main entry point
-        self.execute_label("main")
+        if entry := self.config_ref.get_config("entry_point") != "main":
+            self.execute_label(entry)
+        else:
+            # main entry point
+            self.execute_label("main")
 
     def check_and_breakpoint(self, label, instruction_number, check_for_breakpoint=True):
         if check_for_breakpoint:

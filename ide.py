@@ -36,7 +36,6 @@ class IDE(QWidget):
     def __init__(self, filename):
         self.filename = filename
         super().__init__()
-        Configuration().load()
         self.initUI()
         self.setMinimumSize(1080, 720)
 
@@ -104,7 +103,6 @@ class IDE(QWidget):
         window_menu.addAction(watchpanel_action)
         # FIXME: 
         # watchpanel_action.triggered.connect(self.watchDebugPanel)
-
 
         # Instructin viewer window
         self.instruction_box = QTextEdit(self)
@@ -703,5 +701,3 @@ class IDE(QWidget):
 
     def closeEvent(self, _event):
         self.saveFile()
-
-
