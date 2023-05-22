@@ -14,7 +14,6 @@ class Interpreter(QObject):
 
     highlight_line = pyqtSignal(dict)
     rehighlight_signal = pyqtSignal()
-    watch_expression_signal = pyqtSignal(dict)
 
     file_name = ""
     text = ""
@@ -212,6 +211,7 @@ class Interpreter(QObject):
         except AttributeError:
             return None
 
+    # main interpreter loop
     def execute_label(self, label_to_run):
         try:
             code = self.labels[label_to_run].strip().splitlines()

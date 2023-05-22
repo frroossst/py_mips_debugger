@@ -7,7 +7,6 @@ from PyQt5.QtCore import Qt, QTimer, pyqtSlot, QSettings, QFileSystemWatcher, QE
 from exceptions import InterpreterConversionError
 from better_data_structures import better_deque
 from syntax_highlighter import MIPSHighlighter
-from configuration import Configuration
 from instructions import Instructions
 from interpreter import Interpreter
 from registers import Registers
@@ -99,10 +98,8 @@ class IDE(QWidget):
 
         window_menu = menu_bar.addMenu("Window")
         watchpanel_action = QAction("Watch Panel", self)
-        watchpanel_action.setCheckable(True)
+        watchpanel_action.triggered.connect(self.watchDebugPanel)
         window_menu.addAction(watchpanel_action)
-        # FIXME: 
-        # watchpanel_action.triggered.connect(self.watchDebugPanel)
 
         # Instructin viewer window
         self.instruction_box = QTextEdit(self)
@@ -226,7 +223,6 @@ class IDE(QWidget):
         self.I.highlight_line.connect(self.updateLineGUI)
         self.S.console_signal.connect(self.updateConsoleGUI)
         self.I.rehighlight_signal.connect(self.reHighlightLines)
-        self.I.watch_expression_signal.connect(self.watchDebugPanel)
         self.register_box.setText("Registers:\n" + self.R.__str__())
         self.consoleEdit.blockSignals(True)
         self.consoleEdit.setText("Console:\n")
@@ -622,8 +618,8 @@ class IDE(QWidget):
         watch_list = QListWidget(box)
 
         register_dropdown = QComboBox(box)
-        register_dropdown.addItem("v0")
-        register_dropdown.addItem("v1")
+        for i in self.R.get_all_registers_as_list():
+            register_dropdown.addItem(i)
 
         operator_dropdown = QComboBox(box)
         operator_dropdown.addItem("==")
@@ -651,33 +647,8 @@ class IDE(QWidget):
 
         box.exec()
         
-    @pyqtSlot(dict)
-    def watchDebugPanel(self, checked, _dict):
-        if checked:
-            if not self.watch_singleton:
-                self.watch_singleton = QTableWidget()
-                self.watch_singleton.setWindowTitle("Watch Panel")
-                self.watch_singleton.setColumnCount(2)
-                self.watch_singleton.setHorizontalHeaderLabels(["Expression", "Evaluation"])
-                self.watch_singleton.resizeColumnsToContents()
-
-                for k, v in breakpoints.EVALUATED_WATCHED_EXPRESSIONS.items():
-                    # put values in table
-                    rowCount = self.watch_singleton.rowCount()
-                    self.watch_singleton.insertRow(rowCount)
-                    key = QTableWidgetItem(k)
-                    key.setFlags(key.flags() & ~Qt.ItemIsEditable)
-                    self.watch_singleton.setItem(rowCount, 0, key)
-                    value = QTableWidgetItem(v)
-                    value.setFlags(value.flags() & ~Qt.ItemIsEditable)
-                    self.watch_singleton.setItem(rowCount, 1, value)
-
-                self.watch_singleton.resize(400, 400)
-                self.watch_singleton.show()
-        
-        else:
-            self.watch_singleton.close()
-            self.watch_singleton = None
+    def watchDebugPanel(self):
+        raise RuntimeError("Not implemented")
 
     def verify_and_add_watch_expression(self, wlref, expression):
         li = expression.split(" ")

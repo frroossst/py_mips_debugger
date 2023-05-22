@@ -1,6 +1,8 @@
 from PyQt5.QtCore import Qt, QRegExp
 from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
+from instructions import Instructions
+
 class MIPSHighlighter(QSyntaxHighlighter):
     def __init__(self, parent=None):
         super(MIPSHighlighter, self).__init__(parent)
@@ -41,12 +43,12 @@ class MIPSHighlighter(QSyntaxHighlighter):
         exclaimCommentFormat.setForeground(Qt.red) 
         exclaimCommentFormat.setFontWeight(QFont.Bold)
 
-        instructions = ["li", "add", "addi", "sub", "and", "or", "nor", "slt", "lw", "sw", "beq", "j", "jal", "jr"]
+        instructions = Instructions.get_all_instructions()
 
         self.highlightingRules = [(QRegExp("\\b%s\\b" % word), keywordFormat) for word in instructions]
         self.highlightingRules += [(QRegExp("\\$[a-z]+\\d"), registerFormat)]
         self.highlightingRules += [(QRegExp("\\b[0-9]+\\b"), numberFormat)]
-        self.highlightingRules += [(QRegExp("\\b[a-z]+\\b:"), labelFormat)]
+        self.highlightingRules += [(QRegExp("\\b[a-z0-9]+\\b:"), labelFormat)]
         self.highlightingRules += [(QRegExp("\".*\""), stringFormat)]
         self.highlightingRules += [(QRegExp("\\.[a-z]+"), directiveFormat)]
         self.highlightingRules += [(QRegExp("\\.text"), sectionFormat)]
