@@ -28,12 +28,17 @@ this build an executable for your platform be it linux, windows or macOS, an exe
 - [ ] A minimal MIPS interpreter in Python, (usask's CMPT 215 as a reference for what is supported)
 - [x] Make debugging MIPS assembly easier
 - [ ] Minimal dependencies
+    - PyQt5
+    - toml
+    - termcolor
 - [x] Easy to install
 - [ ] Tiny executable
     - 86.4 MB 
 - ~Ensure compatibility with VSCode using the inbuilt Python DAP~   
     - [x] Implemented custom debugging interface   
-- [ ] Reinvent parts of the wheel as needed, rather than the whole
+
+# Guiding Philosophy
+- Reinvent parts of the wheel as needed, rather than the whole
 
 # Design Choices
 
@@ -47,24 +52,4 @@ intended to be Turing complete, all behaviours might not exactly replicate an of
     foo:
         bar:
             # This is not supported
-```
-- Dropdown label execution is not supported
-```
-foo:
-    # instructions
-
-bar:
-    # instructions
-
-main:
-    j foo
-
-# execution flow for dropdown(s)
-# main -> foo -> bar
-
-# when dropdown(s) aren't supported
-# main -> foo
-# each label has sort of an "end label" tag
-# and so when it is hit, the execution is returned or ended
-# depending on what instruction was used
 ```
