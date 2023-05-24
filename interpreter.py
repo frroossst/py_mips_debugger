@@ -85,6 +85,14 @@ class Interpreter(QObject):
                 if i == "main:":
                     self.__foundmain__ = True
 
+                found_colon = False
+                for j in i:
+                    if j == ":":
+                        found_colon = True
+                        continue
+                    if found_colon and len(j.strip()) > 0:
+                            raise InterpreterSyntaxError("Label must be defined on it's own line")
+
                 if last_label is not None:
                     val = self.labels[last_label]
                     val += EndOfInstruction().__str__()
@@ -131,6 +139,9 @@ class Interpreter(QObject):
 
         self.memory_ref.map_text(self.labels)
         self.memory_ref.map_data(self.data_labels)
+
+        for i in self.labels:
+            self.label_index[i] = self.memory_ref.get_address(i)
 
         self.__processed__ = True
 
@@ -211,10 +222,23 @@ class Interpreter(QObject):
         except AttributeError:
             return None
 
+    def get_code_from_PC(self):
+        for k, v in self.label_index.items():
+            if self.__program_counter__ >= v:
+                code = self.labels[k].strip().splitlines()
+                offset = (self.__program_counter__ - v) // 4
+                code = code[offset:]
+                break
+
     # main interpreter loop
     def execute_label(self, label_to_run, PC=None):
         try:
-            code = self.labels[label_to_run].strip().splitlines()
+            if PC is not None:
+                self.__program_counter__ = PC
+                code = self.get_code_from_PC()
+            else:
+                code = self.labels[label_to_run].strip().splitlines()
+
             for x, i in enumerate(code): 
                 print(f"running [{i: <16}] at index {x:03} in '{label_to_run}'")
 

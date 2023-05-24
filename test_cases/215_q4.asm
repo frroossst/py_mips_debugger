@@ -60,7 +60,9 @@ main:
 
 count:  
     move $v0,$zero
-    loop: lbu $t0,0($a0)
+
+loop: 
+    lbu $t0,0($a0)
     beq $t0,$zero,done
     addi $a0,$a0,1
     bne $t0,$a1,loop

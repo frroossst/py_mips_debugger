@@ -152,7 +152,7 @@ class Instructions:
 
     @staticmethod
     def isLabel(line):
-        if ":" in line:
+        if ":" in line and not line.lstrip().startswith("#"):
             return True
         return False
 
