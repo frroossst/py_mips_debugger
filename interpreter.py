@@ -212,7 +212,7 @@ class Interpreter(QObject):
             return None
 
     # main interpreter loop
-    def execute_label(self, label_to_run):
+    def execute_label(self, label_to_run, PC=None):
         try:
             code = self.labels[label_to_run].strip().splitlines()
             for x, i in enumerate(code): 
@@ -241,7 +241,12 @@ class Interpreter(QObject):
                     return EndOfInstructionShouldNotContinueExecution # continue, if toml config
                 if Multiplexer.is_a_jump_instruction(instruction[0]):
                     Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
-                    if self.registers_ref.ra in list(self.labels):
+                    if instruction[0] == "jr":
+                        if self.registers_ref.get_register(instruction[1][1::]) in list(self.labels):
+                            self.execute_label(self.registers_ref.get_register(instruction[1][1::]))
+                        else:
+                            self.execute_label(None, PC=self.registers_ref.get_register(instruction[1][1::]))
+                    elif self.registers_ref.ra in list(self.labels):
                         self.execute_label(instruction[1])
                 elif Multiplexer.is_a_branch_instruction(instruction[0]):
                     do_jump = Multiplexer.check_and_evaluate_branch(self.registers_ref, instruction[0], instruction[1:])

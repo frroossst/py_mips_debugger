@@ -43,7 +43,8 @@ class Multiplexer:
 
     # expand to include more jumps
     def is_a_jump_instruction(ins):
-        if ins == "j" or ins == "ja" or ins == "jal":
+        j_ins = ["j", "ja", "jal", "jr"]
+        if ins in j_ins:
             return True
         return False
 
@@ -52,7 +53,9 @@ class Multiplexer:
             r.ra = args[0]
         elif ins == "j":
             r.ra = args[0] # this might need to change later on
-            
+        elif ins == "jr":
+            pass
+
         return None
 
     def is_a_branch_instruction(ins):

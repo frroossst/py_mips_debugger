@@ -162,14 +162,14 @@ class Registers:
             return self.get_value_register(register)
         if register[0] == "a":
             return self.get_argument_register(register)
-        if register[0] == "r":
+        if register[0] == "f":
+            return self.get_floating_point_register(register)
+        if register == "ra":
             return self.get_return_address()
         if register == "hi":
             return self.get_hi_register()
         if register == "lo":
             return self.get_lo_register()
-        if register[0] == "f":
-            return self.get_floating_point_register(register)
         if register == "zero":
             return 0
 

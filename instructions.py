@@ -55,8 +55,11 @@ class Instructions:
             # there should be only one argument plus the instruction
             if len(rem_com_li) != 2:
                 raise InterpreterSyntaxError(f"invalid number of arguments for instruction {rem_com_li[0]}")
+            # jr, takes in one arg which is a register
+            if rem_com_li[0] == "jr" and not r.get_register_validity(rem_com_li[1][1::]):
+                raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_move_register_is_invalid(r, m, rem_com_li[0], rem_com_li[1]))
             # jump label should be valid
-            if rem_com_li[1] not in m.get_memory_keys():
+            if rem_com_li[0] != "jr" and rem_com_li[1] not in m.get_memory_keys():
                 raise InterpreterSyntaxError(ErrorMessages.get_error_message_where_label_is_invalid(r, m, rem_com_li[0], rem_com_li[1]))
 
         elif rem_com_li[0] in r_format:
@@ -172,6 +175,11 @@ class Instructions:
     def jal():
         # raise an error to inform the user that control flow shoulnd't have reached here
         raise InterpreterControlFlowError("Invalid instruction jal, control flow should not have reached here!")
+
+    @staticmethod
+    def jr():
+        # raise an error to inform the user that control flow shoulnd't have reached here
+        raise InterpreterControlFlowError("Invalid instruction jr, control flow should not have reached here!")
 
     @staticmethod
     def beq():
