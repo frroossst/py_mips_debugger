@@ -12,10 +12,14 @@ import random
 def get_random_value():
     return random.randint(0, 32000)
 
-def get_random_register():
+def get_random_register(type="regular"):
     to_remove = ["$zero", "hi", "lo", "ra"]
     reg_li = Registers().get_all_registers_as_list()
-    return random.choice(list(filter(lambda x: x not in to_remove, reg_li)))
+    reg_ch = random.choice(list(filter(lambda x: x not in to_remove, reg_li)))
+    if type == "regular" and reg_ch.startswith("f"):
+        return get_random_register()
+    else:
+        return reg_ch
 
 def test(result, expected):
     assert result == expected, f"Expected {expected}, got {result}" 
@@ -47,5 +51,6 @@ for _ in range(10):
     reg1 = get_random_register()
     Instructions.li(R, "$" + reg0, val)
     Instructions.move(R, "$" + reg1, "$" + reg0)
-    reg1 = R.get_register(reg1)
-    test(reg0, reg1)
+    val0 = R.get_register(reg0)
+    val1 = R.get_register(reg1)
+    test(val0, val1)
