@@ -28,7 +28,6 @@ class IDE(QWidget):
     I = None # Interpreter
 
     register_box = None 
-    watch_singleton = None
 
     last_highlighted_line = None
 
@@ -616,6 +615,8 @@ class IDE(QWidget):
         layout = QGridLayout(box)
 
         watch_list = QListWidget(box)
+        for i in breakpoints.WATCHED_EXPRESSIONS:
+            watch_list.addItem(i["register_source"] + i["operator"] + i["register_target"])
 
         register_dropdown = QComboBox(box)
         for i in self.R.get_all_registers_as_list():

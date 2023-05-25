@@ -1,10 +1,16 @@
 [features]
+# enables special registers for IO operations
 memory_mapped = false
+# inserts a psuedo instruction at the end of the program 
+# to halt the execution, think of it like a return statement
+# except control flow isn't returned to the caller
+# true => inserts a halt instruction at the end of the program
+# false => doesn't insert a halt instruction at the end of the program
 end_of_instruction = true
 
 [runner]
 entry_point = "main"
-file_to_run = "test_cases/215_q4.asm"
+file_to_run = "test_cases/watch_expr.asm"
 
 [debugger]
 breakpoints = []

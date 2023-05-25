@@ -257,7 +257,7 @@ class Interpreter(QObject):
                 instruction = Instructions.parse_instruction(i)
                 Instructions.sanitise_instruction(self.registers_ref, self.memory_ref, instruction)
                 if Multiplexer.reached_end_of_instruction(instruction[0]):
-                    if self.config_ref.get_config("end_of_instruction"):
+                    if not self.config_ref.get_config("end_of_instruction"):
                         next_label = self.get_next_label(label_to_run)
                         if next_label is None:
                             raise InterpreterRuntimeError(f"No valid instruction found at instruction pointer: {self.__program_counter__}")
