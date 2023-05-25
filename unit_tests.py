@@ -18,6 +18,8 @@ def get_random_register(type="regular"):
     reg_ch = random.choice(list(filter(lambda x: x not in to_remove, reg_li)))
     if type == "regular" and reg_ch.startswith("f"):
         return get_random_register()
+    elif type == "float" and not reg_ch.startswith("f"):
+        return get_random_register()
     else:
         return reg_ch
 
