@@ -49,13 +49,10 @@ class Multiplexer:
         return False
 
     def process_jump_instruction(r, ins, args):
-        if ins == "ja" or ins == "jal": 
-            r.ra = args[0]
-        elif ins == "j":
-            r.ra = args[0] # this might need to change later on
-        elif ins == "jr":
+        if ins == "jal":
+            r.ra = args
+        elif ins == "j" or ins == "jr" or ins == "ja": 
             pass
-
         return None
 
     def is_a_branch_instruction(ins):

@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QCoreApplication, QObject, pyqtSignal
 
-from exceptions import InterpreterSyntaxError, InterpreterProcessError, InterpreterRecursionError, InterpreterRuntimeError
+from exceptions import InterpreterSyntaxError, InterpreterProcessError, InterpreterRecursionError, InterpreterRuntimeError, InterpreterValueError
 from return_t import BranchShouldNotContinueExecution, EndOfInstructionShouldNotContinueExecution
 from helper_instructions import EndOfInstruction
 from configuration import Configuration
@@ -223,26 +223,38 @@ class Interpreter(QObject):
             return None
 
     def get_code_from_PC(self):
-        for k, v in self.label_index.items():
+        for k, v in sorted(self.label_index.items(), key=lambda x: x[1], reverse=True):
             if self.__program_counter__ >= v:
                 code = self.labels[k].strip().splitlines()
                 offset = (self.__program_counter__ - v) // 4
                 code = code[offset:]
-                break
+                return code
+
+        raise InterpreterValueError("Program Counter is not in any label")
+
+    def get_PC_from_code(self, label, offset):
+        if label in list(self.label_index.keys()):
+            return self.memory_ref.get_address(label) + (offset * 4)
+        return label + (offset * 4)
 
     # main interpreter loop
-    def execute_label(self, label_to_run, PC=None):
+    def execute_label(self, label_to_run):
         try:
-            if PC is not None:
-                self.__program_counter__ = PC
+            # if label_to_run is a register
+            if isinstance(label_to_run, str) and label_to_run[0] == "$":
+                label_to_run = self.registers_ref.get_register(label_to_run.strip("$"))
+            # if label_to_run is a Progam Counter value, then we need to find the label that contains that PC value
+            if isinstance(label_to_run, int) and label_to_run not in list(self.label_index.values()):
+                self.__program_counter__ = label_to_run
                 code = self.get_code_from_PC()
-            else:
+            # if label_to_run is a label, then we can just run the code
+            if isinstance(label_to_run, str) and label_to_run in list(self.labels.keys()):
                 code = self.labels[label_to_run].strip().splitlines()
 
             for x, i in enumerate(code): 
                 print(f"running [{i: <16}] at index {x:03} in '{label_to_run}'")
 
-                self.__program_counter__ = self.memory_ref.get_address(label_to_run) + (x * 4)
+                self.__program_counter__ = self.get_PC_from_code(label_to_run, x)
 
                 # setting class variables for debugging purposes
                 breakpoints.CURRENT_EXECUTING_OBJECT["label"] = label_to_run
@@ -264,14 +276,11 @@ class Interpreter(QObject):
                         self.execute_label(next_label)
                     return EndOfInstructionShouldNotContinueExecution # continue, if toml config
                 if Multiplexer.is_a_jump_instruction(instruction[0]):
-                    Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], instruction[1:])
+                    Multiplexer.process_jump_instruction(self.registers_ref, instruction[0], self.__program_counter__)
                     if instruction[0] == "jr":
-                        if self.registers_ref.get_register(instruction[1][1::]) in list(self.labels):
-                            self.execute_label(self.registers_ref.get_register(instruction[1][1::]))
-                        else:
-                            self.execute_label(None, PC=self.registers_ref.get_register(instruction[1][1::]))
-                    elif self.registers_ref.ra in list(self.labels):
-                        self.execute_label(instruction[1])
+                        self.execute_label(self.registers_ref.get_register(instruction[1][1::]))
+                    if self.execute_label(instruction[1]) == EndOfInstructionShouldNotContinueExecution:
+                        return EndOfInstructionShouldNotContinueExecution
                 elif Multiplexer.is_a_branch_instruction(instruction[0]):
                     do_jump = Multiplexer.check_and_evaluate_branch(self.registers_ref, instruction[0], instruction[1:])
                     if do_jump:
