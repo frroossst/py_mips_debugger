@@ -233,6 +233,7 @@ class Interpreter(QObject):
         raise InterpreterValueError("Program Counter is not in any label")
 
     def get_PC_from_code(self, label, offset):
+        offset += 1
         if label in list(self.label_index.keys()):
             return self.memory_ref.get_address(label) + (offset * 4)
         return label + (offset * 4)
