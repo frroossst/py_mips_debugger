@@ -1,4 +1,5 @@
 [features]
+register_base = "hex" # dec, hex, bin
 # enables special registers for IO operations
 memory_mapped = false
 # inserts a psuedo instruction at the end of the program 
@@ -10,7 +11,7 @@ end_of_instruction = true
 
 [runner]
 entry_point = "main"
-file_to_run = "test_cases/jal.asm"
+file_to_run = "test_cases/hex.asm"
 
 [debugger]
 breakpoints = []

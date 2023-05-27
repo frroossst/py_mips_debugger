@@ -45,6 +45,8 @@ class Registers:
 
     # register return address
     ra = 0
+    # stack pointer
+    sp = 0
 
     # floating point registers
     f0 = 0.0
@@ -104,7 +106,7 @@ class Registers:
             "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
             "v0", "v1",
             "a0", "a1", "a2", "a3",
-            "ra",
+            "ra", "sp"
             "hi", "lo",
             "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12", "f13", "f14", "f15", "f16", "f17", "f18", "f19", "f20", "f21", "f22", "f23", "f24", "f25", "f26", "f27", "f28", "f29", "f30", "f31"
             ]
@@ -130,8 +132,19 @@ class Registers:
             self.register_hotmap.append(register)
         else:
             self.register_hotmap.append(register)
+        
+    def convert_number_base(self, value):
+        if isinstance(value, int):
+            pass
+        elif value[0:2:] == "0x":
+            value = int(value, 16)
+        elif value[0:2:] == "0b":
+            value = int(value, 2)
+        return value
 
     def set_register(self, register, value):
+        value = self.convert_number_base(value)
+        
         if register[0] == "t":
             self.set_temporary_register(register, value)
         elif register[0] == "s":

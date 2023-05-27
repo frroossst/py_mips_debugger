@@ -1,4 +1,4 @@
-from exceptions import InterpreterMemoryError, InterpreterProcessError
+from exceptions import InterpreterMemoryError, InterpreterProcessError, InterpreterSegmentationError
 from helper_instructions import EndOfInstruction
 from collections import OrderedDict
 import struct
@@ -135,7 +135,7 @@ class Memory:
         try:
             val =  self.memmap[addr]
         except KeyError:
-            raise InterpreterMemoryError(f"Memory address {addr} not found")
+            raise InterpreterSegmentationError(f"Out of bounds memory access: {addr}")
 
         return val
 

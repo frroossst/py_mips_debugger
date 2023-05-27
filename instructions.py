@@ -246,6 +246,7 @@ class Instructions:
         if reg[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
 
+        val = r.convert_number_base(val)
         r.set_register(reg[1:], int(val))
 
     @staticmethod
@@ -253,6 +254,7 @@ class Instructions:
         if reg[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
 
+        val = r.convert_number_base(val)
         r.set_register(reg[1:], m.get_address(val))
 
     @staticmethod
@@ -267,6 +269,7 @@ class Instructions:
         if reg_save[0] != "$" and reg_get[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
         
+        val = r.convert_number_base(val)
         r.set_register(reg_save[1:], r.get_register(reg_get[1:]) + int(val))
 
     @staticmethod
@@ -274,6 +277,7 @@ class Instructions:
         if reg_save[0] != "$" and reg_get[0] != "$":
             raise InterpreterRegisterError("Invalid register name")
         
+        val = r.convert_number_base(val)
         r.set_register(reg_save[1:], r.get_register(reg_get[1:]) + int(val))
 
     @staticmethod

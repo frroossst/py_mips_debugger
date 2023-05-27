@@ -54,6 +54,9 @@ class InterpreterRecursionError(InterpreterException):
 class InterpreterMemoryError(InterpreterException):
     pass
 
+class InterpreterSegmentationError(InterpreterException):
+    pass
+
 class InterpreterStackError(InterpreterException):
     pass
 
