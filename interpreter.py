@@ -253,7 +253,7 @@ class Interpreter(QObject):
                 code = self.labels[label_to_run].strip().splitlines()
 
             for x, i in enumerate(code): 
-                print(f"running [{i: <16}] at index {x:03} in '{label_to_run}'")
+                print(f"running [{i: <16}] at index {x:03} at '{label_to_run}'")
 
                 self.__program_counter__ = self.get_PC_from_code(label_to_run, x)
 
@@ -296,4 +296,4 @@ class Interpreter(QObject):
                 self.check_and_breakpoint(label_to_run, x, check_for_breakpoint=False)
 
         except RecursionError: 
-            raise InterpreterRecursionError("Recursion limit reached", label_that_crashed=label_to_run, instruction_that_crashed=code[x+1])
+            raise InterpreterRecursionError("Interpreter Stack Overflow Recursion Limit reached", label_that_crashed=label_to_run, instruction_that_crashed=self.get_code_from_PC()[0])
