@@ -25,14 +25,7 @@ dependencies:
 	@echo "**********************************************"
 	@echo "********** Installing dependencies **********"
 	@echo "**********************************************"
-	@echo "********** Installing PyInstaller ***********"
-	pip3 install pyinstaller
-	@echo "********** Installing PyQt5 *****************"
-	pip3 install PyQt5
-	@echo "********** Installing termcolor *************"
-	pip3 install termcolor
-	@echo "********** Installing toml ******************"
-	pip3 install toml
+	pip3 install -r requirements.txt
 	@echo "******************** End ********************"
 
 docs:
