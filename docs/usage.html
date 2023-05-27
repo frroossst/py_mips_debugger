@@ -155,7 +155,27 @@ to be available as a shell command by moving it to <code>~/.local/bin</code> or 
 <code>make build</code></p>
 <p>this will compile a binary in the <code>dist/</code> subdiretory of the project</p>
 <p>to run the emulator simply <code>./dist/PyMIPS &lt;path_to_assembly_file&gt;</code></p>
-
+<h2 id="configuration-file"><a class="header" href="#configuration-file">Configuration file</a></h2>
+<p>The Configuration file is <code>pymips.toml</code></p>
+<h3 id="features"><a class="header" href="#features">Features</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>key</th><th>values</th><th>description</th></tr></thead><tbody>
+<tr><td>register_base</td><td><code>bin</code> <code>dec</code> <code>hex</code></td><td>the numerical base all registers display in, under the hood it's still decimal</td></tr>
+<tr><td>memory_mapped</td><td><code>true</code> <code>false</code></td><td>enable or disable memory mapped registers</td></tr>
+<tr><td>end_of_instruction</td><td><code>true</code> <code>false</code></td><td>enable or disable end of instruction</td></tr>
+</tbody></table>
+</div>
+<h3 id="runner"><a class="header" href="#runner">Runner</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>key</th><th>values</th><th>description</th></tr></thead><tbody>
+<tr><td>entry_point</td><td><code>label name</code></td><td>the label which executes at the start of the program</td></tr>
+<tr><td>file_to_run</td><td><code>path</code></td><td>the path to the assembly file to run</td></tr>
+</tbody></table>
+</div>
+<h3 id="debugger"><a class="header" href="#debugger">Debugger</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>key</th><th>values</th><th>description</th></tr></thead><tbody>
+<tr><td>breakpoints</td><td><code>list of line number(s)</code></td><td>a list of line numbers to break at</td></tr>
+<tr><td>watchpoints</td><td><code>list of expression(s)</code></td><td>a list of expressions to watch</td></tr>
+</tbody></table>
+</div>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
