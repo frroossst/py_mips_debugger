@@ -28,12 +28,12 @@ this build an executable for your platform be it linux, windows or macOS, an exe
 - [ ] A minimal MIPS interpreter in Python, (usask's CMPT 215 as a reference for what is supported)
 - [x] Make debugging MIPS assembly easier
 - [ ] Minimal dependencies
-    - PyQt5
     - toml
+    - PyQt5
     - termcolor
 - [x] Easy to install
 - [ ] Tiny executable
-    - 86.4 MB 
+    - 86.4 MB (large due to statically linking PyQt5)
 - ~Ensure compatibility with VSCode using the inbuilt Python DAP~   
     - [x] Implemented custom debugging interface   
 
