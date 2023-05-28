@@ -42,6 +42,13 @@ class Configuration:
                 return self.config["features"]["memory_mapped"]
             elif key == "end_of_instruction":
                 return self.config["features"]["end_of_instruction"]
+            elif key == "register_base":
+                if self.config["features"]["register_base"] == "bin":
+                    return 2
+                if self.config["features"]["register_base"] == "dec":
+                    return 10
+                if self.config["features"]["register_base"] == "hex":
+                    return 16
             elif key == "entry_point":
                 return self.config["runner"]["entry_point"]
             elif key == "file_to_run":

@@ -1,12 +1,11 @@
 from exceptions import InterpreterRegisterError, InterpreterTypeError
+from configuration import Configuration
 
 class Registers:
 
-    # TODO: add register print formatters
-    # print in hexadecimal, octal
-    # print only some registers etc.
-
     register_hotmap = []
+
+    reg_base = 10
 
     # $zero
     zero = 0
@@ -87,7 +86,7 @@ class Registers:
 
 
     def __init__(self):
-        pass
+        self.reg_base = Configuration().get_config("register_base")
 
     # returns the values of all the registers as strings
     def __str__(self):
@@ -133,11 +132,9 @@ class Registers:
         else:
             self.register_hotmap.append(register)
         
-    def convert_number_base(self, value, base=None):
-        if base is not None:
-            pass # read config and convert to base and return early
+    def convert_number_base(self, value):
         if isinstance(value, int):
-            pass
+            value = int(str(value), self.reg_base)
         elif value[0:2:] == "0x":
             value = int(value, 16)
         elif value[0:2:] == "0b":
@@ -145,8 +142,6 @@ class Registers:
         return value
 
     def set_register(self, register, value):
-        value = self.convert_number_base(value)
-
         if register == "sp":
             self.set_stack_pointer(value)
         elif register == "ra":

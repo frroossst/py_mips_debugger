@@ -1,5 +1,5 @@
 [features]
-register_base = "dec" # dec, hex, bin
+register_base = "hex" # dec, hex, bin
 # enables special registers for IO operations
 memory_mapped = false
 # inserts a psuedo instruction at the end of the program 
