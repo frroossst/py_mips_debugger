@@ -106,7 +106,7 @@ class Registers:
             "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
             "v0", "v1",
             "a0", "a1", "a2", "a3",
-            "ra", "sp"
+            "ra", "sp",
             "hi", "lo",
             "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12", "f13", "f14", "f15", "f16", "f17", "f18", "f19", "f20", "f21", "f22", "f23", "f24", "f25", "f26", "f27", "f28", "f29", "f30", "f31"
             ]
@@ -133,7 +133,9 @@ class Registers:
         else:
             self.register_hotmap.append(register)
         
-    def convert_number_base(self, value):
+    def convert_number_base(self, value, base=None):
+        if base is not None:
+            pass # read config and convert to base and return early
         if isinstance(value, int):
             pass
         elif value[0:2:] == "0x":
@@ -144,8 +146,16 @@ class Registers:
 
     def set_register(self, register, value):
         value = self.convert_number_base(value)
-        
-        if register[0] == "t":
+
+        if register == "sp":
+            self.set_stack_pointer(value)
+        elif register == "ra":
+            self.set_return_address(value)
+        elif register == "hi":
+            self.set_hi_register(value)
+        elif register == "lo":
+            self.set_lo_register(value)
+        elif register[0] == "t":
             self.set_temporary_register(register, value)
         elif register[0] == "s":
             self.set_saved_register(register, value)
@@ -153,12 +163,6 @@ class Registers:
             self.set_value_register(register, value)
         elif register[0] == "a":
             self.set_argument_register(register, value)
-        elif register[0] == "r":
-            self.set_return_address(value)
-        elif register == "hi":
-            self.set_hi_register(value)
-        elif register == "lo":
-            self.set_lo_register(value)
         elif register[0] == "f":
             self.set_floating_point_register(register, float(value))
         elif register[0] == "zero":
@@ -335,6 +339,14 @@ class Registers:
             return self.s7
 
         raise InterpreterRegisterError("Invalid register name")
+
+    def set_stack_pointer(self, value):
+        self.sp = value
+
+        self.add_to_register_hotmap("sp")
+
+    def get_stack_pointer(self):
+        return self.sp
         
     def set_return_address(self, value):
         self.ra = value
