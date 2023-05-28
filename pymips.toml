@@ -7,11 +7,11 @@ memory_mapped = false
 # except control flow isn't returned to the caller
 # true => inserts a halt instruction at the end of the program
 # false => doesn't insert a halt instruction at the end of the program
-end_of_instruction = false
+end_of_instruction = true
 
 [runner]
 entry_point = "main"
-file_to_run = "test_cases/215_q3.asm"
+file_to_run = "test_cases/watch_expr.asm"
 
 [debugger]
 breakpoints = []

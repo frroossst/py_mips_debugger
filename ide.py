@@ -98,6 +98,7 @@ class IDE(QWidget):
         window_menu = menu_bar.addMenu("Window")
         watchpanel_action = QAction("Watch Panel", self)
         watchpanel_action.triggered.connect(self.watchDebugPanel)
+        watchpanel_action.setCheckable(True)
         window_menu.addAction(watchpanel_action)
 
         # Instructin viewer window
@@ -192,7 +193,7 @@ class IDE(QWidget):
 
         # every x ms, remind the user that the program is waiting on an input
         self.wfi_print_timer = QTimer()
-        self.wfi_print_timer.setInterval(750)
+        self.wfi_print_timer.setInterval(1000)
         # ! starts when console receives stdin object
         self.wfi_print_timer.timeout.connect(self.print_wfi_message)
 
@@ -648,8 +649,23 @@ class IDE(QWidget):
 
         box.exec()
         
-    def watchDebugPanel(self):
-        raise RuntimeError("Not implemented")
+    def watchDebugPanel(self, action):
+        if action:
+            # create a new window
+            self.watch_debug_window = QDialog(self)
+            self.watch_debug_window.setWindowTitle("Watch Debug Panel")
+
+            layout = QGridLayout(self.watch_debug_window)
+
+            self.watch_debug_list = QListWidget(self.watch_debug_window)
+            for i in breakpoints.WATCHED_EXPRESSIONS:
+                self.watch_debug_list.addItem(i["register_source"] + i["operator"] + i["register_target"])
+
+            layout.addWidget(self.watch_debug_list, 0, 0, 1, 3)
+
+            self.watch_debug_window.show()
+        else:
+            self.watch_debug_window.close()
 
     def verify_and_add_watch_expression(self, wlref, expression):
         li = expression.split(" ")
