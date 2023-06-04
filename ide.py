@@ -179,6 +179,13 @@ class IDE(QWidget):
         register_timer.timeout.connect(self.updateRegistersGUI)
         register_timer.start()
 
+        # automatically updates watch expressions every x ms
+        self.watch_debug_window = None
+        watch_timer = QTimer(self)
+        watch_timer.setInterval(500)
+        watch_timer.timeout.connect(self.updateWatchGUI)
+        watch_timer.start()
+
         # automatically updates memory every x ms
         memory_timer = QTimer(self)
         memory_timer.setInterval(500)
@@ -658,14 +665,21 @@ class IDE(QWidget):
             layout = QGridLayout(self.watch_debug_window)
 
             self.watch_debug_list = QListWidget(self.watch_debug_window)
-            for i in breakpoints.WATCHED_EXPRESSIONS:
+            for i in breakpoints.EVALUATED_WATCHED_EXPRESSIONS:
                 self.watch_debug_list.addItem(i["register_source"] + i["operator"] + i["register_target"])
 
             layout.addWidget(self.watch_debug_list, 0, 0, 1, 3)
 
             self.watch_debug_window.show()
         else:
+            self.watch_debug_window = None
             self.watch_debug_window.close()
+
+    def updateWatchGUI(self):
+        if self.watch_debug_window is not None:
+            self.watch_debug_list = QListWidget(self.watch_debug_window)
+            for i in breakpoints.EVALUATED_WATCHED_EXPRESSIONS:
+                self.watch_debug_list.addItem(i["register_source"] + i["operator"] + i["register_target"])
 
     def verify_and_add_watch_expression(self, wlref, expression):
         li = expression.split(" ")

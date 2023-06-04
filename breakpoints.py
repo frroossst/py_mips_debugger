@@ -112,7 +112,23 @@ def process_and_clean_breakpoints():
         # remove directives
         elif Instructions.isDirective(v.split(":")[1].strip()):
             GLOBAL_BREAKPOINTS.pop(k)
-        
+
+def evaluate_watched_expressions(registers_ref):
+    EVALUATED_WATCHED_EXPRESSIONS = {}
+    for i in WATCHED_EXPRESSIONS:
+        # get source register value
+        source_value = registers_ref.get_register(i["register_source"])
+
+        # check if target is a register or a numeric literal
+        target_value = i["register_target"]
+        if registers_ref.get_register_validity(i["register_target"]):
+            target_value = registers_ref.get_register_value(i["register_target"])
+
+        eval_str = str(source_value) + " " + i["operator"] + " " + str(target_value)
+        eval_val = eval(eval_str)
+
+        EVALUATED_WATCHED_EXPRESSIONS[f"{i['register_source']} {i['operator']} {i['register_target']}"] = eval_val
+
 def add_watch_expression(src, op, target):
     watch_object = {"register_source": src, "register_target": target, "operator": op}
     WATCHED_EXPRESSIONS.append(watch_object)

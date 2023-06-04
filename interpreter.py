@@ -173,20 +173,7 @@ class Interpreter(QObject):
                     break
 
             # construct a table of expression and it's truthy value
-            breakpoints.EVALUATED_WATCHED_EXPRESSIONS = {}
-            for i in breakpoints.WATCHED_EXPRESSIONS:
-                # get source register value
-                source_value = self.registers_ref.get_register(i["register_source"])
-
-                # check if target is a register or a numeric literal
-                target_value = i["register_target"]
-                if self.registers_ref.get_register_validity(i["register_target"]):
-                    target_value = self.registers_ref.get_register_value(i["register_target"])
-
-                eval_str = str(source_value) + " " + i["operator"] + " " + str(target_value)
-                eval_val = eval(eval_str)
-
-                breakpoints.EVALUATED_WATCHED_EXPRESSIONS[f"{i['register_source']} {i['operator']} {i['register_target']}"] = eval_val
+            breakpoints.evaluate_watched_expressions(self.registers_ref)
 
         else:
             if breakpoints.STOP_AT_NEXT_INSTRUCTION:
